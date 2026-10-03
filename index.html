@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>BioSearch — The Way to Research</title>
+  <meta name="description" content="BioSearch is your intelligent gateway to biological research. Discover, connect, and explore scientific literature with AI-powered semantic search and dynamic knowledge graphs." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/variables.css" />
+  <link rel="stylesheet" href="css/navbar.css" />
+  <link rel="stylesheet" href="css/hero.css" />
+  <link rel="stylesheet" href="css/explore.css" />
+</head>
+<body>
+
+  <!-- Three.js Canvas: fixed full viewport so graph seamlessly continues behind search -->
+  <canvas id="three-canvas"></canvas>
+
+  <!-- Navigation -->
+  <nav id="navbar">
+    <div class="nav-inner">
+      <div class="nav-logo">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none">
+          <circle cx="16" cy="16" r="14" stroke="url(#logoGrad)" stroke-width="2"/>
+          <circle cx="16" cy="10" r="3" fill="url(#logoGrad)"/>
+          <circle cx="10" cy="20" r="2.5" fill="url(#logoGrad)" opacity="0.8"/>
+          <circle cx="22" cy="20" r="2.5" fill="url(#logoGrad)" opacity="0.8"/>
+          <line x1="16" y1="13" x2="10" y2="17.5" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.7"/>
+          <line x1="16" y1="13" x2="22" y2="17.5" stroke="url(#logoGrad)" stroke-width="1.5" opacity="0.7"/>
+          <line x1="10" y1="20" x2="22" y2="20" stroke="url(#logoGrad)" stroke-width="1" opacity="0.5"/>
+          <defs>
+            <linearGradient id="logoGrad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+              <stop offset="0%" stop-color="#00f0ff"/>
+              <stop offset="100%" stop-color="#8b5cf6"/>
+            </linearGradient>
+          </defs>
+        </svg>
+        <span>BioSearch</span>
+      </div>
+      <div class="nav-links">
+        <a href="#hero-scroll-track" class="nav-link">Preprints</a>
+        <a href="#explore-section" class="nav-link" id="nav-search-link">Semantic Search</a>
+        <a href="#graph-features" class="nav-link">Graph Mesh</a>
+        <a href="#" class="nav-link">About</a>
+      </div>
+      <button class="nav-cta" id="nav-cta-btn">Start Searching</button>
+    </div>
+  </nav>
+
+  <!-- Hero Scroll Track (controls paper falling & particle graph assembly) -->
+  <div class="hero-scroll-wrapper" id="hero-scroll-track">
+    <section id="hero">
+      <!-- Vignette and gradient overlay -->
+      <div class="hero-overlay"></div>
+
+      <!-- Hero Main Content -->
+      <div class="hero-content">
+        <div class="badge" id="hero-badge">
+          <span class="badge-dot"></span>
+          <span id="badge-status-text">Hovering 3D Preprints &middot; Scroll to Synthesize</span>
+        </div>
+        <h1 class="hero-title" id="hero-title">
+          Research that
+          <span class="gradient-text">Thinks</span><br/>
+          with You
+        </h1>
+        <p class="hero-subtitle" id="hero-subtitle">
+          Watch 3D preprints cascade downwards, break into glowing bioluminescent particles, and weave into a living biological knowledge graph.
+        </p>
+        <div class="hero-actions" id="hero-actions">
+          <button class="btn-primary" id="start-exploring-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="8" cy="8" r="5.5" stroke="currentColor" stroke-width="1.8"/>
+              <path d="M12.5 12.5L16 16" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/>
+            </svg>
+            Synthesize &amp; Search
+          </button>
+          <button class="btn-secondary" id="watch-demo-btn">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+              <circle cx="9" cy="9" r="7.5" stroke="currentColor" stroke-width="1.5"/>
+              <path d="M7.5 6.5L12 9L7.5 11.5V6.5Z" fill="currentColor"/>
+            </svg>
+            Auto Demo
+          </button>
+        </div>
+
+        <!-- Stats row -->
+        <div class="hero-stats" id="hero-stats">
+          <div class="stat-item">
+            <span class="stat-num" data-target="50">0</span><span class="stat-unit">M+</span>
+            <span class="stat-label">Papers</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-target="120">0</span><span class="stat-unit">K+</span>
+            <span class="stat-label">Researchers</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-num" data-target="98">0</span><span class="stat-unit">%</span>
+            <span class="stat-label">Synthesis Accuracy</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Graph Completion Callout (appears when graph is fully formed) -->
+      <div class="graph-ready-banner" id="graph-ready-banner">
+        <span class="banner-pulse"></span>
+        <span class="banner-title">Knowledge Graph Connected &middot; 50M+ Entangled Entities</span>
+        <button class="banner-btn" id="banner-search-btn">
+          Go to Search
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Scroll Progress Bar -->
+      <div class="scroll-progress-container">
+        <div class="scroll-progress-track">
+          <div class="scroll-progress-fill" id="scroll-fill"></div>
+        </div>
+        <div class="scroll-step-labels">
+          <span class="step-label active" id="step-1">1. Hovering</span>
+          <span class="step-label" id="step-2">2. Cascading</span>
+          <span class="step-label" id="step-3">3. Graph Mesh</span>
+        </div>
+      </div>
+
+      <!-- Scroll indicator (clickable) -->
+      <div class="scroll-indicator" id="scroll-indicator" title="Click to scroll down">
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+        <span id="scroll-hint-text">Scroll to synthesize &amp; search</span>
+      </div>
+    </section>
+  </div>
+
+  <!-- Explore & Search Section (seamlessly glides over living 3D graph) -->
+  <section id="explore-section">
+    <div class="explore-container">
+      <div class="search-hero-header">
+        <div class="section-tag">AI-Powered Semantic Engine</div>
+        <h2 class="section-title">Query the Connected Graph</h2>
+        <p class="section-desc">Search through millions of biological relationships, proteins, molecular pathways, and scientific hypotheses.</p>
+      </div>
+
+      <div class="search-box-wrapper">
+        <div class="search-box" id="main-search-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" placeholder="Search gene symbols, pathways, disease mechanisms, e.g. CRISPR Cas9..." id="search-input" autocomplete="off" />
+          <button class="search-submit-btn" id="search-submit-btn">Search Graph</button>
+        </div>
+
+        <div class="trending-tags">
+          <span class="tag-title">Try searching:</span>
+          <button class="pill-tag">CRISPR-Cas9</button>
+          <button class="pill-tag">AlphaFold 3</button>
+          <button class="pill-tag">mRNA Vaccines</button>
+          <button class="pill-tag">Single-Cell RNA</button>
+          <button class="pill-tag">TP53 Gene</button>
+          <button class="pill-tag">CAR-T Cells</button>
+        </div>
+      </div>
+
+      <div class="features-grid" id="graph-features">
+        <div class="feature-card">
+          <div class="feature-icon icon-cyan">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="6" cy="6" r="3"></circle>
+              <circle cx="18" cy="6" r="3"></circle>
+              <circle cx="12" cy="18" r="3"></circle>
+              <line x1="8.5" y1="7.5" x2="15.5" y2="7.5"></line>
+              <line x1="7.5" y1="8.5" x2="10.5" y2="15.5"></line>
+              <line x1="16.5" y1="8.5" x2="13.5" y2="15.5"></line>
+            </svg>
+          </div>
+          <h3>Paper-to-Graph Synthesis</h3>
+          <p>Every publication dissolves into semantic nodes, extracting authors, citations, target molecules, and experimental outcomes into an interconnected 3D mesh.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-violet">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path>
+            </svg>
+          </div>
+          <h3>Cross-Discipline Discovery</h3>
+          <p>Detect hidden correlations between disparate fields, such as oncology and botanical immunology, using high-dimensional graph embeddings.</p>
+        </div>
+
+        <div class="feature-card">
+          <div class="feature-icon icon-pink">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </div>
+          <h3>Real-time Pre-print Ingestion</h3>
+          <p>Over 10,000 papers ingested weekly from bioRxiv, PubMed, and arXiv, dynamically expanding coordinates in real time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer id="footer">
+    <div class="footer-inner">
+      <div class="footer-logo">BioSearch</div>
+      <p>&copy; 2026 BioSearch Inc. Designed for researchers pushing the frontiers of life sciences.</p>
+    </div>
+  </footer>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.163.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/main.js"></script>
+</body>
+</html>

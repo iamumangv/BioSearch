@@ -1,0 +1,9 @@
+/* ============================================
+   BioSearch — Main Style Entry Point
+   Imports modular component stylesheets
+   ============================================ */
+
+@import url('css/variables.css');
+@import url('css/navbar.css');
+@import url('css/hero.css');
+@import url('css/explore.css');
