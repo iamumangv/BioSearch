@@ -1458,6 +1458,14 @@
           </svg>
           <span>Deconstruct in PaperLens ↗</span>
         </a>
+        <a id="btn-open-original-link" href="https://pmc.ncbi.nlm.nih.gov/" target="_blank" rel="noopener" class="btn" style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 12px;" title="Open Original Scientific Source / Publication">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span id="btn-original-link-text">Open Original Paper Source ↗</span>
+        </a>
       </div>
     </aside>
   </main>
@@ -2384,6 +2392,30 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           });
           connContainer.appendChild(el);
         });
+      // Configure Original Source link and PaperLens deep link
+      const btnOriginal = document.getElementById('btn-open-original-link');
+      const txtOriginal = document.getElementById('btn-original-link-text');
+      const btnPaperLens = document.getElementById('btn-open-paper-analyzer');
+
+      let originalUrl = node.url || (node.doi ? `https://doi.org/${node.doi}` : null);
+      if (!originalUrl && currentDataset?.meta?.url) {
+        originalUrl = currentDataset.meta.url;
+      } else if (!originalUrl && currentDataset?.meta?.pmc) {
+        originalUrl = `https://pmc.ncbi.nlm.nih.gov/articles/${currentDataset.meta.pmc}/`;
+      } else if (!originalUrl) {
+        originalUrl = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(node.name)}`;
+      }
+
+      if (btnOriginal) {
+        btnOriginal.href = originalUrl;
+        if (txtOriginal) {
+          const pmcTag = currentDataset?.meta?.pmc ? ` (${currentDataset.meta.pmc})` : '';
+          txtOriginal.innerText = `Open Original Paper Source${pmcTag} ↗`;
+        }
+      }
+
+      if (btnPaperLens && currentDataset?.meta?.pmc) {
+        btnPaperLens.href = `../paper-analyzer/index.html?pmc=${encodeURIComponent(currentDataset.meta.pmc)}`;
       }
 
       drawer.classList.add('open');
