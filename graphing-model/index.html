@@ -1228,6 +1228,14 @@
         </svg>
       </button>
 
+      <a href="../paper-analyzer/index.html" class="btn btn-primary" title="Launch Deep Research Paper Analyzer (PaperLens)" style="background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2)); border-color: var(--cyan); color: var(--cyan);">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+          <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+        </svg>
+        <span>PaperLens Analyzer ↗</span>
+      </a>
+
       <a href="../index.html" class="btn" title="Back to BioSearch Home">
         <span>&larr; BioSearch</span>
       </a>
@@ -1436,13 +1444,20 @@
         </div>
       </div>
 
-      <div class="drawer-footer">
+      <div class="drawer-footer" style="flex-wrap: wrap; gap: 8px;">
         <button id="btn-focus-node" class="btn btn-primary" style="flex: 1;" title="Center camera on this node">
           Focus on Canvas
         </button>
         <button id="btn-isolate-node" class="btn" style="flex: 1;" title="Isolate connected subgraph">
           Isolate Cluster
         </button>
+        <a id="btn-open-paper-analyzer" href="../paper-analyzer/index.html" class="btn" style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 240, 255, 0.12); border-color: var(--cyan); color: var(--cyan);" title="Deep Research Paper Analysis (PaperLens)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
+            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
+          </svg>
+          <span>Deconstruct in PaperLens ↗</span>
+        </a>
       </div>
     </aside>
   </main>

@@ -114,12 +114,17 @@
       <div class="graph-ready-banner" id="graph-ready-banner">
         <span class="banner-pulse"></span>
         <span class="banner-title">Knowledge Graph Connected &middot; 50M+ Entangled Entities</span>
-        <button class="banner-btn" id="banner-search-btn">
-          Go to Search
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
+        <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+          <a href="paper-analyzer/index.html" class="banner-btn" style="background: rgba(0, 240, 255, 0.2); border: 1px solid var(--cyan); color: #00f0ff; text-decoration: none;" title="Open PaperLens Deep Research Analyzer">
+            Deep Paper Analysis ↗
+          </a>
+          <button class="banner-btn" id="banner-search-btn">
+            Go to Search
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <polyline points="6 9 12 15 18 9"></polyline>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- Scroll Progress Bar -->
@@ -188,6 +193,9 @@
           </div>
           <h3>Paper-to-Graph Synthesis</h3>
           <p>Every publication dissolves into semantic nodes, extracting authors, citations, target molecules, and experimental outcomes into an interconnected 3D mesh.</p>
+          <a href="paper-analyzer/index.html" style="display: inline-flex; align-items: center; gap: 6px; color: #00f0ff; font-size: 0.85rem; font-weight: 600; text-decoration: none; margin-top: 10px;">
+            <span>Deconstruct in Paper Analyzer</span> &rarr;
+          </a>
         </div>
 
         <div class="feature-card">
