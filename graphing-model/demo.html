@@ -136,7 +136,9 @@
       align-items: center;
       gap: 8px;
     }
-
+    #btn-gemini-modal{
+      visibility: hidden;
+    }
     .brand-badge {
       font-size: 10px;
       font-weight: 600;
@@ -171,6 +173,10 @@
       font-size: 12px;
       font-weight: 500;
       color: var(--text-muted);
+    }
+
+    #paper-banner{
+      visibility: hidden;
     }
 
     .dataset-select {
@@ -938,6 +944,21 @@
       text-anchor: middle;
     }
 
+    /* Sub-graph recursive deployment shockwave and node animation */
+    .subgraph-shockwave {
+      pointer-events: none;
+      filter: drop-shadow(0 0 10px var(--cyan-glow));
+    }
+
+    .node-group.newly-deployed .node-circle {
+      animation: spawnGlow 1.2s ease-out;
+    }
+
+    @keyframes spawnGlow {
+      0% { filter: drop-shadow(0 0 18px #a855f7); stroke: #c084fc; stroke-width: 4px; }
+      100% { filter: none; stroke: #ffffff; stroke-width: 2px; }
+    }
+
     /* Paper citation pill in header */
     .paper-reference-banner {
       position: absolute;
@@ -967,6 +988,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+    }
+
+    #btn-theme-toggle{
+      visibility: hidden;
     }
 
     .pmc-link {
@@ -1159,7 +1184,7 @@
             BioGraph Model
             <span class="brand-badge">Generalized Engine</span>
           </div>
-          <div class="brand-sub">Scientific Entity &amp; Literature Knowledge Mesh</div>
+          <!-- <div class="brand-sub">Scientific Entity &amp; Literature Knowledge Mesh</div> -->
         </div>
       </a>
 
@@ -1278,6 +1303,8 @@
 
     <!-- Right Actions -->
     <div class="nav-right">
+
+      
       <button id="btn-gemini-modal" class="btn" style="background: rgba(139, 92, 246, 0.16); border: 1px solid rgba(139, 92, 246, 0.45); color: #c4b5fd;" title="Configure Google Gemini AI Key &amp; Settings">
         <span style="font-size:13px;">✨</span>
         <span id="gemini-nav-label">Gemini AI</span>
@@ -1334,7 +1361,7 @@
   <main class="studio-layout">
     
     <!-- Dock Toggle Button when closed -->
-    <button id="btn-show-dock" class="btn btn-primary dock-toggle-btn" title="Open Controls Dock">
+    <button id="btn-show-dock" class="btn btn-primary dock-toggle-btn visible" title="Open Controls Dock">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
         <polyline points="13 17 18 12 13 7"></polyline>
         <polyline points="6 17 11 12 6 7"></polyline>
@@ -1343,7 +1370,7 @@
     </button>
 
     <!-- Controls Dock -->
-    <aside id="controls-dock" class="controls-dock">
+    <aside id="controls-dock" class="controls-dock collapsed">
       <div class="dock-header">
         <div class="dock-title">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2">
@@ -1474,7 +1501,7 @@
       </div>
       <div class="hud-divider"></div>
       <div class="hud-tip" id="hud-status-text">
-        Ready &bull; Drag nodes or click to inspect
+        Ready &bull; Drag nodes &bull; Double-click node to expand sub-graph
       </div>
     </div>
 
@@ -1538,6 +1565,13 @@
         </button>
         <button id="btn-isolate-node" class="btn" style="flex: 1;" title="Isolate connected subgraph">
           Isolate Cluster
+        </button>
+        <button id="btn-expand-node-subgraph" class="btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(139, 92, 246, 0.16); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.45); font-weight: 600;" title="Deploy interconnected sub-graph and blast surrounding nodes (or double-click node on canvas)">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5l-2.8 2.8m-7.4 7.4l-2.8 2.8m0-13l2.8 2.8m7.4 7.4l2.8 2.8"></path>
+          </svg>
+          <span id="btn-expand-subgraph-text">&#9889; Deploy Sub-Graph (Double-Click)</span>
         </button>
         <button id="btn-open-website" class="btn" style="width: 100%; display: none; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); text-align: center; justify-content: center; align-items: center; gap: 6px;" title="Open original website / scientific sources">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -2004,6 +2038,9 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     let nodeGroup = null;
     let labelGroup = null;
     let zoomBehavior = null;
+    let linkSelection = null;
+    let labelSelection = null;
+    let nodeSelection = null;
 
     let simulationActive = true;
     let sizingMode = 'degree'; // 'degree' or 'uniform'
@@ -2249,7 +2286,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Setup D3 Simulation
       simulation = d3.forceSimulation(activeNodes)
-        .force('link', d3.forceLink(activeLinks).id(d => d.id).distance(paramLinkDist))
+        .force('link', d3.forceLink(activeLinks).id(d => typeof d === 'object' ? d.id : d).distance(paramLinkDist))
         .force('charge', d3.forceManyBody().strength(paramCharge))
         .force('center', d3.forceCenter(width / 2, height / 2).strength(0.08))
         .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + paramCollision))
@@ -2257,112 +2294,749 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         .force('y', d3.forceY(height / 2).strength(0.04))
         .alphaDecay(0.028);
 
-      // Bind Links
-      const linkSelection = linkGroup.selectAll('.link')
-        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
-        .join('line')
-        .attr('class', 'link')
-        .attr('stroke', 'var(--text-dim)')
-        .attr('stroke-width', 1.6)
-        .attr('marker-end', 'url(#arrow-marker)');
-
-      // Bind Link Labels
-      const labelSelection = labelGroup.selectAll('.link-label-group')
-        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
-        .join('g')
-        .attr('class', 'link-label-group');
-
-      labelSelection.selectAll('*').remove();
-      labelSelection.append('rect')
-        .attr('class', 'link-label-bg')
-        .attr('height', 16);
-      labelSelection.append('text')
-        .attr('class', 'link-label-text')
-        .attr('dy', '3.5')
-        .text(d => d.relationship);
-
-      // Bind Nodes
-      const nodeSelection = nodeGroup.selectAll('.node-group')
-        .data(activeNodes, d => d.id)
-        .join('g')
-        .attr('class', 'node-group')
-        .call(d3.drag()
-          .on('start', dragStarted)
-          .on('drag', dragged)
-          .on('end', dragEnded)
-        );
-
-      nodeSelection.selectAll('*').remove();
-
-      // Outer ripple halo for key publication or central nodes
-      nodeSelection.append('circle')
-        .attr('class', 'node-halo')
-        .attr('r', d => getNodeRadius(d) + 5)
-        .attr('fill', d => getNodeColor(d))
-        .attr('fill-opacity', 0.15)
-        .style('display', d => d.degree > 4 || d.category === 'Publication' ? 'block' : 'none');
-
-      // Primary Node Circle
-      nodeSelection.append('circle')
-        .attr('class', 'node-circle')
-        .attr('r', d => getNodeRadius(d))
-        .attr('fill', d => getNodeColor(d));
-
-      // Node Text Label
-      nodeSelection.append('text')
-        .attr('class', 'node-label')
-        .attr('dx', d => getNodeRadius(d) + 6)
-        .attr('dy', 4)
-        .text(d => d.name);
-
-      // Node Interactions
-      nodeSelection
-        .on('mouseover', (event, d) => onNodeHover(d))
-        .on('mouseout', () => onNodeUnhover())
-        .on('click', (event, d) => onNodeClick(d));
-
-      // Link Interactions
-      linkSelection
-        .on('mouseover', function(event, d) {
-          d3.select(this).attr('stroke', 'var(--cyan)').attr('stroke-width', 3);
-          d3.select('#hud-status-text').html(`<strong>${d.source.name}</strong> &rarr; <em>${d.relationship}</em> &rarr; <strong>${d.target.name}</strong>`);
-        })
-        .on('mouseout', function() {
-          d3.select(this).attr('stroke', 'var(--text-dim)').attr('stroke-width', 1.6);
-          d3.select('#hud-status-text').text('Ready • Drag nodes or click to inspect');
-        });
-
       // Simulation Tick Loop
       simulation.on('tick', () => {
-        linkSelection
-          .attr('x1', d => d.source.x)
-          .attr('y1', d => d.source.y)
-          .attr('x2', d => d.target.x)
-          .attr('y2', d => d.target.y);
+        if (linkSelection) {
+          linkSelection
+            .attr('x1', d => d.source.x)
+            .attr('y1', d => d.source.y)
+            .attr('x2', d => d.target.x)
+            .attr('y2', d => d.target.y);
+        }
 
-        labelSelection.attr('transform', d => {
-          const midX = (d.source.x + d.target.x) / 2;
-          const midY = (d.source.y + d.target.y) / 2;
-          return `translate(${midX}, ${midY})`;
-        });
+        if (labelSelection) {
+          labelSelection.attr('transform', d => {
+            const midX = (d.source.x + d.target.x) / 2;
+            const midY = (d.source.y + d.target.y) / 2;
+            return `translate(${midX}, ${midY})`;
+          });
 
-        labelSelection.each(function() {
-          const g = d3.select(this);
-          const txt = g.select('text').node();
-          if (txt) {
-            const bb = txt.getBBox();
-            g.select('rect')
-              .attr('x', bb.x - 6)
-              .attr('y', bb.y - 2)
-              .attr('width', bb.width + 12);
-          }
-        });
+          labelSelection.each(function() {
+            const g = d3.select(this);
+            const txt = g.select('text').node();
+            if (txt) {
+              const bb = txt.getBBox();
+              g.select('rect')
+                .attr('x', bb.x - 6)
+                .attr('y', bb.y - 2)
+                .attr('width', bb.width + 12);
+            }
+          });
+        }
 
-        nodeSelection.attr('transform', d => `translate(${d.x}, ${d.y})`);
+        if (nodeSelection) {
+          nodeSelection.attr('transform', d => `translate(${d.x}, ${d.y})`);
+        }
       });
+
+      // Refresh D3 DOM Elements
+      refreshGraphMesh();
 
       // Auto-fit view after brief settling
       setTimeout(() => fitGraphToViewport(), 400);
+    }
+
+    // --- REFRESH D3 DOM MESH ---
+    function refreshGraphMesh() {
+      // 1. Links Join
+      linkSelection = linkGroup.selectAll('.link')
+        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
+        .join(
+          enter => enter.append('line')
+            .attr('class', 'link')
+            .attr('stroke', 'var(--text-dim)')
+            .attr('stroke-width', 1.6)
+            .attr('marker-end', 'url(#arrow-marker)')
+            .attr('stroke-opacity', 0)
+            .call(enter => enter.transition().duration(400).attr('stroke-opacity', 1)),
+          update => update,
+          exit => exit.remove()
+        );
+
+      // Link interactions
+      linkSelection
+        .on('mouseover', function(event, d) {
+          d3.select(this).attr('stroke', 'var(--cyan)').attr('stroke-width', 3);
+          const sName = d.source.name || d.source.id || d.source;
+          const tName = d.target.name || d.target.id || d.target;
+          d3.select('#hud-status-text').html(`<strong>${sName}</strong> &rarr; <em>${d.relationship}</em> &rarr; <strong>${tName}</strong>`);
+        })
+        .on('mouseout', function() {
+          d3.select(this).attr('stroke', 'var(--text-dim)').attr('stroke-width', 1.6);
+          d3.select('#hud-status-text').text('Ready • Drag nodes • Double-click node to expand sub-graph');
+        });
+
+      // 2. Link Labels Join
+      labelSelection = labelGroup.selectAll('.link-label-group')
+        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
+        .join(
+          enter => {
+            const g = enter.append('g').attr('class', 'link-label-group');
+            g.append('rect').attr('class', 'link-label-bg').attr('height', 16);
+            g.append('text').attr('class', 'link-label-text').attr('dy', '3.5').text(d => d.relationship);
+            return g;
+          },
+          update => {
+            update.select('text').text(d => d.relationship);
+            return update;
+          },
+          exit => exit.remove()
+        );
+
+      // 3. Nodes Join
+      nodeSelection = nodeGroup.selectAll('.node-group')
+        .data(activeNodes, d => d.id)
+        .join(
+          enter => {
+            const g = enter.append('g')
+              .attr('class', d => d.isSubNode ? 'node-group newly-deployed' : 'node-group')
+              .call(d3.drag()
+                .on('start', dragStarted)
+                .on('drag', dragged)
+                .on('end', dragEnded)
+              );
+
+            g.append('circle')
+              .attr('class', 'node-halo')
+              .attr('r', d => getNodeRadius(d) + 5)
+              .attr('fill', d => getNodeColor(d))
+              .attr('fill-opacity', 0.15)
+              .style('display', d => d.degree > 4 || d.category === 'Publication' || d.isSubNode ? 'block' : 'none');
+
+            g.append('circle')
+              .attr('class', 'node-circle')
+              .attr('r', d => d.isSubNode ? 0 : getNodeRadius(d))
+              .attr('fill', d => getNodeColor(d))
+              .call(enter => {
+                enter.transition()
+                  .duration(450)
+                  .ease(d3.easeBackOut)
+                  .attr('r', d => getNodeRadius(d));
+              });
+
+            g.append('text')
+              .attr('class', 'node-label')
+              .attr('dx', d => getNodeRadius(d) + 6)
+              .attr('dy', 4)
+              .attr('opacity', d => d.isSubNode ? 0 : 1)
+              .text(d => d.name)
+              .call(enter => {
+                enter.transition()
+                  .duration(450)
+                  .attr('opacity', 1);
+              });
+
+            return g;
+          },
+          update => {
+            update.select('.node-circle')
+              .transition().duration(250)
+              .attr('r', d => getNodeRadius(d))
+              .attr('fill', d => getNodeColor(d));
+            update.select('.node-halo')
+              .attr('r', d => getNodeRadius(d) + 5)
+              .attr('fill', d => getNodeColor(d))
+              .style('display', d => d.degree > 4 || d.category === 'Publication' || d.isSubNode ? 'block' : 'none');
+            update.select('.node-label')
+              .attr('dx', d => getNodeRadius(d) + 6);
+            return update;
+          },
+          exit => exit.remove()
+        );
+
+      // Node Interactions (Hover, Click, Double-Click for Recursive Sub-Graph)
+      nodeSelection
+        .on('mouseover', (event, d) => onNodeHover(d))
+        .on('mouseout', () => onNodeUnhover())
+        .on('click', (event, d) => onNodeClick(d))
+        .on('dblclick', (event, d) => {
+          event.stopPropagation();
+          event.preventDefault();
+          expandNodeSubgraph(d);
+        });
+    }
+
+    // --- SHOCKWAVE VISUAL FX ---
+    function triggerShockwave(x, y, color) {
+      if (!gRoot) return;
+      const themeColor = color || 'var(--cyan)';
+
+      const shockRing = gRoot.insert('circle', ':first-child')
+        .attr('class', 'subgraph-shockwave')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', 14)
+        .attr('fill', 'none')
+        .attr('stroke', themeColor)
+        .attr('stroke-width', 3.5)
+        .attr('stroke-opacity', 0.95);
+
+      shockRing.transition()
+        .duration(850)
+        .ease(d3.easeCubicOut)
+        .attr('r', 280)
+        .attr('stroke-width', 0.5)
+        .attr('stroke-opacity', 0)
+        .remove();
+
+      const glowCore = gRoot.insert('circle', ':first-child')
+        .attr('class', 'subgraph-shockwave')
+        .attr('cx', x)
+        .attr('cy', y)
+        .attr('r', 6)
+        .attr('fill', themeColor)
+        .attr('fill-opacity', 0.45)
+        .attr('stroke', '#ffffff')
+        .attr('stroke-width', 2);
+
+      glowCore.transition()
+        .duration(500)
+        .ease(d3.easeQuadOut)
+        .attr('r', 110)
+        .attr('fill-opacity', 0)
+        .attr('stroke-opacity', 0)
+        .remove();
+    }
+
+    // --- PROCEDURAL SUBGRAPH GENERATOR ---
+    function generateNodeSubgraph(parentNode, existingIds) {
+      const pName = parentNode.name || parentNode.id;
+      const pCat = parentNode.category || 'Other';
+      const cleanBaseId = (parentNode.id || pName).replace(/[^a-zA-Z0-9_-]/g, '_');
+      const genNonce = Date.now().toString(36).slice(-4) + Math.random().toString(36).slice(2, 5);
+
+      const nameLow = pName.toLowerCase();
+      let templates = [];
+
+      if (pCat === 'Host Receptor / Enzyme' || nameLow.includes('ace2') || nameLow.includes('tmprss2') || nameLow.includes('receptor') || nameLow.includes('protease') || nameLow.includes('enzyme')) {
+        templates = [
+          {
+            slug: 'active_site',
+            name: `${pName} Catalytic Binding Pocket`,
+            category: 'Host Receptor / Enzyme',
+            desc: `High-affinity coordination site for substrate interaction and ligand docking with ${pName}.`,
+            parentRel: 'Exposes catalytic cleft',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'cleavage_site',
+            name: `Arg/Ser Cleavage Recognition Motif`,
+            category: 'Gene / Protein',
+            desc: `Conserved polybasic substrate cleavage motif activated during enzymatic processing.`,
+            parentRel: 'Cleaves at peptide junction',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'allosteric_reg',
+            name: `Allosteric Zinc/Ion Co-Factor`,
+            category: 'Host Receptor / Enzyme',
+            desc: `Critical metal-ion co-factor maintaining tertiary catalytic fold and enzymatic turnover.`,
+            parentRel: 'Stabilizes active conformation',
+            linksTo: [0, 3]
+          },
+          {
+            slug: 'small_mol_inhibitor',
+            name: `Targeted Small Molecule Inhibitor`,
+            category: 'Drug / Therapeutic',
+            desc: `Competitive molecular inhibitor blocking the active substrate chamber of ${pName}.`,
+            parentRel: 'Competitively inhibits activity',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'internalization_axis',
+            name: `Clathrin-Mediated Endocytosis Complex`,
+            category: 'Disease / Pathology',
+            desc: `Downstream endocytic cascade driving receptor-ligand internalization into host cytoplasm.`,
+            parentRel: 'Triggers cellular entry cascade',
+            linksTo: [1, 3]
+          }
+        ];
+      } else if (pCat === 'Viral Target' || nameLow.includes('spike') || nameLow.includes('nucleocapsid') || nameLow.includes('rbd') || nameLow.includes('antigen') || nameLow.includes('viral')) {
+        templates = [
+          {
+            slug: 'rbd_core',
+            name: `${pName} Receptor Binding Domain (RBD)`,
+            category: 'Viral Target',
+            desc: `Conserved surface-exposed domain mediating host docking and viral adhesion.`,
+            parentRel: 'Key structural subdomain',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'neutralizing_epitope',
+            name: `Neutralizing Paratope Epitope Site`,
+            category: 'Immune Response',
+            desc: `Hypervariable conformational epitope targeted by potent human neutralizing antibodies.`,
+            parentRel: 'Presents neutralization target',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'fusion_peptide',
+            name: `Class-I Viral Fusion Peptide Loop`,
+            category: 'Gene / Protein',
+            desc: `Hydrophobic peptide segment inserting into host target membrane during fusion.`,
+            parentRel: 'Drives membrane merger',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'escape_mutations',
+            name: `Immune Escape Mutation Cluster`,
+            category: 'Clinical Metric / Variable',
+            desc: `Substitutions conferring steric resistance against polyclonal neutralizing sera.`,
+            parentRel: 'Selected by evolutionary pressure',
+            linksTo: [1, 4]
+          },
+          {
+            slug: 'trimer_quaternary',
+            name: `Quaternary Trimeric Stalk Interface`,
+            category: 'Viral Target',
+            desc: `Stable oligomeric trimer core anchoring the glycoprotein complex to viral envelope.`,
+            parentRel: 'Maintains quaternary structure',
+            linksTo: [2, 0]
+          }
+        ];
+      } else if (pCat === 'Diagnostic Assay' || nameLow.includes('lfia') || nameLow.includes('test') || nameLow.includes('pcr') || nameLow.includes('assay') || nameLow.includes('rapid') || nameLow.includes('strip')) {
+        templates = [
+          {
+            slug: 'nano_conjugate',
+            name: `Colloidal Gold Reporter Conjugate`,
+            category: 'Specimen / Matrix',
+            desc: `40nm colloidal gold or europium nanoparticles conjugated with target-specific antibodies.`,
+            parentRel: 'Generates visual colorimetric signal',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'test_capture_line',
+            name: `Nitrocellulose Test Line (T-Line)`,
+            category: 'Diagnostic Assay',
+            desc: `Immobilized capture monoclonal antibody forming the diagnostic sandwich complex.`,
+            parentRel: 'Primary read-out zone',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'control_reference_line',
+            name: `Quality Reference Control Line (C-Line)`,
+            category: 'Regulatory / Guideline',
+            desc: `Anti-species polyclonal IgG confirming adequate capillary wicking and test validity.`,
+            parentRel: 'Validates chromatographic run',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'lod_analytical',
+            name: `Analytical Limit of Detection (LoD)`,
+            category: 'Clinical Metric / Variable',
+            desc: `Minimal target analyte concentration reliably distinguished from blank matrix (95% CI).`,
+            parentRel: 'Defines analytical sensitivity threshold',
+            linksTo: [1, 4]
+          },
+          {
+            slug: 'sample_pad_buffer',
+            name: `Capillary Sample Pad & Lysis Buffer`,
+            category: 'Specimen / Matrix',
+            desc: `Triton X-100 lysis matrix normalizing pH and filtering mucin or cellular debris.`,
+            parentRel: 'Conditioning & flow matrix',
+            linksTo: [0, 1]
+          }
+        ];
+      } else if (pCat === 'Immune Response' || nameLow.includes('antibody') || nameLow.includes('igm') || nameLow.includes('igg') || nameLow.includes('t-cell') || nameLow.includes('interferon') || nameLow.includes('immune')) {
+        templates = [
+          {
+            slug: 'fab_binding_arm',
+            name: `${pName} Fab Hypervariable CDR3 Loop`,
+            category: 'Immune Response',
+            desc: `Antigen-binding fragment containing complementarity-determining regions conferring specificity.`,
+            parentRel: 'Mediates high-avidity binding',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'fc_effector_domain',
+            name: `Fc Receptor (FcγR) Effector Domain`,
+            category: 'Immune Response',
+            desc: `Constant domain engaging macrophage Fc receptors and triggering complement activation.`,
+            parentRel: 'Recruits downstream effector cells',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'affinity_maturation',
+            name: `Germinal Center Affinity Maturation`,
+            category: 'Gene / Protein',
+            desc: `Somatic hypermutation in germinal center B-cells increasing on-rate and equilibrium Ka.`,
+            parentRel: 'Enhances binding affinity',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'plasma_memory_clone',
+            name: `Long-Lived Plasma B-Cell Clone`,
+            category: 'Immune Response',
+            desc: `Bone marrow-homing memory plasma cells maintaining durable neutralizing antibody titres.`,
+            parentRel: 'Clonal expansion source',
+            linksTo: [1, 4]
+          },
+          {
+            slug: 'serum_titre_half_life',
+            name: `Serum Neutralizing Titre Kinetics`,
+            category: 'Clinical Metric / Variable',
+            desc: `Quantitative decay rate and half-life curve over 180 days post-exposure.`,
+            parentRel: 'Kinetic persistence metric',
+            linksTo: [0, 3]
+          }
+        ];
+      } else if (pCat === 'Publication' || nameLow.startsWith('pmc') || nameLow.includes('et al') || nameLow.includes('study')) {
+        templates = [
+          {
+            slug: 'patient_cohort',
+            name: `${pName.split(' ')[0]} Clinical Patient Cohort`,
+            category: 'Specimen / Matrix',
+            desc: `Characterized prospective patient cohort with paired RT-PCR and longitudinal serology.`,
+            parentRel: 'Investigates primary patient cohort',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'primary_endpoint',
+            name: `Primary Diagnostic Sensitivity Finding`,
+            category: 'Clinical Metric / Variable',
+            desc: `Key empirical endpoint demonstrating statistical concordance across target assay groups.`,
+            parentRel: 'Reports primary finding',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'validation_methodology',
+            name: `Comparative Gold-Standard Reference Protocol`,
+            category: 'Regulatory / Guideline',
+            desc: `Standardized ROC analysis and RT-qPCR reference protocol validating test performance.`,
+            parentRel: 'Establishes appraisal protocol',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'pathway_mechanism',
+            name: `Mechanistic Pathophysiological Model`,
+            category: 'Disease / Pathology',
+            desc: `Integrative model linking biomarker dynamics to clinical disease presentation.`,
+            parentRel: 'Proposes mechanistic pathway',
+            linksTo: [1, 4]
+          },
+          {
+            slug: 'biomarker_correlation',
+            name: `Cross-Validated Biomarker Signature`,
+            category: 'Immune Response',
+            desc: `Multi-analyte panel correlating early viral load with humoral antibody seroconversion.`,
+            parentRel: 'Identifies predictive marker',
+            linksTo: [0, 3]
+          }
+        ];
+      } else if (pCat === 'Specimen / Matrix' || nameLow.includes('blood') || nameLow.includes('serum') || nameLow.includes('swab') || nameLow.includes('saliva') || nameLow.includes('plasma')) {
+        templates = [
+          {
+            slug: 'matrix_viscosity',
+            name: `${pName} Viscosity & Mucolytic Matrix`,
+            category: 'Specimen / Matrix',
+            desc: `Physical viscosity and mucin matrix characteristics governing lateral flow capillary speed.`,
+            parentRel: 'Matrix rheology component',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'analyte_recovery',
+            name: `Analyte Extraction Efficiency Rate`,
+            category: 'Clinical Metric / Variable',
+            desc: `Quantitative recovery rate of intact viral protein or antibodies from raw specimen matrix.`,
+            parentRel: 'Determines sample yield',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'cross_reactivity_panel',
+            name: `Pre-Pandemic Negative Interference Panel`,
+            category: 'Regulatory / Guideline',
+            desc: `Control matrix bank tested against endemic human coronaviruses, influenza, and RF.`,
+            parentRel: 'Eliminates matrix interference',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'cellular_debris_filter',
+            name: `In-Line Microfluidic Filtration Membrane`,
+            category: 'Diagnostic Assay',
+            desc: `Separation membrane preventing red blood cell hemolysis from obscuring reading window.`,
+            parentRel: 'Protects detection strip',
+            linksTo: [0, 1]
+          },
+          {
+            slug: 'stability_decay',
+            name: `Analyte Freeze-Thaw Stability Profile`,
+            category: 'Specimen / Matrix',
+            desc: `Thermal stability degradation profile governing sample preservation across temperature swings.`,
+            parentRel: 'Governs specimen preservation',
+            linksTo: [1, 3]
+          }
+        ];
+      } else if (pCat === 'Clinical Metric / Variable' || nameLow.includes('ct') || nameLow.includes('sensitivity') || nameLow.includes('specificity') || nameLow.includes('threshold')) {
+        templates = [
+          {
+            slug: 'ct_cutoff_high',
+            name: `High Viral Load Window (Ct < 25)`,
+            category: 'Clinical Metric / Variable',
+            desc: `Clinical range corresponding to peak infectious viral shedding and 98%+ assay sensitivity.`,
+            parentRel: 'Stratifies diagnostic accuracy',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'concordance_rate',
+            name: `Positive Percent Agreement (PPA 96.4%)`,
+            category: 'Regulatory / Guideline',
+            desc: `Statistical concordance evaluated against simultaneous molecular reference RT-qPCR.`,
+            parentRel: 'Quantifies clinical reliability',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'false_negative_window',
+            name: `Early-Window False Negative Risk (<5 Days)`,
+            category: 'Disease / Pathology',
+            desc: `Window period preceding detectable seroconversion where viral antigen tests dominate.`,
+            parentRel: 'Defines diagnostic limitation',
+            linksTo: [0, 3]
+          },
+          {
+            slug: 'roc_auc_curve',
+            name: `ROC Area Under Curve (AUC = 0.982)`,
+            category: 'Clinical Metric / Variable',
+            desc: `Comprehensive discrimination metric balancing diagnostic sensitivity and false positive index.`,
+            parentRel: 'Evaluates global discriminatory power',
+            linksTo: [0, 1]
+          },
+          {
+            slug: 'diagnostic_odds_ratio',
+            name: `Diagnostic Odds Ratio (DOR = 84.6)`,
+            category: 'Regulatory / Guideline',
+            desc: `Independent indicator of test performance summarizing diagnostic strength independent of prevalence.`,
+            parentRel: 'Summarizes diagnostic odds',
+            linksTo: [1, 3]
+          }
+        ];
+      } else {
+        templates = [
+          {
+            slug: 'upstream_regulator',
+            name: `Upstream Regulatory Factor for ${pName}`,
+            category: 'Gene / Protein',
+            desc: `Transcription factor or upstream kinase regulating expression and functional activation of ${pName}.`,
+            parentRel: 'Positively regulates expression',
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'active_complex',
+            name: `${pName} Functional Core Complex`,
+            category: pCat !== 'Other' ? pCat : 'Gene / Protein',
+            desc: `Core quaternary macromolecular assembly mediating functional biological activity.`,
+            parentRel: 'Constitutes functional assembly',
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'downstream_effector',
+            name: `Downstream Effector Cascade`,
+            category: 'Disease / Pathology',
+            desc: `Intracellular signaling cascade triggered upon activation of ${pName}.`,
+            parentRel: 'Transduces functional signal',
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'target_interaction',
+            name: `Biomolecular Interactor & Ligand`,
+            category: 'Immune Response',
+            desc: `High-affinity cognate binding partner forming stable physiological contact with ${pName}.`,
+            parentRel: 'Physically binds and engages',
+            linksTo: [1, 4]
+          },
+          {
+            slug: 'validation_metric',
+            name: `${pName} Quantitative Expression Index`,
+            category: 'Clinical Metric / Variable',
+            desc: `Standardized biomarker index quantifying physiological or diagnostic concentration in biological systems.`,
+            parentRel: 'Quantifies expression level',
+            linksTo: [0, 3]
+          }
+        ];
+      }
+
+      const newNodes = [];
+      const childIdMap = [];
+
+      templates.forEach((tmpl, i) => {
+        let candidateId = `${cleanBaseId}__${tmpl.slug}_${genNonce}`;
+        let suffix = 1;
+        while (existingIds.has(candidateId)) {
+          candidateId = `${cleanBaseId}__${tmpl.slug}_${genNonce}_${suffix++}`;
+        }
+        existingIds.add(candidateId);
+
+        const nodeObj = {
+          id: candidateId,
+          name: tmpl.name,
+          category: tmpl.category,
+          desc: tmpl.desc,
+          degree: 0,
+          isSubNode: true,
+          parentOriginId: parentNode.id
+        };
+        newNodes.push(nodeObj);
+        childIdMap.push({ id: candidateId, linksTo: tmpl.linksTo, parentRel: tmpl.parentRel });
+      });
+
+      const newLinks = [];
+      const interRelPhrases = [
+        'Forms functional complex with',
+        'Directly regulates',
+        'Co-expressed and localized with',
+        'Modulates binding affinity of',
+        'Triggers activation of',
+        'Transduces signal to',
+        'Synergistically enhances',
+        'Stabilizes conformation of'
+      ];
+
+      childIdMap.forEach((child, idx) => {
+        // Parent -> Child link
+        newLinks.push({
+          source: parentNode.id,
+          target: child.id,
+          relationship: child.parentRel || 'Sub-component of'
+        });
+
+        // Inter-child links (creating triangles and cascades among the newly deployed nodes)
+        if (child.linksTo && Array.isArray(child.linksTo)) {
+          child.linksTo.forEach(targetIdx => {
+            if (targetIdx !== idx && targetIdx >= 0 && targetIdx < childIdMap.length) {
+              const targetId = childIdMap[targetIdx].id;
+              const phrase = interRelPhrases[(idx * 3 + targetIdx) % interRelPhrases.length];
+              const alreadyLinked = newLinks.some(l => 
+                (l.source === child.id && l.target === targetId) ||
+                (l.source === targetId && l.target === child.id)
+              );
+              if (!alreadyLinked) {
+                newLinks.push({
+                  source: child.id,
+                  target: targetId,
+                  relationship: phrase
+                });
+              }
+            }
+          });
+        }
+      });
+
+      return { newNodes, newLinks };
+    }
+
+    // --- RECURSIVE SUBGRAPH EXPANSION & BLAST IMPULSE ---
+    function expandNodeSubgraph(parentNode) {
+      if (!parentNode) return;
+
+      const existingIds = new Set(activeNodes.map(n => n.id));
+      const { newNodes, newLinks } = generateNodeSubgraph(parentNode, existingIds);
+      if (!newNodes || newNodes.length === 0) return;
+
+      const px = (parentNode.x != null && !isNaN(parentNode.x)) ? parentNode.x : 0;
+      const py = (parentNode.y != null && !isNaN(parentNode.y)) ? parentNode.y : 0;
+
+      // 1. Shockwave Ripple Visual Effect
+      triggerShockwave(px, py, getNodeColor(parentNode));
+
+      // 2. Radial Blast Force: Push neighboring nodes away to make room for sub-graph
+      const PUSH_RADIUS = 400;
+      const PUSH_FORCE = 42;
+
+      activeNodes.forEach(other => {
+        if (other.id === parentNode.id) return;
+        const ox = (other.x != null && !isNaN(other.x)) ? other.x : px + 10;
+        const oy = (other.y != null && !isNaN(other.y)) ? other.y : py + 10;
+        const dx = ox - px;
+        const dy = oy - py;
+        const dist = Math.hypot(dx, dy) || 1;
+        if (dist < PUSH_RADIUS) {
+          const factor = Math.max(0.12, 1 - (dist / PUSH_RADIUS));
+          const impulse = PUSH_FORCE * Math.pow(factor, 1.4) + 14;
+          const nx = dx / dist;
+          const ny = dy / dist;
+          other.x = ox + nx * impulse * 1.5;
+          other.y = oy + ny * impulse * 1.5;
+          other.vx = (other.vx || 0) + nx * impulse * 2.5;
+          other.vy = (other.vy || 0) + ny * impulse * 2.5;
+          if (other.fx != null) {
+            other.fx += nx * impulse * 1.5;
+            other.fy += ny * impulse * 1.5;
+          }
+        }
+      });
+
+      // 3. Position new nodes in an orbital ring around the parent
+      const count = newNodes.length;
+      const baseAngle = Math.random() * Math.PI * 2;
+      newNodes.forEach((child, idx) => {
+        const angle = baseAngle + (idx / count) * 2 * Math.PI + (Math.random() - 0.5) * 0.25;
+        const dist = 75 + Math.random() * 30;
+        child.x = px + Math.cos(angle) * dist;
+        child.y = py + Math.sin(angle) * dist;
+        child.vx = Math.cos(angle) * 16;
+        child.vy = Math.sin(angle) * 16;
+        child.degree = 0;
+      });
+
+      // 4. Append new nodes to active list and currentDataset
+      activeNodes.push(...newNodes);
+      currentDataset.nodes.push(...newNodes);
+
+      // 5. Resolve and append new links
+      const nodeMap = new Map(activeNodes.map(n => [n.id, n]));
+      newLinks.forEach(l => {
+        const sNode = nodeMap.get(l.source);
+        const tNode = nodeMap.get(l.target);
+        if (sNode && tNode) {
+          activeLinks.push({
+            source: sNode,
+            target: tNode,
+            relationship: l.relationship
+          });
+          currentDataset.links.push({
+            source: l.source,
+            target: l.target,
+            relationship: l.relationship
+          });
+        }
+      });
+
+      // 6. Recompute degrees for accurate node sizing
+      const degreeMap = {};
+      activeNodes.forEach(n => degreeMap[n.id] = 0);
+      activeLinks.forEach(l => {
+        const s = typeof l.source === 'object' ? l.source.id : l.source;
+        const t = typeof l.target === 'object' ? l.target.id : l.target;
+        if (degreeMap[s] !== undefined) degreeMap[s]++;
+        if (degreeMap[t] !== undefined) degreeMap[t]++;
+      });
+      activeNodes.forEach(n => n.degree = degreeMap[n.id] || 0);
+
+      // 7. Update UI, Category Filters & HUD
+      populateCategoryFilters();
+      document.getElementById('hud-node-count').innerText = activeNodes.length;
+      document.getElementById('hud-link-count').innerText = activeLinks.length;
+      document.getElementById('hud-status-text').innerHTML = `
+        <span style="color:var(--cyan); font-weight:700;">&#9889; Deployed Sub-Graph:</span> 
+        <strong>${parentNode.name}</strong> &rarr; +${newNodes.length} nodes, +${newLinks.length} interconnected pathways
+      `;
+
+      // 8. Re-render DOM mesh
+      refreshGraphMesh();
+
+      // 9. Reheat simulation
+      if (!simulationActive) {
+        simulationActive = true;
+        const txtToggle = document.getElementById('txt-toggle-sim');
+        if (txtToggle) txtToggle.innerText = "Pause Physics";
+      }
+      simulation.nodes(activeNodes);
+      simulation.force('link').links(activeLinks);
+      simulation.alpha(0.85).restart();
+
+      // 10. Update details drawer if open for this node
+      if (selectedNode && selectedNode.id === parentNode.id) {
+        openDetailsDrawer(parentNode);
+      }
     }
 
     function getNodeRadius(d) {
@@ -2456,7 +3130,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             .classed('dimmed', false);
         });
 
-      document.getElementById('hud-status-text').innerText = 'Ready • Drag nodes or click to inspect';
+      document.getElementById('hud-status-text').innerText = 'Ready • Drag nodes • Double-click node to expand sub-graph';
     }
 
     function onNodeClick(d) {
@@ -2476,6 +3150,12 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       document.getElementById('drawer-entity-name').innerText = node.name;
       document.getElementById('drawer-entity-desc').innerText = node.desc || "Entity participating in biological regulation and diagnostic accuracy.";
       document.getElementById('drawer-entity-degree').innerText = node.degree || 0;
+
+      const btnExpandText = document.getElementById('btn-expand-subgraph-text');
+      if (btnExpandText) {
+        const shortName = node.name.length > 18 ? node.name.slice(0, 16) + '...' : node.name;
+        btnExpandText.innerHTML = `&#9889; Deploy Sub-Graph for "${shortName}" (Double-Click)`;
+      }
       // Populate connections list early to determine exact sources
       const connContainer = document.getElementById('drawer-connections-list');
       connContainer.innerHTML = '';
@@ -2581,12 +3261,71 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       }
 
       if (btnPaperLens) {
-        const targetPmc = pmcLinks[0] || (currentDataset?.meta?.pmc && currentDataset.meta.pmc !== 'Multi-Source' ? currentDataset.meta.pmc : null);
-        if (targetPmc) {
-          btnPaperLens.href = `../paper-analyzer/index.html?pmc=${encodeURIComponent(targetPmc)}`;
+        let paperId = '';
+        let paperTitle = '';
+        let paperDesc = '';
+        let paperDoi = '';
+        let paperAuthors = '';
+        let paperJournal = '';
+
+        if (node.category === "Publication") {
+          paperId = node.id;
+          paperTitle = node.name;
+          paperDesc = node.desc || '';
+          paperDoi = node.doi || '';
         } else {
-          btnPaperLens.href = `../paper-analyzer/index.html?query=${encodeURIComponent(node.name)}`;
+          const pubTarget = related.find(r => r.target.category === "Publication")?.target;
+          if (pubTarget) {
+            paperId = pubTarget.id;
+            paperTitle = pubTarget.name;
+            paperDesc = pubTarget.desc || '';
+            paperDoi = pubTarget.doi || '';
+          } else if (currentDataset?.meta) {
+            paperId = currentDataset.meta.pmc || '';
+            paperTitle = currentDataset.meta.title || node.name;
+            paperDesc = currentDataset.meta.summary || node.desc || '';
+            paperAuthors = currentDataset.meta.authors || '';
+            paperJournal = currentDataset.meta.journal || '';
+          }
         }
+
+        if (!paperId && pmcLinks.length > 0) {
+          paperId = pmcLinks[0];
+        }
+
+        const params = new URLSearchParams();
+        if (paperId && paperId !== 'Multi-Source') params.set('pmc', paperId);
+        if (paperTitle) params.set('title', paperTitle);
+        if (paperDesc) params.set('desc', paperDesc.slice(0, 500));
+        if (paperDoi) params.set('doi', paperDoi);
+        if (paperAuthors) params.set('authors', paperAuthors);
+        if (paperJournal) params.set('journal', paperJournal);
+        if (!paperId && !paperTitle) params.set('query', node.name);
+
+        btnPaperLens.href = `../paper-analyzer/index.html?${params.toString()}`;
+
+        // Set dynamic label on button
+        const lensSpan = btnPaperLens.querySelector('span');
+        if (lensSpan) {
+          const targetTag = paperId && paperId.startsWith('PMC') ? paperId : (paperTitle ? (paperTitle.length > 20 ? paperTitle.slice(0, 18) + '...' : paperTitle) : 'Paper');
+          lensSpan.innerText = `Deconstruct in PaperLens (${targetTag}) ↗`;
+        }
+
+        btnPaperLens.onclick = () => {
+          const payload = {
+            id: paperId,
+            pmcid: paperId,
+            title: paperTitle || node.name,
+            desc: paperDesc || node.desc,
+            doi: paperDoi,
+            authors: paperAuthors,
+            journal: paperJournal,
+            sourceNode: { id: node.id, name: node.name, category: node.category }
+          };
+          try {
+            sessionStorage.setItem('paperlens_target_paper', JSON.stringify(payload));
+          } catch (e) {}
+        };
       }
 
       drawer.classList.add('open');
@@ -2827,6 +3566,12 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           return (neighbors.has(s) && neighbors.has(t)) ? 'block' : 'none';
         });
       });
+      const btnExpandSub = document.getElementById('btn-expand-node-subgraph');
+      if (btnExpandSub) {
+        btnExpandSub.addEventListener('click', () => {
+          if (selectedNode) expandNodeSubgraph(selectedNode);
+        });
+      }
 
       // Custom Data Modal
       document.getElementById('btn-custom-data').addEventListener('click', openCustomDataModal);
