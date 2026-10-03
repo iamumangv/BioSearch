@@ -1,134 +1,425 @@
 /* ============================================
-   BioSearch — 3D Models Search & Showcase Section
+   BioSearch — 3D Models Showcase (Homepage) & Catalog (models.html)
    ============================================ */
 
-#models-3d-section {
+/* ══════════════════════════════════════
+   HOMEPAGE SHOWCASE SECTION
+   Center "Explore More" CTA flanked by 3D model previews
+══════════════════════════════════════ */
+#models-showcase-section {
   position: relative;
   z-index: 5;
-  background: rgba(4, 7, 18, 0.82);
+  background: rgba(4, 7, 18, 0.85);
   backdrop-filter: blur(18px);
   -webkit-backdrop-filter: blur(18px);
-  padding: 6.5rem 2rem 8.5rem;
+  padding: 6rem 2rem 7.5rem;
   border-top: 1px solid rgba(139, 92, 246, 0.25);
   box-shadow: 0 -25px 50px rgba(0, 0, 0, 0.7);
+  overflow: hidden;
 }
 
-.models-container {
-  max-width: 1200px;
+.models-showcase-container {
+  max-width: 1240px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 2.5rem;
+  position: relative;
 }
 
-.models-header {
+/* ── Side Model Cards (Left & Right) ── */
+.showcase-side {
+  flex: 0 0 280px;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.side-model-card {
+  background: rgba(10, 16, 40, 0.75);
+  border: 1px solid rgba(0, 240, 255, 0.25);
+  border-radius: 20px;
+  padding: 1.5rem;
   text-align: center;
-  max-width: 760px;
-  margin: 0 auto 3.5rem;
+  text-decoration: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 25px rgba(0,240,255,0.1);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
 }
 
-.models-tag {
+.side-model-card.magenta-glow {
+  border-color: rgba(244, 63, 94, 0.3);
+  box-shadow: 0 15px 35px rgba(0,0,0,0.5), 0 0 25px rgba(244,63,94,0.1);
+}
+
+.side-model-card:hover {
+  transform: translateY(-8px) scale(1.02);
+  border-color: var(--cyan);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.6), 0 0 35px rgba(0,240,255,0.25);
+}
+
+.side-model-card.magenta-glow:hover {
+  border-color: var(--pink);
+  box-shadow: 0 20px 45px rgba(0,0,0,0.6), 0 0 35px rgba(244,63,94,0.3);
+}
+
+.side-model-badge {
+  font-family: monospace;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--cyan);
+  background: rgba(0, 240, 255, 0.1);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  padding: 0.25rem 0.65rem;
+  border-radius: 20px;
+}
+
+.side-model-card.magenta-glow .side-model-badge {
+  color: var(--pink);
+  background: rgba(244, 63, 94, 0.1);
+  border-color: rgba(244, 63, 94, 0.3);
+}
+
+.side-hologram {
+  width: 110px;
+  height: 110px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(0,240,255,0.15) 0%, rgba(3,4,14,0.6) 80%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  margin: 4px 0;
+}
+
+.side-model-card.magenta-glow .side-hologram {
+  background: radial-gradient(circle, rgba(244,63,94,0.18) 0%, rgba(3,4,14,0.6) 80%);
+}
+
+.holo-ring {
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  border: 1px dashed rgba(0, 240, 255, 0.4);
+  animation: spinSlow 16s linear infinite;
+}
+
+.side-model-card.magenta-glow .holo-ring {
+  border-color: rgba(244, 63, 94, 0.4);
+  animation: spinSlow 14s linear infinite reverse;
+}
+
+.side-icon {
+  width: 44px;
+  height: 44px;
+  color: var(--cyan);
+  filter: drop-shadow(0 0 10px var(--cyan));
+  transition: transform 0.3s;
+}
+
+.side-model-card.magenta-glow .side-icon {
+  color: var(--pink);
+  filter: drop-shadow(0 0 10px var(--pink));
+}
+
+.side-model-card:hover .side-icon {
+  transform: scale(1.15) rotate(6deg);
+}
+
+.side-model-name {
+  font-family: var(--heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: #fff;
+  line-height: 1.25;
+}
+
+.side-model-sub {
+  font-size: 0.8rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.side-click-hint {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: var(--cyan);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  transition: transform 0.2s;
+}
+
+.side-model-card.magenta-glow .side-click-hint {
+  color: var(--pink);
+}
+
+.side-model-card:hover .side-click-hint {
+  transform: translateX(4px);
+}
+
+/* ── Center Callout with "Explore More" Button ── */
+.showcase-center {
+  flex: 1;
+  text-align: center;
+  max-width: 600px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.4rem;
+}
+
+.showcase-tag {
   display: inline-flex;
   align-items: center;
   gap: 8px;
   font-size: 0.82rem;
   font-weight: 700;
-  color: var(--pink);
+  color: var(--cyan);
   text-transform: uppercase;
   letter-spacing: 0.14em;
-  margin-bottom: 0.85rem;
   padding: 0.35rem 1rem;
   border-radius: 50px;
-  background: rgba(236, 72, 153, 0.1);
-  border: 1px solid rgba(236, 72, 153, 0.3);
+  background: rgba(0, 240, 255, 0.08);
+  border: 1px solid rgba(0, 240, 255, 0.3);
 }
 
-.models-title {
+.tag-pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: pulse 1.8s infinite;
+}
+
+.showcase-title {
   font-family: var(--heading);
-  font-size: clamp(2.2rem, 4.5vw, 3.2rem);
+  font-size: clamp(2.3rem, 4.5vw, 3.4rem);
   font-weight: 800;
-  color: #fff;
-  margin-bottom: 1rem;
+  line-height: 1.12;
   letter-spacing: -0.02em;
+  color: #fff;
 }
 
-.models-desc {
+.showcase-desc {
   font-size: 1.05rem;
   color: var(--muted);
-  line-height: 1.6;
+  line-height: 1.65;
+  max-width: 520px;
 }
 
-/* ── 3D Search & Filter Bar ── */
-.models-search-wrapper {
-  max-width: 820px;
+/* ── The Primary "Explore More" Button ── */
+.btn-explore-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 1.1rem 2.6rem;
+  border-radius: 16px;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  color: #fff;
+  font-size: 1.12rem;
+  font-weight: 800;
+  font-family: var(--font);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 10px 35px rgba(0, 240, 255, 0.35), 0 0 30px rgba(139, 92, 246, 0.25);
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-explore-more::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(135deg, rgba(255,255,255,0.25), transparent);
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.btn-explore-more:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 16px 45px rgba(0, 240, 255, 0.5), 0 0 40px rgba(139, 92, 246, 0.4);
+}
+
+.btn-explore-more:hover::before {
+  opacity: 1;
+}
+
+.btn-explore-more svg {
+  transition: transform 0.25s;
+}
+
+.btn-explore-more:hover svg {
+  transform: translateX(5px);
+}
+
+.showcase-metrics {
+  font-size: 0.82rem;
+  color: var(--muted);
+  font-family: monospace;
+}
+
+/* ══════════════════════════════════════
+   MODELS CATALOG PAGE (models.html)
+   The full website showing all 3D models
+══════════════════════════════════════ */
+.catalog-page {
+  padding-top: 5rem;
+}
+
+.catalog-hero {
+  text-align: center;
+  padding: 4rem 2rem 2.5rem;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+/* 3D Interactive Live Stage on models.html */
+.catalog-stage-wrapper {
+  max-width: 1200px;
+  margin: 0 auto 4rem;
+  padding: 0 1.5rem;
+}
+
+.catalog-stage {
+  width: 100%;
+  height: 480px;
+  background: radial-gradient(circle at center, rgba(14, 22, 54, 0.9) 0%, rgba(3, 5, 17, 0.95) 100%);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  border-radius: 24px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 60px rgba(0,0,0,0.8), 0 0 40px rgba(0,240,255,0.15);
+}
+
+.stage-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.stage-overlay-hud {
+  position: absolute;
+  top: 1.5rem;
+  left: 1.5rem;
+  right: 1.5rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+.stage-title-block {
+  background: rgba(8, 12, 28, 0.85);
+  backdrop-filter: blur(14px);
+  padding: 10px 18px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  pointer-events: auto;
+}
+
+.stage-title-block h3 {
+  font-family: var(--heading);
+  font-size: 1.25rem;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.stage-title-block span {
+  font-size: 0.78rem;
+  color: var(--cyan);
+  font-family: monospace;
+}
+
+.stage-controls-block {
+  display: flex;
+  gap: 8px;
+  pointer-events: auto;
+}
+
+.stage-btn {
+  background: rgba(8, 12, 28, 0.85);
+  backdrop-filter: blur(14px);
+  border: 1px solid var(--border);
+  color: #fff;
+  padding: 8px 14px;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stage-btn:hover {
+  border-color: var(--cyan);
+  background: rgba(0,240,255,0.12);
+}
+
+.stage-btn.primary {
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  border-color: transparent;
+}
+
+/* ── Search & Filter Controls on models.html ── */
+.catalog-controls {
+  max-width: 860px;
   margin: 0 auto 3rem;
+  padding: 0 1.5rem;
 }
 
-.models-search-bar {
+.catalog-search-bar {
   display: flex;
   align-items: center;
   gap: 14px;
   background: rgba(255, 255, 255, 0.05);
-  border: 1px solid rgba(139, 92, 246, 0.4);
+  border: 1px solid rgba(0, 240, 255, 0.35);
   border-radius: 18px;
-  padding: 8px 12px 8px 20px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 25px rgba(139,92,246,0.15);
+  padding: 10px 16px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
   transition: all 0.25s;
 }
 
-.models-search-bar:focus-within {
+.catalog-search-bar:focus-within {
   border-color: var(--cyan);
-  box-shadow: 0 12px 40px rgba(0,0,0,0.6), 0 0 35px rgba(0,240,255,0.3);
+  box-shadow: 0 10px 35px rgba(0,0,0,0.6), 0 0 30px rgba(0,240,255,0.25);
 }
 
-.models-search-bar svg {
-  color: var(--violet);
-  flex-shrink: 0;
+.catalog-search-bar svg {
+  color: var(--cyan);
 }
 
-.models-search-bar input {
+.catalog-search-bar input {
   flex: 1;
   background: transparent;
   border: none;
   outline: none;
   color: #fff;
-  font-size: 1.05rem;
-  font-family: var(--font);
+  font-size: 1rem;
 }
 
-.models-search-bar input::placeholder {
-  color: rgba(148, 163, 184, 0.6);
-}
-
-.models-search-btn {
-  background: linear-gradient(135deg, var(--violet), var(--pink));
-  border: none;
-  color: #fff;
-  font-weight: 700;
-  padding: 0.8rem 1.6rem;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 16px rgba(139, 92, 246, 0.3);
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  white-space: nowrap;
-}
-
-.models-search-btn:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 24px rgba(236, 72, 153, 0.4);
-}
-
-/* Category Filter Tabs */
-.models-filter-tabs {
+.catalog-filter-tabs {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 10px;
   flex-wrap: wrap;
-  margin-top: 1.2rem;
+  margin-top: 1.5rem;
 }
 
-.model-tab {
+.catalog-tab {
   background: rgba(255, 255, 255, 0.04);
   border: 1px solid var(--border);
   color: var(--muted);
@@ -140,224 +431,75 @@
   transition: all 0.2s;
 }
 
-.model-tab:hover {
+.catalog-tab:hover {
   color: #fff;
   border-color: rgba(0, 240, 255, 0.4);
-  background: rgba(0, 240, 255, 0.08);
 }
 
-.model-tab.active {
+.catalog-tab.active {
   color: #fff;
   background: linear-gradient(135deg, rgba(0,240,255,0.2), rgba(139,92,246,0.2));
   border-color: var(--cyan);
   box-shadow: 0 0 15px rgba(0,240,255,0.25);
 }
 
-/* ── 3D Model Cards Grid ── */
-.models-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-  gap: 2rem;
-  margin-top: 2rem;
+/* ── Full Grid of All Models on models.html ── */
+.catalog-grid-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 1.5rem 8rem;
 }
 
-.model-card {
-  position: relative;
-  background: rgba(10, 16, 38, 0.6);
-  border: 1px solid rgba(255, 255, 255, 0.08);
+.catalog-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 2rem;
+}
+
+.catalog-card {
+  background: rgba(10, 16, 40, 0.65);
+  border: 1px solid var(--border);
   border-radius: 20px;
   padding: 1.8rem;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  gap: 1.5rem;
-  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-  overflow: hidden;
+  gap: 1.4rem;
+  transition: all 0.3s;
+  cursor: pointer;
   text-decoration: none;
 }
 
-.model-card::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, transparent, var(--card-accent, var(--cyan)), transparent);
-  opacity: 0;
-  transition: opacity 0.3s;
-}
-
-.model-card:hover {
+.catalog-card:hover {
   transform: translateY(-6px);
-  border-color: var(--card-accent, rgba(0, 240, 255, 0.4));
-  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px var(--card-glow, rgba(0, 240, 255, 0.15));
+  border-color: var(--cyan);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 30px rgba(0,240,255,0.15);
 }
 
-.model-card:hover::before {
-  opacity: 1;
+.catalog-card.active-card {
+  border-color: var(--cyan);
+  background: rgba(0, 240, 255, 0.08);
+  box-shadow: 0 0 35px rgba(0,240,255,0.25);
 }
 
-/* Top metadata row */
-.model-card-top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 10px;
-}
-
-.model-badge {
-  font-size: 0.72rem;
-  font-family: monospace;
-  font-weight: 700;
-  padding: 0.25rem 0.65rem;
-  border-radius: 6px;
-  background: rgba(255, 255, 255, 0.06);
-  color: var(--muted);
-  border: 1px solid var(--border);
-}
-
-.model-pdb-id {
-  font-family: monospace;
-  font-size: 0.78rem;
-  font-weight: 700;
-  color: var(--cyan);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-/* 3D Visualizer Hologram Icon / Thumbnail */
-.model-hologram-preview {
-  height: 140px;
-  width: 100%;
-  border-radius: 14px;
-  background: radial-gradient(circle at center, rgba(139,92,246,0.15) 0%, rgba(3,4,14,0.4) 80%);
-  border: 1px solid rgba(255, 255, 255, 0.05);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  overflow: hidden;
-  gap: 8px;
-}
-
-.hologram-rings {
-  position: absolute;
-  width: 110px;
-  height: 110px;
-  border-radius: 50%;
-  border: 1px dashed rgba(0, 240, 255, 0.35);
-  animation: spinSlow 20s linear infinite;
-}
-
-.hologram-rings-inner {
-  position: absolute;
-  width: 75px;
-  height: 75px;
-  border-radius: 50%;
-  border: 1px solid rgba(236, 72, 153, 0.3);
-  animation: spinSlow 12s linear infinite reverse;
-}
-
+/* Keyframes */
 @keyframes spinSlow {
   to { transform: rotate(360deg); }
 }
 
-.hologram-icon {
-  width: 48px;
-  height: 48px;
-  color: var(--card-accent, var(--cyan));
-  filter: drop-shadow(0 0 12px var(--card-accent, var(--cyan)));
-  transition: transform 0.4s ease;
-  z-index: 1;
-}
-
-.model-card:hover .hologram-icon {
-  transform: scale(1.15) rotate(8deg);
-}
-
-.hologram-label {
-  font-size: 0.7rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  font-family: monospace;
-  z-index: 1;
-}
-
-/* Card Information */
-.model-info h3 {
-  font-family: var(--heading);
-  font-size: 1.3rem;
-  font-weight: 700;
-  color: #fff;
-  margin-bottom: 0.5rem;
-  line-height: 1.25;
-}
-
-.model-info p {
-  font-size: 0.9rem;
-  color: var(--muted);
-  line-height: 1.55;
-}
-
-/* Spec Chips */
-.model-specs {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 0.6rem 0;
-  border-top: 1px solid var(--border);
-  border-bottom: 1px solid var(--border);
-}
-
-.spec-item {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.spec-key {
-  font-size: 0.65rem;
-  color: var(--muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-}
-
-.spec-val {
-  font-size: 0.82rem;
-  font-weight: 700;
-  color: #fff;
-  font-family: monospace;
-}
-
-/* Launch Button */
-.model-launch-btn {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  width: 100%;
-  padding: 0.8rem 1.2rem;
-  border-radius: 12px;
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  background: rgba(255, 255, 255, 0.04);
-  color: #fff;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: all 0.25s;
-}
-
-.model-card:hover .model-launch-btn {
-  background: linear-gradient(135deg, var(--card-accent, var(--cyan)), var(--violet));
-  border-color: transparent;
-  box-shadow: 0 4px 18px rgba(0, 240, 255, 0.3);
-}
-
-.model-launch-btn svg {
-  transition: transform 0.25s;
-}
-
-.model-card:hover .model-launch-btn svg {
-  transform: translateX(4px);
+/* Responsive */
+@media (max-width: 992px) {
+  .models-showcase-container {
+    flex-direction: column;
+    gap: 3rem;
+  }
+  .showcase-side {
+    flex-direction: row;
+    width: 100%;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .side-model-card {
+    flex: 1 1 260px;
+  }
 }
