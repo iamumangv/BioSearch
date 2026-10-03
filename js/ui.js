@@ -162,6 +162,44 @@ export function initUI(scrollController) {
     });
   }
 
+  // ─── 3D Model Search & Category Filtering ────────────────────────────────────
+  const modelsInput = document.getElementById('models-3d-input');
+  const modelsSearchBtn = document.getElementById('models-3d-search-btn');
+
+  function handle3DModelSearch() {
+    const query = modelsInput ? modelsInput.value.trim() : '';
+    if (query) {
+      window.location.href = `model-viewer.html?q=${encodeURIComponent(query)}`;
+    } else {
+      window.location.href = `model-viewer.html`;
+    }
+  }
+
+  if (modelsSearchBtn) {
+    modelsSearchBtn.addEventListener('click', handle3DModelSearch);
+  }
+  if (modelsInput) {
+    modelsInput.addEventListener('keydown', e => {
+      if (e.key === 'Enter') handle3DModelSearch();
+    });
+  }
+
+  // Category filter tabs on models grid
+  document.querySelectorAll('.model-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.model-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.filter;
+      document.querySelectorAll('.model-card').forEach(card => {
+        if (filter === 'all' || card.dataset.category === filter) {
+          card.style.display = 'flex';
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+
   // ─── Button Ripple Effect ───────────────────────────────────────────────────
   document.querySelectorAll('.btn-primary, .btn-secondary, .nav-cta, .banner-btn, .search-submit-btn').forEach(btn => {
     btn.addEventListener('click', function (e) {

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioSearch — Interactive 3D Macromolecular Viewer</title>
+  <meta name="description" content="Inspect, rotate, and explore interactive 3D biological models and atomic structures with BioSearch 3D Molecular Engine." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/viewer.css" />
+</head>
+<body>
+
+  <!-- Viewer Top Navigation -->
+  <header id="viewer-nav">
+    <div class="nav-left">
+      <a href="index.html" class="back-btn">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+          <line x1="19" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+        Back to BioSearch
+      </a>
+      <span class="viewer-logo">BioSearch 3D</span>
+      <select id="model-select" class="model-selector-dropdown" title="Select 3D Biological Model"></select>
+    </div>
+
+    <div class="nav-right">
+      <button class="nav-action-btn active" id="btn-spin" title="Toggle Auto-Spin Rotation">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21.5 2v6h-6M21.34 15.57a10 10 0 1 1-.57-8.38l5.67-5.67"/>
+        </svg>
+        Spin
+      </button>
+      <button class="nav-action-btn" id="btn-reset" title="Reset Camera View">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"></circle>
+          <polygon points="12 8 8 12 12 16 12 8"></polygon>
+        </svg>
+        Reset
+      </button>
+      <button class="nav-action-btn" id="btn-snapshot" title="Download High-Res Screenshot">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path>
+          <circle cx="12" cy="13" r="4"></circle>
+        </svg>
+        Snapshot
+      </button>
+      <button class="nav-action-btn active" id="btn-toggle-sidebar" title="Toggle Inspector Sidebar">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+          <line x1="15" y1="3" x2="15" y2="21"></line>
+        </svg>
+        Inspector
+      </button>
+    </div>
+  </header>
+
+  <!-- Main Viewport Body -->
+  <main id="viewer-body">
+    <div id="viewer-canvas-container">
+      <canvas id="viewer-canvas"></canvas>
+
+      <!-- Tip overlay -->
+      <div class="orbit-tip">
+        <span class="tip-item"><span class="tip-key">Left Drag:</span> Rotate</span>
+        <span class="tip-item"><span class="tip-key">Right Drag:</span> Pan</span>
+        <span class="tip-item"><span class="tip-key">Scroll:</span> Zoom</span>
+      </div>
+
+      <!-- Floating Bottom Control Dock -->
+      <div class="floating-control-dock">
+        <!-- Representations -->
+        <div class="dock-group">
+          <span class="dock-label">Style:</span>
+          <button class="dock-btn active" data-rep="ribbon">Ribbon</button>
+          <button class="dock-btn" data-rep="ball-stick">Ball &amp; Stick</button>
+          <button class="dock-btn" data-rep="atoms">Atoms</button>
+          <button class="dock-btn" data-rep="surface">Surface</button>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <!-- Color Modes -->
+        <div class="dock-group">
+          <span class="dock-label">Color:</span>
+          <button class="dock-btn active" data-color="chain">By Chain</button>
+          <button class="dock-btn" data-color="structure">Structure</button>
+          <button class="dock-btn" data-color="neon">Neon Biolum</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Inspector Sidebar -->
+    <aside id="inspector-sidebar">
+      <div class="sidebar-header">
+        <span class="sidebar-tag" id="inspect-tag">Genome Editing</span>
+        <h2 class="sidebar-title" id="inspect-title">CRISPR-Cas9 Complex</h2>
+        <p class="sidebar-sub" id="inspect-sub">Streptococcus pyogenes Cas9 with sgRNA</p>
+      </div>
+
+      <div class="sidebar-content">
+        <!-- Specs Table -->
+        <div class="sidebar-specs-card">
+          <div class="side-spec">
+            <span class="side-spec-label">PDB ID</span>
+            <span class="side-spec-val" id="inspect-pdb">4UN3</span>
+          </div>
+          <div class="side-spec">
+            <span class="side-spec-label">Resolution</span>
+            <span class="side-spec-val" id="inspect-res">2.58 Å</span>
+          </div>
+          <div class="side-spec">
+            <span class="side-spec-label">Mol. Weight</span>
+            <span class="side-spec-val" id="inspect-weight">162 kDa</span>
+          </div>
+          <div class="side-spec">
+            <span class="side-spec-label">Organism</span>
+            <span class="side-spec-val" id="inspect-org">S. pyogenes</span>
+          </div>
+          <div class="side-spec">
+            <span class="side-spec-label">Atom Count</span>
+            <span class="side-spec-val" id="inspect-atoms">11,420</span>
+          </div>
+          <div class="side-spec">
+            <span class="side-spec-label">Chains</span>
+            <span class="side-spec-val" id="inspect-chains">3 (A, B, C)</span>
+          </div>
+        </div>
+
+        <!-- Molecular Mechanism Block -->
+        <div class="sidebar-block">
+          <h4>Biological Function</h4>
+          <p id="inspect-desc">RNA-guided endonuclease that catalyzes site-specific double-strand breaks in genomic DNA, enabling precise modifications in eukaryotic systems.</p>
+        </div>
+
+        <!-- Related Literature Block -->
+        <div class="sidebar-block">
+          <h4>BioSearch Preprints (<span id="inspect-preprints-count">14,280</span>)</h4>
+          <div class="sidebar-papers-list">
+            <a href="index.html" class="side-paper-item">
+              <div class="side-paper-title">Structural Basis of Cas9 Inactivation by Anti-CRISPR</div>
+              <div class="side-paper-meta">bioRxiv &middot; 42 citations &middot; 2024</div>
+            </a>
+            <a href="index.html" class="side-paper-item">
+              <div class="side-paper-title">High-Fidelity CRISPR Variants via Allosteric Tuning</div>
+              <div class="side-paper-meta">Nature Biotech &middot; 89 citations &middot; 2025</div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://unpkg.com/three@0.163.0/build/three.module.js",
+        "three/addons/": "https://unpkg.com/three@0.163.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="js/model-viewer.js"></script>
+</body>
+</html>

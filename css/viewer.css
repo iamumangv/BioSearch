@@ -1,0 +1,417 @@
+/* ============================================
+   BioSearch — 3D Model Viewer Styles
+   ============================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  --cyan:    #00f0ff;
+  --violet:  #8b5cf6;
+  --indigo:  #4f46e5;
+  --pink:    #ec4899;
+  --bg:      #030511;
+  --surface: rgba(13, 20, 45, 0.7);
+  --border:  rgba(255, 255, 255, 0.1);
+  --text:    #e8eaf6;
+  --muted:   #94a3b8;
+  --font:    'Inter', sans-serif;
+  --heading: 'Space Grotesk', sans-serif;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  overflow: hidden;
+  height: 100vh;
+  width: 100vw;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── Top Header Navigation ── */
+#viewer-nav {
+  height: 64px;
+  background: rgba(8, 12, 28, 0.9);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  z-index: 50;
+  flex-shrink: 0;
+}
+
+.nav-left {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+}
+
+.back-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 600;
+  padding: 0.4rem 0.85rem;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: rgba(255,255,255,0.03);
+  transition: all 0.2s;
+}
+
+.back-btn:hover {
+  color: #fff;
+  border-color: var(--cyan);
+  background: rgba(0,240,255,0.1);
+}
+
+.viewer-logo {
+  font-family: var(--heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan), var(--violet));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.model-selector-dropdown {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  color: #fff;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  padding: 0.45rem 1rem;
+  border-radius: 10px;
+  outline: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.model-selector-dropdown:hover, .model-selector-dropdown:focus {
+  border-color: var(--cyan);
+  box-shadow: 0 0 15px rgba(0,240,255,0.25);
+}
+
+.model-selector-dropdown option {
+  background: #080d24;
+  color: #fff;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.nav-action-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid var(--border);
+  color: var(--text);
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.45rem 0.9rem;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.nav-action-btn:hover {
+  background: rgba(255,255,255,0.1);
+  border-color: rgba(255,255,255,0.25);
+  color: #fff;
+}
+
+.nav-action-btn.active {
+  background: rgba(0,240,255,0.15);
+  border-color: var(--cyan);
+  color: var(--cyan);
+}
+
+/* ── Main Layout ── */
+#viewer-body {
+  flex: 1;
+  position: relative;
+  display: flex;
+  overflow: hidden;
+}
+
+/* Three.js viewport canvas */
+#viewer-canvas-container {
+  flex: 1;
+  position: relative;
+  height: 100%;
+  width: 100%;
+}
+
+#viewer-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+/* Orbit Instruction Pill */
+.orbit-tip {
+  position: absolute;
+  top: 1.25rem;
+  left: 1.5rem;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(8, 12, 28, 0.75);
+  backdrop-filter: blur(12px);
+  padding: 6px 14px;
+  border-radius: 30px;
+  border: 1px solid var(--border);
+  font-size: 0.76rem;
+  color: var(--muted);
+  pointer-events: none;
+}
+
+.tip-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.tip-key {
+  color: var(--cyan);
+  font-weight: 700;
+}
+
+/* ── Floating Control Dock (Bottom Center) ── */
+.floating-control-dock {
+  position: absolute;
+  bottom: 2rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  background: rgba(8, 14, 34, 0.85);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(0, 240, 255, 0.3);
+  padding: 8px 18px;
+  border-radius: 50px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6), 0 0 30px rgba(0,240,255,0.15);
+}
+
+.dock-group {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.dock-label {
+  font-size: 0.72rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-right: 4px;
+}
+
+.dock-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 0.35rem 0.85rem;
+  border-radius: 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.dock-btn:hover {
+  color: #fff;
+  border-color: rgba(0,240,255,0.4);
+}
+
+.dock-btn.active {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(0,240,255,0.25), rgba(139,92,246,0.25));
+  border-color: var(--cyan);
+  box-shadow: 0 0 12px rgba(0,240,255,0.3);
+}
+
+.dock-divider {
+  width: 1px;
+  height: 24px;
+  background: var(--border);
+}
+
+/* ── Sidebar Inspector ── */
+#inspector-sidebar {
+  width: 380px;
+  height: 100%;
+  background: rgba(8, 12, 28, 0.88);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border-left: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  z-index: 30;
+  flex-shrink: 0;
+  overflow-y: auto;
+  transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+#inspector-sidebar.collapsed {
+  transform: translateX(100%);
+}
+
+.sidebar-header {
+  padding: 1.5rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-tag {
+  display: inline-block;
+  font-size: 0.74rem;
+  font-family: monospace;
+  font-weight: 700;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+}
+
+.sidebar-title {
+  font-family: var(--heading);
+  font-size: 1.4rem;
+  font-weight: 800;
+  color: #fff;
+  line-height: 1.25;
+  margin-bottom: 4px;
+}
+
+.sidebar-sub {
+  font-size: 0.86rem;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.sidebar-content {
+  padding: 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+/* Specs Table */
+.sidebar-specs-card {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 1rem;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.side-spec {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.side-spec-label {
+  font-size: 0.68rem;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.side-spec-val {
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #fff;
+  font-family: monospace;
+}
+
+/* Description Section */
+.sidebar-block h4 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--cyan);
+  margin-bottom: 0.5rem;
+}
+
+.sidebar-block p {
+  font-size: 0.88rem;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
+/* Related Preprints */
+.sidebar-papers-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 6px;
+}
+
+.side-paper-item {
+  background: rgba(255,255,255,0.03);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 12px;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.side-paper-item:hover {
+  background: rgba(0,240,255,0.08);
+  border-color: rgba(0,240,255,0.4);
+}
+
+.side-paper-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 2px;
+}
+
+.side-paper-meta {
+  font-size: 0.72rem;
+  color: var(--muted);
+}
+
+/* Mobile responsive */
+@media (max-width: 900px) {
+  #inspector-sidebar {
+    position: absolute;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 320px;
+  }
+  .floating-control-dock {
+    bottom: 1rem;
+    width: 90%;
+    overflow-x: auto;
+    border-radius: 20px;
+    padding: 8px 12px;
+  }
+}
