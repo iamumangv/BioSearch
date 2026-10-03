@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="css/hero.css" />
   <link rel="stylesheet" href="css/explore.css" />
   <link rel="stylesheet" href="css/models.css" />
+  <link rel="stylesheet" href="css/threat-map.css" />
 </head>
 <body>
 
@@ -271,6 +272,65 @@
           <div class="side-model-sub">Trimeric ACE2 Receptor &middot; 2.80 Å</div>
           <span class="side-click-hint">Inspect in 3D &rarr;</span>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Global Cyber & Biosafety Threat Map Preview Section -->
+  <section id="threat-map-section">
+    <div class="threat-preview-container">
+      <!-- Section Header -->
+      <div class="threat-preview-header">
+        <div class="threat-preview-left">
+          <div class="threat-preview-tag">
+            <span class="threat-preview-dot"></span>
+            Planetary Biosecurity &amp; Threat Intelligence
+          </div>
+          <h2 class="threat-preview-title">
+            Global Defense &amp; <span>Threat Surveillance Network</span>
+          </h2>
+          <p class="threat-preview-desc">
+            Real-time orbital tracking and continuous telemetry across international genomic research hubs, pathogen surveillance clusters, and intrusion defense lines.
+          </p>
+        </div>
+
+        <div class="threat-preview-actions">
+          <a href="threat-map/index.html" class="btn-launch-threat-portal" title="Open Dedicated Live Threat Map Platform">
+            <span class="radar-beacon"></span>
+            <span>Open Threat Map Website</span>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
+          </a>
+          <a href="threat-map/index.html" class="btn-threat-secondary" title="Explore Live Planetary Vectors">
+            <span>Live 3D Portal ↗</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Simple Preview Canvas Card with 4-5 Moving Dots -->
+      <div class="threat-preview-card" onclick="window.location.href='threat-map/index.html';" title="Click to launch full Threat Map Portal">
+        <canvas id="threat-preview-canvas"></canvas>
+        <div class="threat-preview-footer-bar">
+          <div class="preview-status-stats">
+            <div class="stat-chip">
+              <span class="chip-dot"></span>
+              <span>Active Core Hubs: <strong>5 Global Facilities</strong></span>
+            </div>
+            <div class="stat-chip">
+              <span class="chip-dot" style="background: #00e5ff; box-shadow: 0 0 6px #00e5ff;"></span>
+              <span>Vectors: <strong>Real-time Quantum Pulse</strong></span>
+            </div>
+            <div class="stat-chip">
+              <span class="chip-dot" style="background: #ff3366; box-shadow: 0 0 6px #ff3366;"></span>
+              <span>Hotspot Status: <strong>Monitoring Active</strong></span>
+            </div>
+          </div>
+          <a href="threat-map/index.html" class="preview-portal-link">
+            <span>Explore Full Interactive Threat Platform &rarr;</span>
+          </a>
+        </div>
       </div>
     </div>
   </section>

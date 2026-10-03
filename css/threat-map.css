@@ -1,0 +1,308 @@
+/* ============================================
+   BioSearch — Homepage Threat Map Preview Section
+   Minimalist World Map with 5 nodes, 4-5 moving pulse dots, and CTA to Portal
+   ============================================ */
+
+#threat-map-section {
+  position: relative;
+  z-index: 6;
+  background: radial-gradient(circle at 50% 30%, rgba(4, 14, 20, 0.95) 0%, rgba(2, 6, 12, 0.98) 70%, #010408 100%);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  padding: 5.5rem 2rem 6.5rem;
+  border-top: 1px solid rgba(0, 255, 136, 0.2);
+  border-bottom: 1px solid rgba(0, 255, 136, 0.15);
+  box-shadow: 0 -25px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(0, 255, 136, 0.12);
+  overflow: hidden;
+}
+
+#threat-map-section::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: 
+    radial-gradient(ellipse 70% 35% at 50% 0%, rgba(0, 255, 136, 0.08), transparent 70%),
+    repeating-linear-gradient(0deg, rgba(0, 255, 136, 0.012) 0px, rgba(0, 255, 136, 0.012) 1px, transparent 1px, transparent 3px);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.threat-preview-container {
+  max-width: 1240px;
+  margin: 0 auto;
+  position: relative;
+  z-index: 2;
+}
+
+/* ── Section Header ── */
+.threat-preview-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 2rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.threat-preview-left {
+  max-width: 720px;
+}
+
+.threat-preview-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  color: #00ff88;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  margin-bottom: 0.75rem;
+  padding: 5px 12px;
+  background: rgba(0, 255, 136, 0.08);
+  border: 1px solid rgba(0, 255, 136, 0.3);
+  border-radius: 20px;
+  box-shadow: 0 0 12px rgba(0, 255, 136, 0.15);
+}
+
+.threat-preview-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 8px #00ff88;
+  animation: pulseGreen 1.8s infinite;
+}
+
+@keyframes pulseGreen {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.35; transform: scale(0.7); }
+}
+
+.threat-preview-title {
+  font-family: var(--heading);
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-weight: 800;
+  color: #ffffff;
+  line-height: 1.15;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.02em;
+}
+
+.threat-preview-title span {
+  background: linear-gradient(135deg, #00ff88 0%, #00e5ff 50%, #ff3366 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.threat-preview-desc {
+  font-size: 1.02rem;
+  color: #94a3b8;
+  line-height: 1.6;
+}
+
+/* ── Top CTA Buttons ── */
+.threat-preview-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.btn-launch-threat-portal {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0.85rem 1.65rem;
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.25) 0%, rgba(0, 229, 255, 0.18) 100%);
+  border: 1px solid #00ff88;
+  border-radius: 12px;
+  color: #ffffff;
+  font-family: var(--heading);
+  font-size: 0.95rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 0 0 25px rgba(0, 255, 136, 0.25), 0 4px 15px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-launch-threat-portal:hover {
+  background: linear-gradient(135deg, rgba(0, 255, 136, 0.45) 0%, rgba(0, 229, 255, 0.3) 100%);
+  box-shadow: 0 0 35px rgba(0, 255, 136, 0.45), 0 0 20px rgba(0, 229, 255, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-launch-threat-portal .radar-beacon {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 10px #00ff88;
+  position: relative;
+}
+
+.btn-launch-threat-portal .radar-beacon::after {
+  content: '';
+  position: absolute;
+  top: -4px; left: -4px; right: -4px; bottom: -4px;
+  border-radius: 50%;
+  border: 1.5px solid #00ff88;
+  animation: beaconPulse 1.4s infinite;
+}
+
+@keyframes beaconPulse {
+  0% { transform: scale(0.6); opacity: 1; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+.btn-threat-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 0.85rem 1.3rem;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  color: #e2e8f0;
+  font-size: 0.88rem;
+  font-weight: 600;
+  text-decoration: none;
+  transition: all 0.25s;
+}
+
+.btn-threat-secondary:hover {
+  background: rgba(0, 255, 136, 0.12);
+  border-color: rgba(0, 255, 136, 0.4);
+  color: #00ff88;
+  transform: translateY(-1px);
+}
+
+/* ── Preview Map Card Wrapper ── */
+.threat-preview-card {
+  position: relative;
+  background: #02060b;
+  border: 1px solid rgba(0, 255, 136, 0.35);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 
+    0 25px 60px rgba(0, 0, 0, 0.8),
+    0 0 35px rgba(0, 255, 136, 0.1),
+    inset 0 0 50px rgba(0, 0, 0, 0.9);
+  cursor: pointer;
+  transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.threat-preview-card:hover {
+  border-color: #00ff88;
+  box-shadow: 
+    0 30px 70px rgba(0, 0, 0, 0.85),
+    0 0 45px rgba(0, 255, 136, 0.2),
+    inset 0 0 50px rgba(0, 0, 0, 0.9);
+}
+
+.threat-preview-card::before {
+  content: '';
+  position: absolute;
+  top: 10px; left: 10px;
+  width: 18px; height: 18px;
+  border-top: 2px solid #00ff88;
+  border-left: 2px solid #00ff88;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.threat-preview-card::after {
+  content: '';
+  position: absolute;
+  bottom: 10px; right: 10px;
+  width: 18px; height: 18px;
+  border-bottom: 2px solid #00e5ff;
+  border-right: 2px solid #00e5ff;
+  pointer-events: none;
+  z-index: 10;
+}
+
+#threat-preview-canvas {
+  width: 100%;
+  height: 440px;
+  display: block;
+}
+
+/* Bottom Bar inside the Card */
+.threat-preview-footer-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+  background: rgba(3, 8, 16, 0.9);
+  border-top: 1px solid rgba(0, 255, 136, 0.2);
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.preview-status-stats {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-family: var(--heading), monospace;
+  font-size: 0.8rem;
+  color: #94a3b8;
+}
+
+.stat-chip {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.stat-chip strong {
+  color: #fff;
+}
+
+.chip-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #00ff88;
+  box-shadow: 0 0 6px #00ff88;
+}
+
+.preview-portal-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--heading);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #00ff88;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.preview-portal-link:hover {
+  color: #ffffff;
+  transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+  #threat-map-section {
+    padding: 4rem 1.25rem 5rem;
+  }
+  .threat-preview-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  #threat-preview-canvas {
+    height: 300px;
+  }
+  .threat-preview-footer-bar {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+  }
+}
