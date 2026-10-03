@@ -100,7 +100,7 @@ Once the server is running on `http://localhost:8080`:
 | :--- | :--- | :--- |
 | **Main BioSearch Hub** | [`http://localhost:8080/index.html`](http://localhost:8080/index.html) | Live literature search bar, trending topics, quick navigation links |
 | **BioGraph Studio** | [`http://localhost:8080/graphing-model/demo.html`](http://localhost:8080/graphing-model/demo.html) | Interactive 2D/3D physics knowledge graph with live Europe PMC retrieval & Gemini AI synthesis |
-| **Global Threat Map** | [`http://localhost:8080/threat-map/index.html`](http://localhost:8080/threat-map/index.html) | Real-time global pathogen surveillance, risk telemetry, outbreak radar |
+| **Global HealthMap Outbreak Radar** | [`http://localhost:8080/healthmap-clone/frontend/index.html`](http://localhost:8080/healthmap-clone/frontend/index.html) | Real-time global disease outbreak & epidemic monitor (WHO, CDC, ECDC, Disease.sh) |
 | **3D Pathogen Viewer** | [`http://localhost:8080/model-viewer.html`](http://localhost:8080/model-viewer.html) | Interactive 3D molecular, protein, and viral structure inspector |
 
 > [!TIP]
@@ -185,11 +185,13 @@ Website_Draft/
 ├── model-viewer.html           # 🔬 3D molecular viewer
 ├── style.css                   # 🎨 Core styling
 ├── css/                        # 🎨 Supporting stylesheets
-├── js/                         # ⚡ Platform UI & search routing logic
-├── threat-map/                 # 🗺️ Global biological threat surveillance
-│   ├── index.html
-│   ├── threat_map.js
-│   └── threat_map.css
+├── healthmap-clone/            # 🌍 EpiWatch: Real-time disease outbreak & epidemic monitor
+│   ├── frontend/               # Leaflet.js interactive dark-mode surveillance dashboard
+│   │   ├── index.html
+│   │   ├── css/style.css
+│   │   ├── data/seed-events.js
+│   │   └── js/app.js
+│   └── backend/                # FastAPI + APScheduler + SQLite outbreak surveillance pipeline
 ├── paper-analyzer/             # 📑 PaperLens: Deep Research Intelligence & Topology Engine
 │   ├── index.html              # Main PaperLens application
 │   ├── css/style.css           # Glassmorphic cyber-biomedical design system

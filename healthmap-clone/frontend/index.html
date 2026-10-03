@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>EpiWatch — Global Disease Outbreak Monitor</title>
+  <meta name="description" content="Real-time global disease outbreak and epidemic monitoring. Track biological events, outbreaks, and health alerts worldwide with live data from WHO, ProMED, CDC, and more." />
+  <meta name="keywords" content="disease outbreak, epidemic monitor, health alert, WHO, ProMED, global health, virus tracking" />
+  <meta property="og:title" content="EpiWatch — Global Disease Outbreak Monitor" />
+  <meta property="og:description" content="Real-time global disease outbreak monitoring using live WHO, ProMED, CDC data." />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+
+  <!-- Leaflet MarkerCluster -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+
+  <link rel="stylesheet" href="css/style.css" />
+</head>
+<body>
+  <!-- Animated background particles -->
+  <div class="bg-particles" id="bgParticles"></div>
+
+  <!-- Header -->
+  <header class="header" id="mainHeader">
+    <div class="header-inner">
+      <div class="logo-group">
+        <div class="logo-icon">
+          <svg viewBox="0 0 40 40" fill="none">
+            <circle cx="20" cy="20" r="18" stroke="#00ff88" stroke-width="1.5" opacity="0.3"/>
+            <circle cx="20" cy="20" r="12" stroke="#00ff88" stroke-width="1.5" opacity="0.5"/>
+            <circle cx="20" cy="20" r="5" fill="#00ff88"/>
+            <line x1="20" y1="2" x2="20" y2="8" stroke="#00ff88" stroke-width="1.5"/>
+            <line x1="20" y1="32" x2="20" y2="38" stroke="#00ff88" stroke-width="1.5"/>
+            <line x1="2" y1="20" x2="8" y2="20" stroke="#00ff88" stroke-width="1.5"/>
+            <line x1="32" y1="20" x2="38" y2="20" stroke="#00ff88" stroke-width="1.5"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-name">EpiWatch</span>
+          <span class="logo-tagline">Global Disease Monitor</span>
+        </div>
+      </div>
+
+      <nav class="header-nav">
+        <a href="../../index.html" class="nav-portal-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; color: #00ff88; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;" title="Return to BioSearch Hub">
+          &larr; BioSearch Home
+        </a>
+        <a href="../../graphing-model/demo.html" class="nav-portal-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 8px; color: #00f0ff; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;" title="Open BioGraph 3D Knowledge Mesh">
+          BioGraph Studio ↗
+        </a>
+        <a href="../../paper-analyzer/index.html" class="nav-portal-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 8px; color: #c084fc; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;" title="Deconstruct in PaperLens">
+          PaperLens ↗
+        </a>
+        <div class="live-indicator" id="liveIndicator">
+          <span class="pulse-dot"></span>
+          <span>LIVE</span>
+        </div>
+        <div class="last-updated" id="lastUpdated">Connecting...</div>
+        <button class="btn-refresh" id="btnRefresh" onclick="triggerRefresh()">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6M1 20v-6h6"/>
+            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+          </svg>
+          Refresh
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar" id="statsBar">
+    <div class="stat-item" id="statTotal">
+      <span class="stat-value" id="statTotalVal">—</span>
+      <span class="stat-label">Total Events</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value critical" id="statActiveVal">—</span>
+      <span class="stat-label">Active Outbreaks</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value" id="statCountriesVal">—</span>
+      <span class="stat-label">Countries Affected</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value warning" id="statHighVal">—</span>
+      <span class="stat-label">High Severity</span>
+    </div>
+    <div class="stat-divider"></div>
+    <div class="stat-item">
+      <span class="stat-value danger" id="statCriticalVal">—</span>
+      <span class="stat-label">Critical Alerts</span>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <main class="main-layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <!-- Filters -->
+      <section class="sidebar-section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+          </svg>
+          Filters
+        </h2>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filterDays">Time Range</label>
+          <select class="filter-select" id="filterDays" onchange="applyFilters()">
+            <option value="7">Last 7 days</option>
+            <option value="30" selected>Last 30 days</option>
+            <option value="90">Last 90 days</option>
+            <option value="180">Last 6 months</option>
+            <option value="365">Last year</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filterDisease">Disease</label>
+          <select class="filter-select" id="filterDisease" onchange="applyFilters()">
+            <option value="">All Diseases</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filterSeverity">Severity</label>
+          <select class="filter-select" id="filterSeverity" onchange="applyFilters()">
+            <option value="">All Severities</option>
+            <option value="critical">🔴 Critical</option>
+            <option value="high">🟠 High</option>
+            <option value="medium">🟡 Medium</option>
+            <option value="low">🟢 Low</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filterSource">Data Source</label>
+          <select class="filter-select" id="filterSource" onchange="applyFilters()">
+            <option value="">All Sources (Free APIs)</option>
+            <option value="WHO">WHO</option>
+            <option value="CDC">CDC</option>
+            <option value="ECDC">ECDC</option>
+            <option value="Disease.sh">Disease.sh</option>
+            <option value="Global News">Global News</option>
+          </select>
+        </div>
+
+        <div class="filter-group">
+          <label class="filter-label" for="filterSearch">Search</label>
+          <div class="search-input-wrap">
+            <input type="text" class="filter-input" id="filterSearch" placeholder="Search events..." oninput="applyFilters()" />
+            <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+            </svg>
+          </div>
+        </div>
+
+        <button class="btn-clear-filters" id="btnClearFilters" onclick="clearFilters()">Clear All Filters</button>
+      </section>
+
+      <!-- Legend -->
+      <section class="sidebar-section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
+          </svg>
+          Severity Legend
+        </h2>
+        <div class="legend">
+          <div class="legend-item"><span class="legend-dot critical"></span><span>Critical — Immediate action required</span></div>
+          <div class="legend-item"><span class="legend-dot high"></span><span>High — Active outbreak</span></div>
+          <div class="legend-item"><span class="legend-dot medium"></span><span>Medium — Under monitoring</span></div>
+          <div class="legend-item"><span class="legend-dot low"></span><span>Low — Advisory / Watch</span></div>
+        </div>
+      </section>
+
+      <!-- Top Diseases Chart -->
+      <section class="sidebar-section">
+        <h2 class="section-title">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
+            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+          </svg>
+          Disease Distribution
+        </h2>
+        <div class="chart-wrap">
+          <canvas id="diseaseChart"></canvas>
+        </div>
+      </section>
+
+      <!-- Event count -->
+      <div class="sidebar-event-count" id="sidebarEventCount">
+        Loading events...
+      </div>
+    </aside>
+
+    <!-- Map Area -->
+    <div class="map-container">
+      <div id="map"></div>
+
+      <!-- Map Controls Overlay -->
+      <div class="map-overlay-controls">
+        <button class="map-btn" id="btnZoomAll" onclick="resetMapView()" title="Reset view">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+          </svg>
+        </button>
+        <button class="map-btn" id="btnToggleClusters" onclick="toggleClusters()" title="Toggle clustering">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+          </svg>
+        </button>
+        <button class="map-btn" id="btnToggleBasemap" onclick="toggleBasemap()" title="Switch Map Layer (Dark Canvas / Satellite / Street)">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+            <polyline points="2 17 12 22 22 17"/>
+            <polyline points="2 12 12 17 22 12"/>
+          </svg>
+        </button>
+      </div>
+
+      <!-- Loading overlay -->
+      <div class="map-loading" id="mapLoading">
+        <div class="loading-spinner"></div>
+        <p>Fetching global outbreak data...</p>
+      </div>
+    </div>
+
+    <!-- Event List Panel -->
+    <div class="events-panel" id="eventsPanel">
+      <div class="events-panel-header">
+        <h2>Recent Alerts</h2>
+        <span class="events-count-badge" id="eventCountBadge">0</span>
+      </div>
+      <div class="events-list" id="eventsList">
+        <!-- Events will be injected here -->
+      </div>
+    </div>
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+    <div class="modal" id="modal">
+      <button class="modal-close" onclick="closeModal(null)" id="btnModalClose">✕</button>
+      <div class="modal-content" id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- Toast notifications -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <script src="data/seed-events.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

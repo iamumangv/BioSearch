@@ -24,6 +24,15 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# Virtual Environments
+venv/
+.venv/
+env/
+ENV/
+
+# Databases
+*.sqlite3
+
 # Environment Variables
 .env
 .env.local

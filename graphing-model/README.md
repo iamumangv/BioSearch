@@ -268,4 +268,4 @@ BioGraph Studio comes pre-configured with four built-in datasets:
    ```
    http://127.0.0.1:5500/graphing-model/demo.html
    ```
-3. Use the navigation links to explore between **BioSearch Home**, **3D Models**, **Interactive Threat Map**, and **BioGraph Studio**!
+3. Use the navigation links to explore between **BioSearch Home**, **3D Models**, **HealthMap Outbreak Radar**, and **BioGraph Studio**!

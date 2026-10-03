@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="../css/advanced-search.css" />
 
   <!-- D3.js v7 CDN with fallback -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
@@ -849,6 +850,7 @@
     .link {
       stroke-opacity: 0.55;
       transition: stroke-opacity 0.2s, stroke 0.2s, stroke-width 0.2s;
+      pointer-events: none;
     }
 
     .link.highlighted {
@@ -1177,14 +1179,100 @@
     </div>
 
     <!-- Center Search -->
-    <div class="nav-center">
+    <div class="nav-center" style="position: relative;">
       <div class="search-box">
         <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
         <input type="text" id="node-search" class="search-input" placeholder="Search genes, assays, papers..." autocomplete="off" />
+        
+        <button class="advanced-search-btn" id="adv-search-toggle" title="Advanced Search" style="margin-left: 4px; padding: 4px; position: absolute; right: 28px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+        </button>
+
         <button id="search-clear" class="search-clear" title="Clear search">&times;</button>
+      </div>
+
+      <!-- Advanced Search Modal (Graph) -->
+      <div class="advanced-search-modal" id="adv-search-modal" style="width: 500px; right: auto; left: 0;">
+        <div class="adv-search-header">
+          <span>Advanced Search</span>
+          <button class="adv-search-close" id="adv-close-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
+        </div>
+        
+        <div class="adv-form-group">
+          <label for="adv-all-words">Find articles with all of the words</label>
+          <input type="text" id="adv-all-words" placeholder="e.g. perovskite solar efficiency">
+        </div>
+        
+        <div class="adv-form-group">
+          <label for="adv-exact">With the exact phrase</label>
+          <input type="text" id="adv-exact" placeholder='e.g. "crispr cas9"'>
+        </div>
+        
+        <div class="adv-form-row">
+          <div class="adv-form-group">
+            <label for="adv-any">With at least one of the words</label>
+            <input type="text" id="adv-any" placeholder="e.g. microplastics nanoplastics">
+          </div>
+          <div class="adv-form-group">
+            <label for="adv-none">Without the words</label>
+            <input type="text" id="adv-none" placeholder="e.g. oxide">
+          </div>
+        </div>
+        
+        <div class="adv-form-row">
+          <div class="adv-form-group">
+            <label for="adv-where">Where my words occur</label>
+            <select id="adv-where">
+              <option value="anywhere">Anywhere in the article</option>
+              <option value="title">In the title of the article</option>
+            </select>
+          </div>
+        </div>
+        
+        <div class="adv-form-row">
+          <div class="adv-form-group">
+            <label for="adv-author">Return articles authored by</label>
+            <input type="text" id="adv-author" placeholder='e.g. "richard feynman"'>
+          </div>
+          <div class="adv-form-group">
+            <label for="adv-source">Published in</label>
+            <input type="text" id="adv-source" placeholder='e.g. "Nature Chemistry"'>
+          </div>
+        </div>
+        
+        <div class="adv-form-row">
+          <div class="adv-form-group">
+            <label for="adv-year-start">Date Range (Year)</label>
+            <input type="text" id="adv-year-start" placeholder="Start (e.g. 2021)">
+          </div>
+          <div class="adv-form-group">
+            <label for="adv-year-end">&nbsp;</label>
+            <input type="text" id="adv-year-end" placeholder="End (e.g. 2025)">
+          </div>
+        </div>
+        
+        <div class="adv-form-actions">
+          <button class="adv-btn-clear" id="adv-clear-btn">Clear</button>
+          <button class="adv-btn-apply" id="adv-apply-btn">Apply Constraints</button>
+        </div>
       </div>
     </div>
 
@@ -1450,6 +1538,14 @@
         </button>
         <button id="btn-isolate-node" class="btn" style="flex: 1;" title="Isolate connected subgraph">
           Isolate Cluster
+        </button>
+        <button id="btn-open-website" class="btn" style="width: 100%; display: none; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); text-align: center; justify-content: center; align-items: center; gap: 6px;" title="Open original website / scientific sources">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+            <polyline points="15 3 21 3 21 9"></polyline>
+            <line x1="10" y1="14" x2="21" y2="3"></line>
+          </svg>
+          <span id="btn-open-website-text">Open Website</span>
         </button>
         <a id="btn-open-paper-analyzer" href="../paper-analyzer/index.html" class="btn" style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 240, 255, 0.12); border-color: var(--cyan); color: var(--cyan);" title="Deep Research Paper Analysis (PaperLens)">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1898,6 +1994,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
     // --- APPLICATION STATE ---
     let currentDataset = generateCombinedDataset();
+    let fullCustomDataset = null;
     let activeNodes = [];
     let activeLinks = [];
     let simulation = null;
@@ -2005,6 +2102,32 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         currentDataset = JSON.parse(JSON.stringify(DATA_PMC11462910));
       } else if (datasetKey === 'pmc8293341') {
         currentDataset = JSON.parse(JSON.stringify(DATA_PMC8293341));
+      } else if (datasetKey === 'active_custom' && fullCustomDataset) {
+        currentDataset = JSON.parse(JSON.stringify(fullCustomDataset));
+      } else if (datasetKey.startsWith('custom_') && fullCustomDataset) {
+        const targetPmc = datasetKey.replace('custom_', '');
+        const fcd = JSON.parse(JSON.stringify(fullCustomDataset));
+        const nodes = fcd.nodes.filter(n => {
+          if (n.id === targetPmc) return true;
+          return fcd.links.some(l => 
+            (l.source === targetPmc && l.target === n.id) ||
+            (l.target === targetPmc && l.source === n.id)
+          );
+        });
+        const links = fcd.links.filter(l => 
+          (l.source === targetPmc || l.target === targetPmc)
+        );
+        currentDataset = {
+          meta: {
+            title: `Single Paper View: ${targetPmc}`,
+            authors: fcd.meta.authors,
+            journal: fcd.meta.journal,
+            pmc: targetPmc,
+            summary: `Isolated subgraph for ${targetPmc}. Showing ${nodes.length} entities.`
+          },
+          nodes,
+          links
+        };
       }
       
       // Update top banner
@@ -2333,7 +2456,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             .classed('dimmed', false);
         });
 
-      document.getElementById('hud-status-text').text = 'Ready • Drag nodes or click to inspect';
+      document.getElementById('hud-status-text').innerText = 'Ready • Drag nodes or click to inspect';
     }
 
     function onNodeClick(d) {
@@ -2353,9 +2476,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       document.getElementById('drawer-entity-name').innerText = node.name;
       document.getElementById('drawer-entity-desc').innerText = node.desc || "Entity participating in biological regulation and diagnostic accuracy.";
       document.getElementById('drawer-entity-degree').innerText = node.degree || 0;
-      document.getElementById('drawer-entity-source').innerText = currentDataset.meta?.pmc || "Literature Extraction";
-
-      // Populate connections list
+      // Populate connections list early to determine exact sources
       const connContainer = document.getElementById('drawer-connections-list');
       connContainer.innerHTML = '';
       
@@ -2369,6 +2490,47 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           related.push({ target: s, rel: l.relationship, direction: 'incoming' });
         }
       });
+
+      // Determine Source and Open Website logic
+      let sourceText = currentDataset.meta?.pmc || "Literature Extraction";
+      let pmcLinks = [];
+      
+      if (node.category === "Publication") {
+        sourceText = node.id;
+        pmcLinks.push(node.id);
+      } else {
+        const pubNodes = related.filter(r => r.target.category === "Publication").map(r => r.target.id);
+        if (pubNodes.length > 0) {
+          pmcLinks = [...new Set(pubNodes)];
+          if (pmcLinks.length === 1) {
+            sourceText = pmcLinks[0];
+          } else {
+            sourceText = pmcLinks.length + " Sources";
+          }
+        } else if (currentDataset.meta?.pmc && currentDataset.meta.pmc !== "Multi-Source") {
+          pmcLinks.push(currentDataset.meta.pmc);
+        }
+      }
+
+      document.getElementById('drawer-entity-source').innerText = sourceText;
+
+      const openWebBtn = document.getElementById('btn-open-website');
+      if (openWebBtn) {
+        if (pmcLinks.length > 0) {
+          openWebBtn.style.display = "flex";
+          const labelSpan = document.getElementById('btn-open-website-text') || openWebBtn;
+          labelSpan.innerText = pmcLinks.length > 1 ? `Open Sources (${pmcLinks.length}) ↗` : "Open Website ↗";
+          openWebBtn.onclick = () => {
+            pmcLinks.forEach(pmcId => {
+              const cleanId = pmcId.replace('PMC', '');
+              const url = `https://europepmc.org/article/PMC/${cleanId}`;
+              window.open(url, '_blank');
+            });
+          };
+        } else {
+          openWebBtn.style.display = "none";
+        }
+      }
 
       document.getElementById('drawer-conn-count').innerText = related.length;
 
@@ -2392,6 +2554,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           });
           connContainer.appendChild(el);
         });
+      }
+
       // Configure Original Source link and PaperLens deep link
       const btnOriginal = document.getElementById('btn-open-original-link');
       const txtOriginal = document.getElementById('btn-original-link-text');
@@ -2400,6 +2564,9 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       let originalUrl = node.url || (node.doi ? `https://doi.org/${node.doi}` : null);
       if (!originalUrl && currentDataset?.meta?.url) {
         originalUrl = currentDataset.meta.url;
+      } else if (!originalUrl && pmcLinks.length > 0) {
+        const cleanId = pmcLinks[0].replace('PMC', '');
+        originalUrl = `https://europepmc.org/article/PMC/${cleanId}`;
       } else if (!originalUrl && currentDataset?.meta?.pmc) {
         originalUrl = `https://pmc.ncbi.nlm.nih.gov/articles/${currentDataset.meta.pmc}/`;
       } else if (!originalUrl) {
@@ -2409,13 +2576,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       if (btnOriginal) {
         btnOriginal.href = originalUrl;
         if (txtOriginal) {
-          const pmcTag = currentDataset?.meta?.pmc ? ` (${currentDataset.meta.pmc})` : '';
-          txtOriginal.innerText = `Open Original Paper Source${pmcTag} ↗`;
+          txtOriginal.innerText = `Open Original Paper Source (${sourceText}) ↗`;
         }
       }
 
-      if (btnPaperLens && currentDataset?.meta?.pmc) {
-        btnPaperLens.href = `../paper-analyzer/index.html?pmc=${encodeURIComponent(currentDataset.meta.pmc)}`;
+      if (btnPaperLens) {
+        const targetPmc = pmcLinks[0] || (currentDataset?.meta?.pmc && currentDataset.meta.pmc !== 'Multi-Source' ? currentDataset.meta.pmc : null);
+        if (targetPmc) {
+          btnPaperLens.href = `../paper-analyzer/index.html?pmc=${encodeURIComponent(targetPmc)}`;
+        } else {
+          btnPaperLens.href = `../paper-analyzer/index.html?query=${encodeURIComponent(node.name)}`;
+        }
       }
 
       drawer.classList.add('open');
@@ -2774,7 +2945,7 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
 
         // Apply dataset
         currentDataset = {
-          meta: {
+          meta: parsed.meta || {
             title: "Custom User Knowledge Graph",
             authors: "Generated via BioGraph Studio Engine",
             journal: "User-defined dataset",
@@ -2784,9 +2955,38 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
           nodes: parsed.nodes,
           links: parsed.links
         };
+        fullCustomDataset = JSON.parse(JSON.stringify(currentDataset));
 
-        // Select 'custom' in dropdown
-        document.getElementById('dataset-selector').value = 'custom';
+        // Update dropdown
+        const selector = document.getElementById('dataset-selector');
+        if (selector) {
+          selector.innerHTML = '';
+          const combinedOpt = document.createElement('option');
+          combinedOpt.value = 'active_custom';
+          combinedOpt.innerText = currentDataset.meta.articles && currentDataset.meta.articles.length > 0
+            ? `✨ ${currentDataset.meta.title} (${currentDataset.meta.articles.length} Papers)`
+            : `✨ ${currentDataset.meta.title}`;
+          selector.appendChild(combinedOpt);
+
+          if (currentDataset.meta.articles) {
+            currentDataset.meta.articles.forEach((art, i) => {
+              const pmcId = art.pmcid || art.id || `Paper_${i+1}`;
+              const pmcFormatted = pmcId.toString().startsWith('PMC') ? pmcId : ('PMC' + pmcId);
+              const opt = document.createElement('option');
+              opt.value = `custom_${pmcFormatted}`;
+              const titleStr = art.title ? art.title.slice(0, 50) : 'Study';
+              opt.innerText = `📑 ${pmcFormatted}: ${titleStr}...`;
+              selector.appendChild(opt);
+            });
+          }
+
+          const newOpt = document.createElement('option');
+          newOpt.value = 'custom';
+          newOpt.innerText = `➕ Generate New Graph Data...`;
+          selector.appendChild(newOpt);
+
+          selector.value = 'active_custom';
+        }
         closeCustomDataModal();
         updatePaperBanner(currentDataset.meta);
         populateCategoryFilters();
@@ -3415,14 +3615,43 @@ Return strictly a single JSON object with this exact structure:
             journal: "Real-Time BioSearch Knowledge Engine",
             pmc: articles.map(a => a.pmcid || a.id).filter(Boolean).slice(0, 3).join(", "),
             url: `https://europepmc.org/search?query=${encodeURIComponent(cleanTopic)}`,
-            summary: `Living knowledge graph generated across open-access papers on ${cleanTopic}. ${graphData.nodes.length} biological entities connected across ${graphData.links.length} scientific mechanisms.`
+            summary: `Living knowledge graph generated across open-access papers on ${cleanTopic}. ${graphData.nodes.length} biological entities connected across ${graphData.links.length} scientific mechanisms.`,
+            articles: articles
           },
           nodes: graphData.nodes,
           links: graphData.links
         };
+        fullCustomDataset = JSON.parse(JSON.stringify(currentDataset));
 
         const selector = document.getElementById('dataset-selector');
-        if (selector) selector.value = 'custom';
+        if (selector) {
+          selector.innerHTML = '';
+          const combinedOpt = document.createElement('option');
+          combinedOpt.value = 'active_custom';
+          combinedOpt.innerText = currentDataset.meta.articles && currentDataset.meta.articles.length > 0
+            ? `✨ ${currentDataset.meta.title} (${currentDataset.meta.articles.length} Papers)`
+            : `✨ ${currentDataset.meta.title}`;
+          selector.appendChild(combinedOpt);
+
+          if (currentDataset.meta.articles) {
+            currentDataset.meta.articles.forEach((art, i) => {
+              const pmcId = art.pmcid || art.id || `Paper_${i+1}`;
+              const pmcFormatted = pmcId.toString().startsWith('PMC') ? pmcId : ('PMC' + pmcId);
+              const opt = document.createElement('option');
+              opt.value = `custom_${pmcFormatted}`;
+              const titleStr = art.title ? art.title.slice(0, 50) : 'Study';
+              opt.innerText = `📑 ${pmcFormatted}: ${titleStr}...`;
+              selector.appendChild(opt);
+            });
+          }
+
+          const newOpt = document.createElement('option');
+          newOpt.value = 'custom';
+          newOpt.innerText = `➕ Generate New Graph Data...`;
+          selector.appendChild(newOpt);
+
+          selector.value = 'active_custom';
+        }
 
         closeCustomDataModal();
         updatePaperBanner(currentDataset.meta);
@@ -3566,6 +3795,16 @@ Return strictly a single JSON object with this exact structure:
       if (lower.includes('inhibitor') || lower.includes('mab') || lower.includes('drug') || lower.includes('vir')) return 'Drug / Therapeutic';
       return 'Gene / Protein';
     }
+
+    window.runLiveTopicSearch = runLiveTopicSearch;
+  </script>
+  <script type="module">
+    import { initAdvancedSearch } from '../js/advanced-search.js';
+    initAdvancedSearch({
+      toggleBtnId: 'adv-search-toggle',
+      searchInputId: 'node-search',
+      wrapperSelector: '.nav-center'
+    });
   </script>
 </body>
 </html>

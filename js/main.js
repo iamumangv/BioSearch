@@ -10,7 +10,7 @@ import { HoveringPaper } from './three/paper.js';
 import { PAPER_CONFIGS } from './config/papers-data.js';
 import { ScrollController } from './scroll-controller.js';
 import { initUI } from './ui.js';
-import { ThreatMapPreview } from './threat-map-preview.js';
+import { HealthMapPreview } from './healthmap-preview.js';
 
 // ─── Initialize System Components ────────────────────────────────────────────
 const canvas = document.getElementById('three-canvas');
@@ -28,8 +28,8 @@ const scrollController = new ScrollController();
 // UI Interactions
 initUI(scrollController);
 
-// Homepage Threat Map Preview (5 hubs, moving pulse dots)
-const threatPreview = new ThreatMapPreview('threat-preview-canvas');
+// Homepage HealthMap Outbreak Radar Preview
+const healthmapPreview = new HealthMapPreview('healthmap-preview-canvas');
 
 // ─── Animation Loop ──────────────────────────────────────────────────────────
 const clock = new THREE.Clock();
