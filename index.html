@@ -42,15 +42,15 @@
         <span>BioSearch</span>
       </div>
       <div class="nav-links">
-        <a href="#hero-scroll-track" class="nav-link">Preprints</a>
-        <a href="#explore-section" class="nav-link" id="nav-search-link">Semantic Search</a>
+        <!-- <a href="#hero-scroll-track" class="nav-link">Preprints</a> -->
+        <!-- <a href="#explore-section" class="nav-link" id="nav-search-link">Semantic Search</a> -->
         <a href="paper-analyzer/index.html" class="nav-link" style="color: #00f0ff;">Paper Analyzer</a>
-        <a href="#models-showcase-section" class="nav-link">3D Models</a>
+        <!-- <a href="#models-showcase-section" class="nav-link">3D Models</a> -->
         <a href="#healthmap-section" class="nav-link">HealthMap Radar</a>
         <a href="graphing-model/demo.html" class="nav-link">Graphing Model</a>
-        <a href="model-viewer.html" class="nav-link">3D Viewer &rarr;</a>
+        <!-- <a href="model-viewer.html" class="nav-link">3D Viewer &rarr;</a> -->
       </div>
-      <button class="nav-cta" id="nav-cta-btn">Start Searching</button>
+      <!-- <button class="nav-cta" id="nav-cta-btn">Start Searching</button> -->
     </div>
   </nav>
 
@@ -62,17 +62,17 @@
 
       <!-- Hero Main Content -->
       <div class="hero-content">
-        <div class="badge" id="hero-badge">
+        <!-- <div class="badge" id="hero-badge">
           <span class="badge-dot"></span>
           <span id="badge-status-text">Hovering 3D Preprints &middot; Scroll to Synthesize</span>
-        </div>
+        </div> -->
         <h1 class="hero-title" id="hero-title">
           Research that
           <span class="gradient-text">Thinks</span><br/>
           with You
         </h1>
         <p class="hero-subtitle" id="hero-subtitle">
-          Watch 3D preprints cascade downwards, break into glowing bioluminescent particles, and weave into a living biological knowledge graph.
+          Turn research paper into graphical view, and accelerate your thinking
         </p>
         <div class="hero-actions" id="hero-actions">
           <!-- <button class="btn-primary" id="start-exploring-btn">
@@ -89,6 +89,15 @@
             </svg>
             Auto Demo
           </button> -->
+        </div>
+
+        <div class="search-box" id="main-search-box">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" placeholder="Covid 19" id="search-input" autocomplete="off" />
+          <button class="search-submit-btn" id="search-submit-btn">Search Graph</button>
         </div>
 
         <!-- Stats row -->
@@ -109,6 +118,8 @@
           </div>
         </div>
       </div>
+
+      
 
       <!-- Graph Completion Callout (appears when graph is fully formed) -->
       <!-- <div class="graph-ready-banner" id="graph-ready-banner">
@@ -131,7 +142,7 @@
       </div> -->
 
       <!-- Scroll Progress Bar -->
-      <div class="scroll-progress-container">
+      <!-- <div class="scroll-progress-container">
         <div class="scroll-progress-track">
           <div class="scroll-progress-fill" id="scroll-fill"></div>
         </div>
@@ -140,7 +151,7 @@
           <span class="step-label" id="step-2">2. Cascading</span>
           <span class="step-label" id="step-3">3. Graph Mesh</span>
         </div>
-      </div>
+      </div> -->
 
       <!-- Scroll indicator (clickable) -->
       <!-- <div class="scroll-indicator" id="scroll-indicator" title="Click to scroll down">
@@ -150,6 +161,7 @@
         <span id="scroll-hint-text">Scroll to synthesize &amp; search</span>
       </div> -->
     </section>
+    
   </div>
 
   <!-- Explore & Search Section (seamlessly glides over living 3D graph) -->
@@ -300,16 +312,16 @@
       <!-- Section Header -->
       <div class="healthmap-header">
         <div class="healthmap-header-left">
-          <div class="healthmap-badge">
+          <!-- <div class="healthmap-badge">
             <span class="healthmap-pulse-dot"></span>
             Real-Time Pathogen Surveillance &bull; HealthMap Engine
-          </div>
+          </div> -->
           <h2 class="healthmap-title">
             Global Disease Outbreak &amp; <span>Epidemic Monitor</span>
           </h2>
-          <p class="healthmap-desc">
+          <!-- <p class="healthmap-desc">
             Continuous planetary surveillance tracking biological threats, emerging viral variants, and disease outbreaks worldwide. Ingests live alerts and epidemiological data across 230+ countries from WHO, CDC, ECDC, Disease.sh, and verified surveillance feeds.
-          </p>
+          </p> -->
         </div>
 
         <div class="healthmap-actions">
@@ -321,9 +333,9 @@
             </svg>
             <span>Open HealthMap Platform ↗</span>
           </a>
-          <a href="healthmap-clone/frontend/index.html" class="btn-healthmap-secondary" title="View Live Epidemic Alerts">
+          <!-- <a href="healthmap-clone/frontend/index.html" class="btn-healthmap-secondary" title="View Live Epidemic Alerts">
             <span>Live Outbreak Feeds ↗</span>
-          </a>
+          </a> -->
         </div>
       </div>
 
@@ -348,7 +360,7 @@
           <div id="healthmap-tooltip" class="healthmap-tooltip"></div>
         </div>
 
-        <div class="healthmap-footer-bar">
+        <!-- <div class="healthmap-footer-bar">
           <div class="healthmap-stats-chips">
             <div class="stat-chip">
               <span class="chip-dot critical"></span>
@@ -366,7 +378,7 @@
           <a href="healthmap-clone/frontend/index.html" class="preview-portal-link">
             <span>Launch Full Interactive HealthMap Portal &rarr;</span>
           </a>
-        </div>
+        </div> -->
       </div>
     </div>
   </section>

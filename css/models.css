@@ -7,6 +7,7 @@
    Center "Explore More" CTA flanked by 3D model previews
 ══════════════════════════════════════ */
 #models-showcase-section {
+  display: none !important;
   position: relative;
   z-index: 5;
   background: rgba(4, 7, 18, 0.85);

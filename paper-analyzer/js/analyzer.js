@@ -46,46 +46,21 @@ document.addEventListener('DOMContentLoaded', () => {
   setupScrollSpy();
 
 
-  // --- FLOATING TOAST NOTIFICATION ---
+  // --- STATUS NOTICE ---
   function showToastNotification(message, isPersistent = false) {
     let toast = document.getElementById('paperlens-toast');
     if (!toast) {
       toast = document.createElement('div');
       toast.id = 'paperlens-toast';
-      toast.style.cssText = `
-        position: fixed;
-        top: 72px;
-        left: 50%;
-        transform: translateX(-50%);
-        z-index: 9999;
-        background: rgba(14, 22, 41, 0.95);
-        border: 1px solid var(--border-highlight);
-        box-shadow: 0 8px 32px rgba(0, 240, 255, 0.3);
-        backdrop-filter: blur(16px);
-        color: var(--text-main);
-        padding: 10px 22px;
-        border-radius: 30px;
-        font-size: 13px;
-        font-weight: 500;
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
-        pointer-events: none;
-      `;
+      toast.className = 'app-toast';
       document.body.appendChild(toast);
     }
-    toast.innerHTML = `<span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan);"></span><span>${message}</span>`;
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(-50%) translateY(0)';
+    toast.innerHTML = `<span class="toast-mark"></span><span>${message}</span>`;
+    toast.classList.add('visible');
 
+    clearTimeout(toast.hideTimer);
     if (!isPersistent) {
-      setTimeout(() => {
-        if (toast) {
-          toast.style.opacity = '0';
-          toast.style.transform = 'translateX(-50%) translateY(-10px)';
-        }
-      }, 5500);
+      toast.hideTimer = setTimeout(() => toast.classList.remove('visible'), 5500);
     }
   }
 
@@ -243,10 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     papers.forEach((p, idx) => {
       const chip = document.createElement('button');
       chip.className = `preset-chip ${idx === 0 ? 'active' : ''}`;
-      chip.innerHTML = `
-        <span class="chip-dot"></span>
-        <span class="chip-name">${p.shortTitle || p.title.slice(0, 24)}</span>
-      `;
+      chip.innerHTML = `<span class="chip-name">${p.shortTitle || p.title}</span>`;
       chip.addEventListener('click', () => {
         document.querySelectorAll('.preset-chip').forEach(c => c.classList.remove('active'));
         chip.classList.add('active');
@@ -329,67 +301,69 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="section-card">
         <div class="card-header">
           <div class="card-icon cyan">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <circle cx="12" cy="12" r="10"></circle>
               <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
               <line x1="12" y1="17" x2="12.01" y2="17"></line>
             </svg>
           </div>
           <div>
-            <div class="section-badge cyan">Formal Problem Statement</div>
-            <h2 class="card-title">Core Research Question &amp; Working Hypothesis</h2>
+            <div class="section-badge cyan">Problem statement</div>
+            <h2 class="card-title">Research Question &amp; Working Hypothesis</h2>
           </div>
         </div>
 
-        <div class="question-callout">
-          <div class="callout-label">CENTRAL INVESTIGATION</div>
-          <p class="question-text">"${data.statement}"</p>
-        </div>
-
-        <div class="hypothesis-grid">
-          <div class="hypothesis-subcard primary">
-            <div class="subcard-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2">
-                <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
-              </svg>
-              Formal Hypothesis Formulation (H₁)
-            </div>
-            <p class="subcard-text">${data.formalHypothesis}</p>
+        <div class="section-body">
+          <div class="question-callout">
+            <div class="callout-label">Central question</div>
+            <p class="question-text">"${data.statement}"</p>
           </div>
 
-          <div class="hypothesis-subcard warning">
-            <div class="subcard-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <line x1="12" y1="8" x2="12" y2="12"></line>
-                <line x1="12" y1="16" x2="12.01" y2="16"></line>
-              </svg>
-              Status Quo &amp; Methodological Bottleneck
+          <div class="hypothesis-grid">
+            <div class="hypothesis-subcard primary">
+              <div class="subcard-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+                </svg>
+                Formal hypothesis (H&#8321;)
+              </div>
+              <p class="subcard-text">${data.formalHypothesis}</p>
             </div>
-            <p class="subcard-text">${data.statusQuoBottleneck}</p>
-          </div>
 
-          <div class="hypothesis-subcard danger">
-            <div class="subcard-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f43f5e" stroke-width="2">
-                <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
-                <line x1="15" y1="9" x2="9" y2="15"></line>
-                <line x1="9" y1="9" x2="15" y2="15"></line>
-              </svg>
-              Falsification Criteria
+            <div class="hypothesis-subcard warning">
+              <div class="subcard-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                Prior limitation
+              </div>
+              <p class="subcard-text">${data.statusQuoBottleneck}</p>
             </div>
-            <p class="subcard-text">${data.falsificationCriteria}</p>
-          </div>
 
-          <div class="hypothesis-subcard info">
-            <div class="subcard-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2">
-                <circle cx="12" cy="12" r="10"></circle>
-                <polyline points="12 6 12 12 14 14"></polyline>
-              </svg>
-              Domain Scope &amp; Target Horizon
+            <div class="hypothesis-subcard danger">
+              <div class="subcard-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <polygon points="7.86 2 16.14 2 22 7.86 22 16.14 16.14 22 7.86 22 2 16.14 2 7.86 7.86 2"></polygon>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                Falsification criteria
+              </div>
+              <p class="subcard-text">${data.falsificationCriteria}</p>
             </div>
-            <p class="subcard-text">${data.domainScope}</p>
+
+            <div class="hypothesis-subcard info">
+              <div class="subcard-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 14 14"></polyline>
+                </svg>
+                Scope of the claim
+              </div>
+              <p class="subcard-text">${data.domainScope}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -433,63 +407,65 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="section-card">
         <div class="card-header">
           <div class="card-icon emerald">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <polyline points="22 12 18 12 15 21 9 3 6 12 2 12"></polyline>
             </svg>
           </div>
           <div>
-            <div class="section-badge emerald">Quantitative Rigor</div>
+            <div class="section-badge emerald">Reported results</div>
             <h2 class="card-title">Key Findings &amp; Quantitative Benchmarks</h2>
           </div>
         </div>
 
-        <div class="findings-headline">
-          <div class="headline-badge">EXECUTIVE SUMMARY</div>
-          <p>${data.headline}</p>
-        </div>
-
-        <div class="kpi-grid">
-          ${metricsHtml}
-        </div>
-
-        <div class="findings-columns">
-          <div class="findings-col">
-            <h3 class="subsection-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
-                <polyline points="20 6 9 17 4 12"></polyline>
-              </svg>
-              Validated Qualitative Breakthroughs
-            </h3>
-            <ul class="breakthrough-list">
-              ${qualitativeHtml}
-            </ul>
+        <div class="section-body">
+          <div class="findings-headline">
+            <div class="headline-badge">Summary</div>
+            <p>${data.headline}</p>
           </div>
 
-          <div class="findings-col wide">
-            <h3 class="subsection-title">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2">
-                <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-                <line x1="3" y1="9" x2="21" y2="9"></line>
-                <line x1="9" y1="21" x2="9" y2="9"></line>
-              </svg>
-              Exact Head-to-Head Benchmark Comparisons
-            </h3>
-            <div class="table-responsive">
-              <table class="benchmark-table">
-                <thead>
-                  <tr>
-                    <th>Evaluation Task</th>
-                    <th>Standard Benchmark</th>
-                    <th>Reported Score</th>
-                    <th>Prior SOTA Baseline</th>
-                    <th>Significance (p)</th>
-                    <th>Verdict</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  ${benchmarkRowsHtml}
-                </tbody>
-              </table>
+          <div class="kpi-grid">
+            ${metricsHtml}
+          </div>
+
+          <div class="findings-columns">
+            <div class="findings-col">
+              <h3 class="subsection-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9">
+                  <polyline points="20 6 9 17 4 12"></polyline>
+                </svg>
+                Validated claims
+              </h3>
+              <ul class="breakthrough-list">
+                ${qualitativeHtml}
+              </ul>
+            </div>
+
+            <div class="findings-col wide">
+              <h3 class="subsection-title">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                  <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                  <line x1="3" y1="9" x2="21" y2="9"></line>
+                  <line x1="9" y1="21" x2="9" y2="9"></line>
+                </svg>
+                Head-to-head benchmark comparison
+              </h3>
+              <div class="table-responsive">
+                <table class="benchmark-table">
+                  <thead>
+                    <tr>
+                      <th>Evaluation task</th>
+                      <th>Benchmark</th>
+                      <th>This paper</th>
+                      <th>Prior SOTA</th>
+                      <th>p</th>
+                      <th>Verdict</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    ${benchmarkRowsHtml}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -507,7 +483,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="ablation-card ${severityClass}">
           <div class="ablation-header">
             <div class="ablation-name-row">
-              <span class="ablation-index">Test #${i + 1}</span>
+              <span class="ablation-index">A${String(i + 1).padStart(2, '0')}</span>
               <h4 class="ablation-component-name">${c.component}</h4>
             </div>
             <span class="severity-badge ${severityClass}">${c.verdict}</span>
@@ -515,7 +491,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="ablation-body">
             <div class="ablation-modification">
-              <strong>Perturbation / Ablation:</strong> ${c.modification}
+              <strong>Perturbation</strong> &mdash; ${c.modification}
             </div>
             <div class="ablation-impact-box">
               <div class="impact-delta-tag">${c.impactDelta}</div>
@@ -530,22 +506,24 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="section-card">
         <div class="card-header">
           <div class="card-icon amber">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
             </svg>
           </div>
           <div>
-            <div class="section-badge amber">Component Causal Validation</div>
-            <h2 class="card-title">Ablation Studies &amp; Necessity Proofs</h2>
+            <div class="section-badge amber">Component necessity</div>
+            <h2 class="card-title">Ablation Studies</h2>
           </div>
         </div>
 
-        <div class="ablation-summary-banner">
-          <p><strong>Methodological Rigor:</strong> ${data.methodologySummary}</p>
-        </div>
+        <div class="section-body">
+          <div class="ablation-summary-banner">
+            <p>${data.methodologySummary}</p>
+          </div>
 
-        <div class="ablation-grid">
-          ${cardsHtml}
+          <div class="ablation-grid">
+            ${cardsHtml}
+          </div>
         </div>
       </div>
     `;
@@ -564,7 +542,7 @@ document.addEventListener('DOMContentLoaded', () => {
         <div class="lineage-card">
           <div class="lineage-top">
             <span class="lineage-venue">${a.venue} &middot; ${a.year}</span>
-            <a href="https://doi.org/${a.doi}" target="_blank" rel="noopener" class="lineage-doi-link">DOI ↗</a>
+            <a href="https://doi.org/${a.doi}" target="_blank" rel="noopener" class="lineage-doi-link">DOI &#8599;</a>
           </div>
           <h4 class="lineage-title">${a.paper}</h4>
           <div class="lineage-authors">${a.authors}</div>
@@ -572,21 +550,21 @@ document.addEventListener('DOMContentLoaded', () => {
           <div class="lineage-diff-grid">
             <div class="diff-box inherited">
               <div class="diff-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#10b981" stroke-width="2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <polyline points="20 6 9 17 4 12"></polyline>
                 </svg>
-                Inherited Concept / Mathematical Base
+                Inherited
               </div>
               <p>${a.inheritedConcept}</p>
             </div>
 
             <div class="diff-box diverged">
               <div class="diff-title">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <line x1="5" y1="12" x2="19" y2="12"></line>
                   <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
-                Where This Work Diverged &amp; Innovated
+                Diverged
               </div>
               <p>${a.divergencePoint}</p>
             </div>
@@ -599,7 +577,7 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="section-card">
         <div class="card-header">
           <div class="card-icon purple">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <line x1="6" y1="3" x2="6" y2="15"></line>
               <circle cx="18" cy="6" r="3"></circle>
               <circle cx="6" cy="18" r="3"></circle>
@@ -607,17 +585,19 @@ document.addEventListener('DOMContentLoaded', () => {
             </svg>
           </div>
           <div>
-            <div class="section-badge purple">Intellectual Heritage</div>
+            <div class="section-badge purple">Intellectual debt</div>
             <h2 class="card-title">Lineage &amp; Foundational Frameworks</h2>
           </div>
         </div>
 
-        <div class="lineage-narrative">
-          <p>${data.narrative}</p>
-        </div>
+        <div class="section-body">
+          <div class="lineage-narrative">
+            <p>${data.narrative}</p>
+          </div>
 
-        <div class="lineage-timeline">
-          ${ancestorsHtml}
+          <div class="lineage-timeline">
+            ${ancestorsHtml}
+          </div>
         </div>
       </div>
     `;
@@ -651,8 +631,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
           <div class="related-actions">
             <a href="https://doi.org/${r.doi}" target="_blank" rel="noopener" class="btn-related-doi">
-              <span>View Source DOI</span>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <span>Source DOI</span>
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
                 <line x1="7" y1="17" x2="17" y2="7"></line>
                 <polyline points="7 7 17 7 17 17"></polyline>
               </svg>
@@ -666,23 +646,25 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="section-card">
         <div class="card-header">
           <div class="card-icon cyan">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
               <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
             </svg>
           </div>
           <div>
-            <div class="section-badge cyan">Literature Ecosystem</div>
+            <div class="section-badge cyan">Literature context</div>
             <h2 class="card-title">Related Papers &amp; Comparative Analysis</h2>
           </div>
         </div>
 
-        <div class="related-intro">
-          <p>Contextualized against current state-of-the-art architectures, competing benchmarks, and methodological descendants.</p>
-        </div>
+        <div class="section-body">
+          <div class="related-intro">
+            <p>Placed against competing architectures, shared benchmarks, and methodological descendants.</p>
+          </div>
 
-        <div class="related-grid">
-          ${cardsHtml}
+          <div class="related-grid">
+            ${cardsHtml}
+          </div>
         </div>
       </div>
     `;
@@ -709,9 +691,10 @@ document.addEventListener('DOMContentLoaded', () => {
     });
   }
 
-  // --- SCROLL SPY & STICKY NAV ---
+  // --- SCROLL SPY, STICKY NAV & READING PROGRESS ---
   function setupScrollSpy() {
     const navLinks = document.querySelectorAll('.section-nav-link');
+    const progressBar = document.getElementById('reading-progress-bar');
     const sections = [
       document.getElementById('section-core-question'),
       document.getElementById('section-key-findings'),
@@ -721,16 +704,35 @@ document.addEventListener('DOMContentLoaded', () => {
       document.getElementById('section-related-papers')
     ].filter(Boolean);
 
-    window.addEventListener('scroll', () => {
+    let ticking = false;
+
+    const update = () => {
+      ticking = false;
       const scrollPos = window.scrollY + 200;
-      sections.forEach((sec, idx) => {
+
+      sections.forEach((sec) => {
         if (sec.offsetTop <= scrollPos && (sec.offsetTop + sec.offsetHeight) > scrollPos) {
-          navLinks.forEach(link => link.classList.remove('active'));
+          navLinks.forEach((link) => link.classList.remove('active'));
           const currentLink = document.querySelector(`.section-nav-link[href="#${sec.id}"]`);
           if (currentLink) currentLink.classList.add('active');
         }
       });
-    });
+
+      if (progressBar) {
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.max(0, (window.scrollY / docHeight) * 100)) : 0;
+        progressBar.style.width = `${pct}%`;
+      }
+    };
+
+    window.addEventListener('scroll', () => {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(update);
+    }, { passive: true });
+
+    window.addEventListener('resize', update);
+    update();
   }
 
   // --- CUSTOM PAPER MODAL & GEMINI / HEURISTIC ANALYSIS ---
@@ -1188,50 +1190,49 @@ Return ONLY the raw JSON object. Do not wrap in markdown or backticks.`;
       if (!p) return;
 
       const mdContent = `
-# 🧬 BioSearch PaperLens — Research Intelligence Dossier
+# PaperLens Analysis
 **Title:** ${p.title}  
 **Authors:** ${p.authors}  
 **Journal:** ${p.journal} (${p.year})  
 **DOI:** https://doi.org/${p.doi}  
-**Citations:** ${p.citations} | **Impact Factor:** ${p.impactFactor}  
+**Citations:** ${p.citations} | **Impact factor:** ${p.impactFactor}  
 **Category:** ${p.category}  
 
 ---
 
-## 1. Core Research Question
-**Central Investigation:**  
+## 1. Research Question
 > "${p.coreResearchQuestion.statement}"
 
-- **Formal Hypothesis (H₁):** ${p.coreResearchQuestion.formalHypothesis}
-- **Status Quo Bottleneck:** ${p.coreResearchQuestion.statusQuoBottleneck}
-- **Falsification Criteria:** ${p.coreResearchQuestion.falsificationCriteria}
-- **Domain Scope:** ${p.coreResearchQuestion.domainScope}
+- **Formal hypothesis (H1):** ${p.coreResearchQuestion.formalHypothesis}
+- **Prior limitation:** ${p.coreResearchQuestion.statusQuoBottleneck}
+- **Falsification criteria:** ${p.coreResearchQuestion.falsificationCriteria}
+- **Scope of the claim:** ${p.coreResearchQuestion.domainScope}
 
 ---
 
-## 2. Key Findings & Quantitative Benchmarks
-**Executive Summary:** ${p.keyFindings.headline}
+## 2. Findings & Benchmarks
+${p.keyFindings.headline}
 
-### Headline Metric Numbers
+### Headline figures
 ${p.keyFindings.metrics.map(m => `- **${m.label}:** \`${m.value}\` (${m.delta}) — *${m.note}*`).join('\n')}
 
-### Validated Qualitative Breakthroughs
+### Validated claims
 ${p.keyFindings.qualitativeBreakthroughs.map(q => `- ${q}`).join('\n')}
 
-### Benchmark Comparisons
-| Task | Dataset | Paper Score | Baseline Score | p-Value | Verdict |
+### Benchmark comparison
+| Task | Benchmark | This paper | Prior SOTA | p-value | Verdict |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 ${p.keyFindings.benchmarksTable.map(r => `| ${r.task} | ${r.benchmark} | **${r.af3}** | ${r.baseline} | ${r.pValue} | ${r.status} |`).join('\n')}
 
 ---
 
-## 3. Component Ablation Studies
+## 3. Ablation Studies
 *${p.ablationStudies.methodologySummary}*
 
 ${p.ablationStudies.components.map((c, i) => `
-### Test #${i+1}: ${c.component} [${c.verdict}]
+### A${String(i + 1).padStart(2, '0')}: ${c.component} [${c.verdict}]
 - **Perturbation:** ${c.modification}
-- **Observed Impact:** \`${c.impactDelta}\`
+- **Observed impact:** \`${c.impactDelta}\`
 - **Analysis:** ${c.details}
 `).join('\n')}
 
@@ -1244,22 +1245,22 @@ ${p.lineageAndFoundation.ancestors.map(a => `
 ### ${a.paper} (${a.venue} ${a.year})
 - **Authors:** ${a.authors}
 - **DOI:** https://doi.org/${a.doi}
-- **Inherited Concept:** ${a.inheritedConcept}
-- **Divergence & Innovation:** ${a.divergencePoint}
+- **Inherited:** ${a.inheritedConcept}
+- **Diverged:** ${a.divergencePoint}
 `).join('\n')}
 
 ---
 
-## 5. Related Papers & Comparative Analysis
+## 5. Related Papers
 ${p.relatedPapers.map(r => `
 ### ${r.title} (${r.venue})
 - **Similarity:** ${r.similarity} (${r.status})
-- **Shared Concepts:** ${r.sharedConcepts.join(', ')}
-- **How It Compares:** ${r.comparativeAnalysis}
+- **Shared concepts:** ${r.sharedConcepts.join(', ')}
+- **How it compares:** ${r.comparativeAnalysis}
 `).join('\n')}
 
 ---
-*Generated by BioSearch PaperLens Platform — Central Research Intelligence*
+*Generated with PaperLens · BioSearch*
 `.trim();
 
       const blob = new Blob([mdContent], { type: 'text/markdown;charset=utf-8' });

@@ -1,15 +1,19 @@
 <!DOCTYPE html>
 <html lang="en" data-theme="dark">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>BioGraph Studio — Generalized Knowledge Graph &amp; Biomedical Research Model</title>
-  <meta name="description" content="Generalized interactive force-directed graphing model for biomedical literature and custom datasets. Explore entity relationships across PMC8259047, PMC11462910, and PMC8293341, or create custom graphs." />
-  
+  <meta name="description"
+    content="Generalized interactive force-directed graphing model for biomedical literature and custom datasets. Explore entity relationships across PMC8259047, PMC11462910, and PMC8293341, or create custom graphs." />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap"
+    rel="stylesheet" />
   <link rel="stylesheet" href="../css/advanced-search.css" />
 
   <!-- D3.js v7 CDN with fallback -->
@@ -24,11 +28,11 @@
       --bg-card: rgba(18, 26, 47, 0.75);
       --border-subtle: rgba(255, 255, 255, 0.08);
       --border-highlight: rgba(0, 240, 255, 0.25);
-      
+
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
       --text-dim: #64748b;
-      
+
       --cyan: #00f0ff;
       --cyan-glow: rgba(0, 240, 255, 0.35);
       --purple: #8b5cf6;
@@ -38,7 +42,7 @@
       --rose: #f43f5e;
       --indigo: #6366f1;
       --teal: #14b8a6;
-      
+
       --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       --font-display: 'Space Grotesk', sans-serif;
       --font-mono: 'JetBrains Mono', monospace;
@@ -47,7 +51,7 @@
       --radius-md: 10px;
       --radius-lg: 16px;
       --radius-full: 9999px;
-      
+
       --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px var(--cyan-glow);
     }
 
@@ -136,10 +140,9 @@
       align-items: center;
       gap: 8px;
     }
-    #btn-gemini-modal{
-      visibility: hidden;
-    }
+
     .brand-badge {
+      display: none !important;
       font-size: 10px;
       font-weight: 600;
       text-transform: uppercase;
@@ -149,11 +152,24 @@
       background: rgba(0, 240, 255, 0.12);
       color: var(--cyan);
       border: 1px solid rgba(0, 240, 255, 0.3);
+
     }
 
     .brand-sub {
       font-size: 11px;
       color: var(--text-muted);
+    }
+
+    #btn-gemini-modal {
+      visibility: hidden;
+    }
+
+    #btn-theme-toggle {
+      visibility: hidden;
+    }
+
+    #paper-banner {
+      visibility: hidden;
     }
 
     .nav-divider {
@@ -175,10 +191,6 @@
       color: var(--text-muted);
     }
 
-    #paper-banner{
-      visibility: hidden;
-    }
-
     .dataset-select {
       background: var(--bg-surface-elevated);
       color: var(--text-main);
@@ -194,7 +206,8 @@
       min-width: 280px;
     }
 
-    .dataset-select:focus, .dataset-select:hover {
+    .dataset-select:focus,
+    .dataset-select:hover {
       border-color: var(--cyan);
       box-shadow: 0 0 8px var(--cyan-glow);
     }
@@ -353,7 +366,7 @@
 
     .dock-toggle-btn {
       position: absolute;
-      top: 16px;
+      bottom: 16px;
       left: 16px;
       z-index: 19;
       display: none;
@@ -410,7 +423,7 @@
 
     .filter-chip-count {
       font-size: 9px;
-      background: rgba(0,0,0,0.3);
+      background: rgba(0, 0, 0, 0.3);
       padding: 1px 4px;
       border-radius: 4px;
       color: var(--text-dim);
@@ -486,6 +499,7 @@
 
     /* Floating Viewport Toolbars (HUD) */
     .bottom-hud {
+      display: none !important;
       position: absolute;
       bottom: 20px;
       left: 50%;
@@ -526,11 +540,13 @@
       color: var(--text-dim);
     }
 
-    /* Zoom / Navigation floating controls */
+    /* Zoom / Navigation floating controls (Centered vertically on right edge) */
     .zoom-controls {
+      display: none !important;
       position: absolute;
       right: 20px;
-      bottom: 20px;
+      top: 50%;
+      transform: translateY(-50%);
       z-index: 25;
       display: flex;
       flex-direction: column;
@@ -564,28 +580,92 @@
       box-shadow: 0 0 8px var(--cyan-glow);
     }
 
-    /* Right Entity Inspector Drawer */
-    .details-drawer {
+    /* Floating Split Panels for Entity Inspection */
+    .floating-panel {
       position: absolute;
-      top: 16px;
       right: 16px;
-      bottom: 16px;
-      width: 380px;
+      width: 390px;
+      max-width: calc(100vw - 32px);
       z-index: 30;
       background: var(--bg-card);
       backdrop-filter: blur(24px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      transform: translateX(420px);
-      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      transform: translateX(430px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.3s ease;
+      opacity: 0;
+      pointer-events: none;
     }
 
-    .details-drawer.open {
+    .floating-panel.open {
       transform: translateX(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    /* 1. Top Floating Box: Topic & GIST (Sizes dynamically to content, zero scrollbar) */
+    .floating-top-box {
+      top: 16px;
+      height: auto;
+      max-height: none;
+      display: flex;
+      flex-direction: column;
+      overflow: visible;
+    }
+
+    .floating-top-box .drawer-body {
+      padding: 12px 18px 16px;
+      overflow: visible;
+      flex: none;
+    }
+
+    .floating-top-box,
+    .floating-top-box * {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    .floating-top-box::-webkit-scrollbar,
+    .floating-top-box *::-webkit-scrollbar {
+      display: none !important;
+      width: 0 !important;
+      height: 0 !important;
+    }
+
+    /* 2. Bottom Floating Box: ASK AI & PaperLens */
+    .floating-bottom-box {
+      bottom: 16px;
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    /* 3. Floating Interconnected Entities (Above Controls on the left) */
+    .floating-connected-box {
+      position: absolute;
+      bottom: 64px;
+      left: 16px;
+      width: 295px;
+      z-index: 24;
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      display: none;
+    }
+
+    .floating-connected-box.visible {
+      display: block;
+    }
+
+    .floating-connected-box .connected-entities-list {
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 8px;
     }
 
     .drawer-header {
@@ -658,12 +738,13 @@
 
     .drawer-description {
       font-size: 13px;
-      line-height: 1.6;
-      color: var(--text-muted);
+      line-height: 1.68;
+      color: var(--text-main);
       background: rgba(255, 255, 255, 0.03);
-      padding: 12px;
+      padding: 14px 16px;
       border-radius: var(--radius-sm);
       border: 1px solid var(--border-subtle);
+      letter-spacing: 0.15px;
     }
 
     .drawer-stats-grid {
@@ -713,16 +794,187 @@
 
     .connected-item:hover {
       border-color: var(--cyan);
-      background: rgba(0, 240, 255, 0.05);
+      background: rgba(0, 240, 255, 0.08);
+      transform: translateX(2px);
     }
 
     .conn-edge-label {
-      font-size: 10px;
-      font-family: var(--font-mono);
+      display: none !important;
+    }
+
+    /* Dotted Add Node for Domain Expansion */
+    .add-node-dotted-ring {
+      stroke-dasharray: 6, 4;
+      animation: marchDotted 1.5s linear infinite;
+      transform: none !important;
+    }
+
+    @keyframes marchDotted {
+      from {
+        stroke-dashoffset: 0;
+      }
+
+      to {
+        stroke-dashoffset: 20;
+      }
+    }
+
+    .add-node-group {
+      cursor: pointer;
+    }
+
+    .add-node-group:hover .add-node-dotted-ring {
+      stroke: #38bdf8;
+      stroke-width: 2.6px;
+      filter: drop-shadow(0 0 8px rgba(0, 240, 255, 0.8));
+    }
+
+    .add-node-group:hover circle:nth-of-type(2) {
+      fill: rgba(0, 240, 255, 0.38);
+      stroke: #ffffff;
+    }
+
+    .add-node-group:hover text {
+      fill: #ffffff;
+    }
+
+    .badge-reset-isolation {
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 3px 10px;
+      border-radius: 12px;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid var(--cyan);
+      color: var(--cyan);
+      font-size: 11px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      transition: all 0.2s ease;
+      margin-left: 10px;
+    }
+
+    .badge-reset-isolation:hover {
+      background: rgba(0, 240, 255, 0.25);
+      color: #ffffff;
+      box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+
+    /* Interconnected Entities Dropdown */
+    .drawer-dropdown {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      background: rgba(255, 255, 255, 0.02);
+      overflow: hidden;
+      transition: all 0.25s ease;
+      margin-top: 10px;
+    }
+
+    .drawer-dropdown-summary {
+      padding: 10px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      cursor: pointer;
+      user-select: none;
+      background: var(--bg-surface-elevated);
+      transition: background 0.2s, color 0.2s;
+    }
+
+    .drawer-dropdown-summary:hover {
+      background: rgba(0, 240, 255, 0.08);
+      color: var(--cyan);
+    }
+
+    .drawer-dropdown-summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .dropdown-chevron {
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       color: var(--text-dim);
-      background: rgba(0, 0, 0, 0.3);
-      padding: 2px 6px;
-      border-radius: 4px;
+    }
+
+    .drawer-dropdown[open] .dropdown-chevron {
+      transform: rotate(180deg);
+      color: var(--cyan);
+    }
+
+    .drawer-dropdown .connected-entities-list {
+      padding: 10px;
+      max-height: 200px;
+      overflow-y: auto;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    /* Drawer AI Chatbot & Deep Search Shortcuts */
+    .drawer-ai-shortcuts {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 10px 12px;
+      background: rgba(255, 255, 255, 0.025);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
+    .drawer-ai-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-dim);
+    }
+
+    .ai-icons-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      justify-content: space-between;
+    }
+
+    .ai-icon-btn {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 7px 2px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      text-decoration: none;
+      font-size: 10px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+
+    .ai-icon-btn:hover {
+      background: rgba(0, 240, 255, 0.12);
+      border-color: var(--cyan);
+      color: #ffffff;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 240, 255, 0.25);
+    }
+
+    .ai-icon-btn svg {
+      transition: transform 0.2s ease;
+    }
+
+    .ai-icon-btn:hover svg {
+      transform: scale(1.15);
+      color: var(--cyan);
     }
 
     .drawer-footer {
@@ -730,7 +982,8 @@
       border-top: 1px solid var(--border-subtle);
       background: rgba(0, 0, 0, 0.15);
       display: flex;
-      gap: 8px;
+      flex-direction: column;
+      gap: 10px;
     }
 
     /* Modal for Custom Data Input / Modeling */
@@ -883,9 +1136,17 @@
     }
 
     @keyframes pulseAnimation {
-      0% { r: 16; }
-      50% { r: 21; }
-      100% { r: 16; }
+      0% {
+        r: 16;
+      }
+
+      50% {
+        r: 21;
+      }
+
+      100% {
+        r: 16;
+      }
     }
 
     .node-circle.highlighted {
@@ -901,32 +1162,54 @@
 
     .node-label {
       font-family: var(--font-sans);
-      font-size: 11px;
-      font-weight: 500;
-      fill: var(--text-main);
+      font-size: 12px;
+      font-weight: 600;
+      fill: #ffffff;
+      paint-order: stroke fill;
+      stroke: #030712;
+      stroke-width: 4px;
+      stroke-linejoin: round;
+      stroke-linecap: round;
+      letter-spacing: 0.2px;
       pointer-events: none;
-      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
-      transition: opacity 0.2s, font-weight 0.2s;
+      transition: opacity 0.2s, font-size 0.2s, fill 0.2s;
+      user-select: none;
     }
 
     .node-label.dimmed {
-      opacity: 0.15;
+      opacity: 0.22;
     }
 
     .node-label.highlighted {
       font-weight: 700;
-      font-size: 13px;
+      font-size: 14px;
       fill: var(--cyan);
+      stroke: #000000;
+      stroke-width: 5px;
+      filter: drop-shadow(0 0 6px rgba(0, 240, 255, 0.65));
+    }
+
+    /* Enhanced Label Visibility Modes */
+    .labels-large .node-label {
+      font-size: 14.5px !important;
+      font-weight: 700 !important;
+      stroke-width: 4.8px !important;
+    }
+
+    .labels-large .node-label.highlighted {
+      font-size: 16.5px !important;
+      stroke-width: 5.5px !important;
     }
 
     .link-label-group {
+      display: none !important;
       pointer-events: none;
-      transition: opacity 0.2s ease;
       opacity: 0;
     }
 
     .link-label-group.visible {
-      opacity: 1;
+      display: none !important;
+      opacity: 0;
     }
 
     .link-label-bg {
@@ -955,8 +1238,17 @@
     }
 
     @keyframes spawnGlow {
-      0% { filter: drop-shadow(0 0 18px #a855f7); stroke: #c084fc; stroke-width: 4px; }
-      100% { filter: none; stroke: #ffffff; stroke-width: 2px; }
+      0% {
+        filter: drop-shadow(0 0 18px #a855f7);
+        stroke: #c084fc;
+        stroke-width: 4px;
+      }
+
+      100% {
+        filter: none;
+        stroke: #ffffff;
+        stroke-width: 2px;
+      }
     }
 
     /* Paper citation pill in header */
@@ -990,10 +1282,6 @@
       justify-content: space-between;
     }
 
-    #btn-theme-toggle{
-      visibility: hidden;
-    }
-
     .pmc-link {
       color: var(--cyan);
       text-decoration: none;
@@ -1022,10 +1310,12 @@
       pointer-events: none;
       transition: opacity 0.3s ease;
     }
+
     .synthesis-overlay.visible {
       opacity: 1;
       pointer-events: auto;
     }
+
     .synthesis-modal {
       width: 90%;
       max-width: 520px;
@@ -1033,10 +1323,11 @@
       border: 1px solid rgba(0, 240, 255, 0.3);
       border-radius: var(--radius-lg);
       padding: 32px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0, 240, 255, 0.2);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), 0 0 30px rgba(0, 240, 255, 0.2);
       text-align: center;
       position: relative;
     }
+
     .synthesis-radar {
       width: 72px;
       height: 72px;
@@ -1046,6 +1337,7 @@
       align-items: center;
       justify-content: center;
     }
+
     .radar-pulse {
       position: absolute;
       inset: 0;
@@ -1054,20 +1346,26 @@
       opacity: 0.8;
       animation: radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
     }
+
     .radar-pulse.outer {
       animation-delay: 0.8s;
       border-color: var(--purple);
     }
+
     @keyframes radarPing {
-      75%, 100% {
+
+      75%,
+      100% {
         transform: scale(2);
         opacity: 0;
       }
     }
+
     .radar-icon {
       font-size: 28px;
       z-index: 2;
     }
+
     .synthesis-badge {
       display: inline-flex;
       align-items: center;
@@ -1082,23 +1380,27 @@
       color: var(--cyan);
       margin-bottom: 12px;
     }
+
     .synthesis-title {
       font-family: var(--font-display);
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 6px;
     }
+
     .synthesis-desc {
       font-size: 13px;
       color: var(--text-muted);
       margin-bottom: 24px;
     }
+
     .synthesis-steps {
       display: flex;
       flex-direction: column;
       gap: 12px;
       text-align: left;
     }
+
     .synthesis-step {
       display: flex;
       align-items: flex-start;
@@ -1109,14 +1411,17 @@
       border: 1px solid var(--border-subtle);
       transition: all 0.3s ease;
     }
+
     .synthesis-step.active {
       background: rgba(0, 240, 255, 0.08);
       border-color: rgba(0, 240, 255, 0.4);
     }
+
     .synthesis-step.completed {
       background: rgba(16, 185, 129, 0.08);
       border-color: rgba(16, 185, 129, 0.4);
     }
+
     .step-icon {
       width: 24px;
       height: 24px;
@@ -1130,19 +1435,23 @@
       flex-shrink: 0;
       margin-top: 2px;
     }
+
     .synthesis-step.active .step-icon {
       background: var(--cyan);
       color: #060913;
     }
+
     .synthesis-step.completed .step-icon {
       background: var(--emerald);
       color: #ffffff;
     }
+
     .step-name {
       font-size: 13px;
       font-weight: 600;
       color: var(--text-main);
     }
+
     .step-sub {
       font-size: 11px;
       color: var(--text-dim);
@@ -1154,19 +1463,23 @@
       .search-box {
         display: none;
       }
+
       .controls-dock {
         width: calc(100vw - 32px);
         max-height: 50vh;
       }
+
       .details-drawer {
         width: calc(100vw - 32px);
       }
+
       .dataset-select {
         min-width: 180px;
       }
     }
   </style>
 </head>
+
 <body>
 
   <!-- Top Navigation -->
@@ -1176,7 +1489,8 @@
         <div class="brand-logo-icon">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
             <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5l-2.8 2.8m-7.4 7.4l-2.8 2.8m0-13l2.8 2.8m7.4 7.4l2.8 2.8"></path>
+            <path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5l-2.8 2.8m-7.4 7.4l-2.8 2.8m0-13l2.8 2.8m7.4 7.4l2.8 2.8">
+            </path>
           </svg>
         </div>
         <div class="brand-text">
@@ -1196,7 +1510,8 @@
         <select id="dataset-selector" class="dataset-select" aria-label="Select Graph Dataset">
           <option value="combined">🔬 Multi-Paper Synthesis (PMC8259047 + PMC11462910 + PMC8293341)</option>
           <option value="pmc8259047">📑 PMC8259047: 30 Lateral Flow Immunoassays (COVID-19 Immune Response)</option>
-          <option value="pmc11462910">📑 PMC11462910: Rapid Antigen Tests vs RT-PCR (Diagnostic Accuracy Meta-Analysis)</option>
+          <option value="pmc11462910">📑 PMC11462910: Rapid Antigen Tests vs RT-PCR (Diagnostic Accuracy Meta-Analysis)
+          </option>
           <option value="pmc8293341">📑 PMC8293341: Innate Immunity in Children &amp; ACE2 Receptor Expression</option>
           <option value="custom">✨ Custom User Graph Data...</option>
         </select>
@@ -1206,13 +1521,16 @@
     <!-- Center Search -->
     <div class="nav-center" style="position: relative;">
       <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
           <circle cx="11" cy="11" r="8"></circle>
           <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
         </svg>
-        <input type="text" id="node-search" class="search-input" placeholder="Search genes, assays, papers..." autocomplete="off" />
-        
-        <button class="advanced-search-btn" id="adv-search-toggle" title="Advanced Search" style="margin-left: 4px; padding: 4px; position: absolute; right: 28px;">
+        <input type="text" id="node-search" class="search-input" placeholder="Search genes, assays, papers..."
+          autocomplete="off" />
+
+        <button class="advanced-search-btn" id="adv-search-toggle" title="Advanced Search"
+          style="margin-left: 4px; padding: 4px; position: absolute; right: 28px;">
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <line x1="4" y1="21" x2="4" y2="14"></line>
             <line x1="4" y1="10" x2="4" y2="3"></line>
@@ -1240,17 +1558,17 @@
             </svg>
           </button>
         </div>
-        
+
         <div class="adv-form-group">
           <label for="adv-all-words">Find articles with all of the words</label>
           <input type="text" id="adv-all-words" placeholder="e.g. perovskite solar efficiency">
         </div>
-        
+
         <div class="adv-form-group">
           <label for="adv-exact">With the exact phrase</label>
           <input type="text" id="adv-exact" placeholder='e.g. "crispr cas9"'>
         </div>
-        
+
         <div class="adv-form-row">
           <div class="adv-form-group">
             <label for="adv-any">With at least one of the words</label>
@@ -1261,7 +1579,7 @@
             <input type="text" id="adv-none" placeholder="e.g. oxide">
           </div>
         </div>
-        
+
         <div class="adv-form-row">
           <div class="adv-form-group">
             <label for="adv-where">Where my words occur</label>
@@ -1271,7 +1589,7 @@
             </select>
           </div>
         </div>
-        
+
         <div class="adv-form-row">
           <div class="adv-form-group">
             <label for="adv-author">Return articles authored by</label>
@@ -1282,7 +1600,7 @@
             <input type="text" id="adv-source" placeholder='e.g. "Nature Chemistry"'>
           </div>
         </div>
-        
+
         <div class="adv-form-row">
           <div class="adv-form-group">
             <label for="adv-year-start">Date Range (Year)</label>
@@ -1293,7 +1611,7 @@
             <input type="text" id="adv-year-end" placeholder="End (e.g. 2025)">
           </div>
         </div>
-        
+
         <div class="adv-form-actions">
           <button class="adv-btn-clear" id="adv-clear-btn">Clear</button>
           <button class="adv-btn-apply" id="adv-apply-btn">Apply Constraints</button>
@@ -1303,9 +1621,9 @@
 
     <!-- Right Actions -->
     <div class="nav-right">
-
-      
-      <button id="btn-gemini-modal" class="btn" style="background: rgba(139, 92, 246, 0.16); border: 1px solid rgba(139, 92, 246, 0.45); color: #c4b5fd;" title="Configure Google Gemini AI Key &amp; Settings">
+      <button id="btn-gemini-modal" class="btn"
+        style="display: none !important;background: rgba(139, 92, 246, 0.16); border: 1px solid rgba(139, 92, 246, 0.45); color: #c4b5fd;"
+        title="Configure Google Gemini AI Key &amp; Settings">
         <span style="font-size:13px;">✨</span>
         <span id="gemini-nav-label">Gemini AI</span>
       </button>
@@ -1326,8 +1644,10 @@
         <span>Export</span>
       </button>
 
-      <button id="btn-theme-toggle" class="btn btn-icon-only" title="Toggle Dark/Light Mode">
-        <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+      <button id="btn-theme-toggle" class="btn btn-icon-only" title="Toggle Dark/Light Mode"
+        style="display: none !important;">
+        <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2" style="display:none;">
           <circle cx="12" cy="12" r="5"></circle>
           <line x1="12" y1="1" x2="12" y2="3"></line>
           <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -1338,18 +1658,19 @@
           <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
           <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
         </svg>
-        <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2">
           <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
         </svg>
       </button>
 
-      <a href="../paper-analyzer/index.html" class="btn btn-primary" title="Launch Deep Research Paper Analyzer (PaperLens)" style="background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2)); border-color: var(--cyan); color: var(--cyan);">
+      <!-- <a href="../paper-analyzer/index.html" class="btn btn-primary" title="Launch Deep Research Paper Analyzer (PaperLens)" style="background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.2)); border-color: var(--cyan); color: var(--cyan);">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
           <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
         </svg>
         <span>PaperLens Analyzer ↗</span>
-      </a>
+      </a> -->
 
       <a href="../index.html" class="btn" title="Back to BioSearch Home">
         <span>&larr; BioSearch</span>
@@ -1359,7 +1680,7 @@
 
   <!-- Studio Main -->
   <main class="studio-layout">
-    
+
     <!-- Dock Toggle Button when closed -->
     <button id="btn-show-dock" class="btn btn-primary dock-toggle-btn visible" title="Open Controls Dock">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1447,6 +1768,21 @@
         </div>
       </div>
 
+      <!-- Node Text Visibility Controls -->
+      <div>
+        <div class="section-label">
+          <span>Node Text Visibility</span>
+        </div>
+        <div class="action-button-grid">
+          <button id="btn-label-standard" class="btn active" title="Standard high-contrast labels">
+            Standard (12px)
+          </button>
+          <button id="btn-label-large" class="btn" title="Enlarge all node labels for maximum readability">
+            Large Text (15px)
+          </button>
+        </div>
+      </div>
+
       <!-- Quick Action Utilities -->
       <div class="action-button-grid">
         <button id="btn-toggle-sim" class="btn" title="Pause or restart simulation forces">
@@ -1465,8 +1801,10 @@
         </button>
       </div>
 
-      <div style="font-size: 11px; color: var(--text-dim); line-height: 1.4; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
-        💡 <strong>Tip:</strong> Click any node to open its full evidence drawer. Drag nodes to pin them in 2D space. Hover over edges to inspect scientific relationships.
+      <div
+        style="font-size: 11px; color: var(--text-dim); line-height: 1.4; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+        💡 <strong>Tip:</strong> Click any node to open its full evidence drawer. Drag nodes to pin them in 2D space.
+        Hover over edges to inspect scientific relationships.
       </div>
     </aside>
 
@@ -1520,81 +1858,116 @@
       <button id="btn-zoom-reset" class="zoom-btn" title="Reset zoom (100%)">1:1</button>
     </div>
 
-    <!-- Entity Details Side Drawer -->
-    <aside id="details-drawer" class="details-drawer">
+    <!-- Floating Interconnected Entities (Shifted to Left Side Above Controls, closed by default) -->
+    <details id="drawer-conn-dropdown" class="drawer-dropdown floating-connected-box">
+      <summary class="drawer-dropdown-summary">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="18" cy="5" r="3"></circle>
+            <circle cx="6" cy="12" r="3"></circle>
+            <circle cx="18" cy="19" r="3"></circle>
+            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+          </svg>
+          <span>Interconnected Entities (<span id="drawer-conn-count">0</span>)</span>
+        </div>
+        <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </summary>
+      <div id="drawer-connections-list" class="connected-entities-list">
+        <!-- Dynamic connected items -->
+      </div>
+    </details>
+
+    <!-- 1. Top Floating Box: Topic & GIST -->
+    <aside id="floating-top-box" class="floating-panel floating-top-box">
       <div class="drawer-header">
         <div class="drawer-title-group">
-          <span id="drawer-type-badge" class="drawer-badge" style="background: rgba(0, 240, 255, 0.15); color: var(--cyan);">
+          <span id="drawer-type-badge" class="drawer-badge"
+            style="background: rgba(0, 240, 255, 0.15); color: var(--cyan);">
             Entity
           </span>
           <h2 id="drawer-entity-name" class="drawer-title">Entity Name</h2>
         </div>
-        <button id="btn-close-drawer" class="drawer-close-btn" title="Close drawer">&times;</button>
+        <button id="btn-close-drawer" class="drawer-close-btn" title="Close topic details">&times;</button>
       </div>
 
       <div class="drawer-body">
         <div>
-          <div class="drawer-section-title">Scientific Overview &amp; Context</div>
+          <div class="drawer-section-title">Topic Explanation (Gist)</div>
           <div id="drawer-entity-desc" class="drawer-description">
             Description from publication...
           </div>
         </div>
+      </div>
+    </aside>
 
-        <div class="drawer-stats-grid">
-          <div class="drawer-stat-card">
-            <div id="drawer-entity-degree" class="drawer-stat-val">0</div>
-            <div class="drawer-stat-lbl">Connected Edges</div>
-          </div>
-          <div class="drawer-stat-card">
-            <div id="drawer-entity-source" class="drawer-stat-val" style="font-size: 13px; font-family: var(--font-sans);">Primary</div>
-            <div class="drawer-stat-lbl">Literature Source</div>
-          </div>
+    <!-- 2. Bottom Floating Box: ASK AI & Deconstruct in PaperLens -->
+    <aside id="floating-bottom-box" class="floating-panel floating-bottom-box">
+      <!-- AI Chatbots & Deep Search Quick Access -->
+      <div class="drawer-ai-shortcuts" style="margin-bottom: 0;">
+        <div class="drawer-ai-header">
+          <span>Ask AI &amp; Research</span>
+          <span style="font-size: 10px; color: var(--cyan); text-transform: none;">Instant Topic Prompt</span>
         </div>
-
-        <div>
-          <div class="drawer-section-title">Interconnected Relationships (<span id="drawer-conn-count">0</span>)</div>
-          <div id="drawer-connections-list" class="connected-entities-list">
-            <!-- Dynamic connected items -->
-          </div>
+        <div class="ai-icons-row">
+          <a id="ai-chatgpt" href="https://chatgpt.com/" target="_blank" rel="noopener noreferrer" class="ai-icon-btn" title="Ask ChatGPT about this entity">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M22.28 9.87a5.98 5.98 0 0 0-.49-4.83 6.07 6.07 0 0 0-4.41-3.1 5.99 5.99 0 0 0-5.02 1.34 6.02 6.02 0 0 0-4.06.63 6.06 6.06 0 0 0-3.3 3.96 6.03 6.03 0 0 0-.96 4.96 6.05 6.05 0 0 0 .5 4.83 6.08 6.08 0 0 0 4.41 3.1 6 6 0 0 0 5.02-1.34 6.02 6.02 0 0 0 4.06-.63 6.06 6.06 0 0 0 3.3-3.96 6.03 6.03 0 0 0 .95-4.96zm-9.15 11.23a4.7 4.7 0 0 1-3.05-.74l.15-.09 5.07-2.93a.7.7 0 0 0 .36-.6v-7.16l2.15 1.24a.07.07 0 0 1 .04.05v6.07a4.73 4.73 0 0 1-4.72 4.16zm-7.6-3.83a4.67 4.67 0 0 1-.58-3.09l.15.09 5.07 2.93a.69.69 0 0 0 .7 0l6.2-3.58v2.48a.07.07 0 0 1-.03.06l-5.26 3.03a4.73 4.73 0 0 1-6.25-1.92zm-1.1-8.58a4.7 4.7 0 0 1 2.47-2.35l-.01.17v5.86a.7.7 0 0 0 .35.6l6.2 3.58-2.15 1.25a.07.07 0 0 1-.07 0l-5.26-3.04a4.73 4.73 0 0 1-1.53-6.07zm14.16 2.37-6.2-3.58 2.15-1.24a.07.07 0 0 1 .07 0l5.26 3.03a4.73 4.73 0 0 1 1.53 6.07 4.7 4.7 0 0 1-2.47 2.35v-6.03a.7.7 0 0 0-.34-.6zm2.34-2.85a4.67 4.67 0 0 1 .58 3.09l-.15-.09-5.07-2.93a.7.7 0 0 0-.7 0l-6.2 3.58v-2.48a.07.07 0 0 1 .03-.06l5.26-3.03a4.73 4.73 0 0 1 6.25 1.92zm-9.35 1.34 2.8-1.62 2.8 1.62v3.23l-2.8 1.62-2.8-1.62z"/>
+            </svg>
+            <span>ChatGPT</span>
+          </a>
+          <a id="ai-perplexity" href="https://www.perplexity.ai/" target="_blank" rel="noopener noreferrer" class="ai-icon-btn" title="Search Perplexity AI for cited scientific answers">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M4.93 19.07l14.14-14.14"/>
+              <circle cx="12" cy="12" r="3" fill="currentColor"/>
+            </svg>
+            <span>Perplexity</span>
+          </a>
+          <a id="ai-claude" href="https://claude.ai/" target="_blank" rel="noopener noreferrer" class="ai-icon-btn" title="Ask Claude about this entity">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor">
+              <path d="M12 2l2.4 6.6L21 11l-5.6 4.4L17 22l-5-3.8L7 22l1.6-6.6L3 11l6.6-2.4z"/>
+            </svg>
+            <span>Claude</span>
+          </a>
+          <a id="ai-gemini" href="https://gemini.google.com/app" target="_blank" rel="noopener noreferrer" class="ai-icon-btn" title="Ask Google Gemini about this entity">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M12 3c0 4.97-4.03 9-9 9 4.97 0 9 4.03 9 9 0-4.97 4.03-9 9-9-4.97 0-9-4.03-9-9z"/>
+            </svg>
+            <span>Gemini</span>
+          </a>
+          <a id="ai-pubmed" href="https://pubmed.ncbi.nlm.nih.gov/" target="_blank" rel="noopener noreferrer" class="ai-icon-btn" title="Search PubMed biomedical literature">
+            <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>
+              <line x1="9" y1="7" x2="15" y2="7"/>
+              <line x1="9" y1="11" x2="13" y2="11"/>
+            </svg>
+            <span>PubMed</span>
+          </a>
         </div>
       </div>
 
-      <div class="drawer-footer" style="flex-wrap: wrap; gap: 8px;">
-        <button id="btn-focus-node" class="btn btn-primary" style="flex: 1;" title="Center camera on this node">
-          Focus on Canvas
-        </button>
-        <button id="btn-isolate-node" class="btn" style="flex: 1;" title="Isolate connected subgraph">
-          Isolate Cluster
-        </button>
-        <button id="btn-expand-node-subgraph" class="btn" style="width: 100%; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(139, 92, 246, 0.16); color: #c084fc; border: 1px solid rgba(139, 92, 246, 0.45); font-weight: 600;" title="Deploy interconnected sub-graph and blast surrounding nodes (or double-click node on canvas)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="12" cy="12" r="3"></circle>
-            <path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5l-2.8 2.8m-7.4 7.4l-2.8 2.8m0-13l2.8 2.8m7.4 7.4l2.8 2.8"></path>
-          </svg>
-          <span id="btn-expand-subgraph-text">&#9889; Deploy Sub-Graph (Double-Click)</span>
-        </button>
-        <button id="btn-open-website" class="btn" style="width: 100%; display: none; background: rgba(56, 189, 248, 0.2); color: #38bdf8; border: 1px solid rgba(56, 189, 248, 0.4); text-align: center; justify-content: center; align-items: center; gap: 6px;" title="Open original website / scientific sources">
+      <div style="display: flex; flex-direction: column; gap: 8px;">
+        <a id="btn-open-original-link" href="https://pmc.ncbi.nlm.nih.gov/" target="_blank" rel="noopener" class="btn"
+          style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle); color: var(--text-main); font-size: 13px; font-weight: 500; padding: 9px 12px; border-radius: 8px; transition: all 0.2s;"
+          title="Open Original Scientific Source / Publication">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
             <polyline points="15 3 21 3 21 9"></polyline>
             <line x1="10" y1="14" x2="21" y2="3"></line>
           </svg>
-          <span id="btn-open-website-text">Open Website</span>
-        </button>
-        <a id="btn-open-paper-analyzer" href="../paper-analyzer/index.html" class="btn" style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(0, 240, 255, 0.12); border-color: var(--cyan); color: var(--cyan);" title="Deep Research Paper Analysis (PaperLens)">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <span id="btn-original-link-text">Open Original Source ↗</span>
+        </a>
+        <a id="btn-open-paper-analyzer" href="../paper-analyzer/index.html" class="btn btn-primary"
+          style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 14px; font-size: 13px; font-weight: 600; border-radius: 8px; box-shadow: 0 4px 14px rgba(0, 240, 255, 0.25);"
+          title="Deep Research Paper Analysis (PaperLens)">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
           </svg>
-          <span>Deconstruct in PaperLens ↗</span>
-        </a>
-        <a id="btn-open-original-link" href="https://pmc.ncbi.nlm.nih.gov/" target="_blank" rel="noopener" class="btn" style="width: 100%; text-align: center; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 6px; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-subtle); color: var(--text-muted); font-size: 12px;" title="Open Original Scientific Source / Publication">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
-            <polyline points="15 3 21 3 21 9"></polyline>
-            <line x1="10" y1="14" x2="21" y2="3"></line>
-          </svg>
-          <span id="btn-original-link-text">Open Original Paper Source ↗</span>
+          <span id="btn-paper-analyzer-text">Deconstruct in PaperLens ↗</span>
         </a>
       </div>
     </aside>
@@ -1621,11 +1994,14 @@
         <!-- Live PMC Search Tab -->
         <div id="tab-content-live-pmc">
           <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
-            Search PubMed Central / Europe PMC directly across millions of open-access scientific papers. The engine automatically parses titles, abstracts, and MeSH terms to build an interactive entity relationship graph.
+            Search PubMed Central / Europe PMC directly across millions of open-access scientific papers. The engine
+            automatically parses titles, abstracts, and MeSH terms to build an interactive entity relationship graph.
           </p>
           <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 12px;">
             <div style="display:flex; gap:10px;">
-              <input type="text" id="live-search-topic" class="search-input" style="flex:1; padding:8px 14px;" placeholder="Enter scientific topic (e.g. CRISPR Cas9 off-target, ACE2 pediatric COVID, mRNA vaccine)..." value="CRISPR Cas9 gene editing therapeutics" />
+              <input type="text" id="live-search-topic" class="search-input" style="flex:1; padding:8px 14px;"
+                placeholder="Enter scientific topic (e.g. CRISPR Cas9 off-target, ACE2 pediatric COVID, mRNA vaccine)..."
+                value="CRISPR Cas9 gene editing therapeutics" />
               <button id="btn-run-live-search" class="btn btn-primary" style="white-space:nowrap; padding:8px 16px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                   <circle cx="11" cy="11" r="8"></circle>
@@ -1634,10 +2010,12 @@
                 <span>Fetch &amp; Generate Graph</span>
               </button>
             </div>
-            <div style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--text-dim);">
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--text-dim);">
               <div style="display:flex; gap:6px; align-items:center;">
                 <span>Papers to retrieve:</span>
-                <select id="live-search-limit" class="dataset-select" style="min-width:70px; padding:3px 6px; font-size:11px;">
+                <select id="live-search-limit" class="dataset-select"
+                  style="min-width:70px; padding:3px 6px; font-size:11px;">
                   <option value="3">3 papers</option>
                   <option value="5" selected>5 papers</option>
                   <option value="8">8 papers</option>
@@ -1645,29 +2023,37 @@
               </div>
               <div style="display:flex; gap:6px;">
                 <span>Quick Topics:</span>
-                <a href="#" class="live-topic-quick" data-q="PMC8259047 OR PMC11462910 OR PMC8293341" style="color:var(--cyan); text-decoration:none;">The 3 PMC Papers</a> &bull;
-                <a href="#" class="live-topic-quick" data-q="mRNA vaccine lipid nanoparticle delivery" style="color:var(--cyan); text-decoration:none;">mRNA LNP</a> &bull;
-                <a href="#" class="live-topic-quick" data-q="CAR-T cell exhaustion immunotherapy" style="color:var(--cyan); text-decoration:none;">CAR-T Exhaustion</a>
+                <a href="#" class="live-topic-quick" data-q="PMC8259047 OR PMC11462910 OR PMC8293341"
+                  style="color:var(--cyan); text-decoration:none;">The 3 PMC Papers</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="mRNA vaccine lipid nanoparticle delivery"
+                  style="color:var(--cyan); text-decoration:none;">mRNA LNP</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="CAR-T cell exhaustion immunotherapy"
+                  style="color:var(--cyan); text-decoration:none;">CAR-T Exhaustion</a>
               </div>
             </div>
 
             <!-- Gemini AI Integration Setting -->
-            <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(139, 92, 246, 0.08); border:1px solid rgba(139, 92, 246, 0.25); padding:8px 12px; border-radius:var(--radius-sm); font-size:12px;">
+            <div
+              style="display:flex; align-items:center; justify-content:space-between; background:rgba(139, 92, 246, 0.08); border:1px solid rgba(139, 92, 246, 0.25); padding:8px 12px; border-radius:var(--radius-sm); font-size:12px;">
               <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
                 <input type="checkbox" id="check-use-gemini" checked style="accent-color:var(--purple);" />
                 <span>Extract extra nodes &amp; relations with <strong>Gemini API</strong></span>
               </label>
-              <a href="#" id="link-open-gemini-settings" style="color:var(--cyan); text-decoration:none; font-size:11px;">Configure Gemini Key &rarr;</a>
+              <a href="#" id="link-open-gemini-settings"
+                style="color:var(--cyan); text-decoration:none; font-size:11px;">Configure Gemini Key &rarr;</a>
             </div>
           </div>
-          <div id="live-search-log" style="font-family:var(--font-mono); font-size:11px; background:#080c16; border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px; height:120px; overflow-y:auto; color:var(--text-muted); line-height:1.5;">
+          <div id="live-search-log"
+            style="font-family:var(--font-mono); font-size:11px; background:#080c16; border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px; height:120px; overflow-y:auto; color:var(--text-muted); line-height:1.5;">
             Ready to query PubMed Central & Europe PMC REST API...
           </div>
         </div>
 
         <div id="tab-content-triplets" style="display: none;">
           <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
-            Enter one entity relationship per line in the format: <code>Subject -> Object : Relationship</code> or <code>Subject | Object | Relationship</code>. The model will automatically construct and compute node degrees, categories, and forces!
+            Enter one entity relationship per line in the format: <code>Subject -> Object : Relationship</code> or
+            <code>Subject | Object | Relationship</code>. The model will automatically construct and compute node
+            degrees, categories, and forces!
           </p>
           <textarea id="input-triplets" class="code-editor-area" placeholder="SARS-CoV-2 -> Spike Protein : Encodes
 Spike Protein -> ACE2 Receptor : Binds with high affinity
@@ -1680,7 +2066,8 @@ Remdesivir -> RNA-Dependent RNA Polymerase : Inhibits replication"></textarea>
           <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
             Full JSON structure with custom node categories, colors, and relationship labels:
           </p>
-          <textarea id="input-json" class="code-editor-area" placeholder="{\n  &quot;nodes&quot;: [\n    { &quot;id&quot;: &quot;Node1&quot;, &quot;name&quot;: &quot;Node 1&quot;, &quot;category&quot;: &quot;Protein&quot; },\n    { &quot;id&quot;: &quot;Node2&quot;, &quot;name&quot;: &quot;Node 2&quot;, &quot;category&quot;: &quot;Disease&quot; }\n  ],\n  &quot;links&quot;: [\n    { &quot;source&quot;: &quot;Node1&quot;, &quot;target&quot;: &quot;Node2&quot;, &quot;relationship&quot;: &quot;Associated with&quot; }\n  ]\n}"></textarea>
+          <textarea id="input-json" class="code-editor-area"
+            placeholder="{\n  &quot;nodes&quot;: [\n    { &quot;id&quot;: &quot;Node1&quot;, &quot;name&quot;: &quot;Node 1&quot;, &quot;category&quot;: &quot;Protein&quot; },\n    { &quot;id&quot;: &quot;Node2&quot;, &quot;name&quot;: &quot;Node 2&quot;, &quot;category&quot;: &quot;Disease&quot; }\n  ],\n  &quot;links&quot;: [\n    { &quot;source&quot;: &quot;Node1&quot;, &quot;target&quot;: &quot;Node2&quot;, &quot;relationship&quot;: &quot;Associated with&quot; }\n  ]\n}"></textarea>
         </div>
 
         <div id="tab-content-csv" style="display: none;">
@@ -1695,8 +2082,10 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
         <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
           <div style="display: flex; gap: 8px;">
-            <button id="btn-load-preset-biomed" class="btn" style="font-size: 11px;">Load Sample: Oncology &amp; Genes</button>
-            <button id="btn-load-preset-pharma" class="btn" style="font-size: 11px;">Load Sample: Drug Interactions</button>
+            <button id="btn-load-preset-biomed" class="btn" style="font-size: 11px;">Load Sample: Oncology &amp;
+              Genes</button>
+            <button id="btn-load-preset-pharma" class="btn" style="font-size: 11px;">Load Sample: Drug
+              Interactions</button>
           </div>
           <span style="font-size: 11px; color: var(--text-dim);" id="parse-status-msg"></span>
         </div>
@@ -1722,20 +2111,27 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       </div>
       <div class="modal-body" style="padding: 24px;">
         <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
-          When searching for a new research topic, BioSearch retrieves open-access publications from Europe PMC / PubMed and uses <strong>Google Gemini API</strong> to analyze the paper abstracts, automatically synthesizing additional biological entities (genes, viral targets, receptors, pathways, clinical metrics) and extracting scientific relationships.
+          When searching for a new research topic, BioSearch retrieves open-access publications from Europe PMC / PubMed
+          and uses <strong>Google Gemini API</strong> to analyze the paper abstracts, automatically synthesizing
+          additional biological entities (genes, viral targets, receptors, pathways, clinical metrics) and extracting
+          scientific relationships.
         </p>
 
-        <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: var(--radius-md); padding: 14px; margin-bottom: 20px;">
+        <div
+          style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: var(--radius-md); padding: 14px; margin-bottom: 20px;">
           <label style="display:block; font-size: 12px; font-weight: 600; color: #c4b5fd; margin-bottom: 8px;">
             Google Gemini API Key
           </label>
           <div style="display:flex; gap:8px;">
-            <input type="password" id="gemini-api-key-input" class="search-input" placeholder="AIzaSy..." style="flex:1;" />
-            <button id="btn-toggle-key-visibility" class="btn" style="padding:6px 12px;" title="Show/Hide Key">👁️</button>
+            <input type="password" id="gemini-api-key-input" class="search-input" placeholder="AIzaSy..."
+              style="flex:1;" />
+            <button id="btn-toggle-key-visibility" class="btn" style="padding:6px 12px;"
+              title="Show/Hide Key">👁️</button>
           </div>
           <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:11px;">
             <span id="gemini-key-status" style="color:var(--text-dim);">Stored locally in your browser</span>
-            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:var(--cyan); text-decoration:none;">
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener"
+              style="color:var(--cyan); text-decoration:none;">
               Get free Gemini API key at Google AI Studio &nearr;
             </a>
           </div>
@@ -1745,13 +2141,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
               <label for="gemini-model-input" style="font-size: 12px; font-weight: 600; color: #c4b5fd;">
                 Gemini Model
               </label>
-              <span id="gemini-model-status" style="font-size: 11px; color: var(--text-dim);">Default: gemini-3.1-flash-lite</span>
+              <span id="gemini-model-status" style="font-size: 11px; color: var(--text-dim);">Default:
+                gemini-3.1-flash-lite</span>
             </div>
-            <input type="text" id="gemini-model-input" class="search-input" value="gemini-3.1-flash-lite" placeholder="gemini-3.1-flash-lite" style="width:100%; font-family: monospace; font-size: 12px;" />
+            <input type="text" id="gemini-model-input" class="search-input" value="gemini-3.1-flash-lite"
+              placeholder="gemini-3.1-flash-lite" style="width:100%; font-family: monospace; font-size: 12px;" />
             <div style="display:flex; gap:8px; margin-top:8px; font-size:11px; align-items:center;">
               <span style="color:var(--text-dim);">Presets:</span>
-              <button type="button" class="gemini-model-preset-btn" data-model="gemini-3.1-flash-lite" style="background:rgba(139,92,246,0.18); border:1px solid rgba(139,92,246,0.4); color:#c4b5fd; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer;">gemini-3.1-flash-lite</button>
-              <button type="button" class="gemini-model-preset-btn" data-model="gemini-1.5-flash" style="background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer;">gemini-1.5-flash</button>
+              <button type="button" class="gemini-model-preset-btn" data-model="gemini-3.1-flash-lite"
+                style="background:rgba(139,92,246,0.18); border:1px solid rgba(139,92,246,0.4); color:#c4b5fd; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer;">gemini-3.1-flash-lite</button>
+              <button type="button" class="gemini-model-preset-btn" data-model="gemini-1.5-flash"
+                style="background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer;">gemini-1.5-flash</button>
             </div>
           </div>
         </div>
@@ -1782,7 +2182,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         <div class="radar-icon">🧬</div>
       </div>
       <div class="synthesis-badge">
-        <span class="badge-dot" style="width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);"></span>
+        <span class="badge-dot"
+          style="width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);"></span>
         <span id="synthesis-phase-tag">Europe PMC &amp; Gemini AI Knowledge Synthesis</span>
       </div>
       <h2 class="synthesis-title" id="synthesis-title">Building Knowledge Graph</h2>
@@ -1800,7 +2201,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           <div class="step-icon"><span>2</span></div>
           <div class="step-text">
             <div class="step-name">Gemini AI Entity &amp; Relationship Synthesis</div>
-            <div class="step-sub" id="synth-sub-2">Extracting biological nodes, targets, pathways &amp; mechanisms...</div>
+            <div class="step-sub" id="synth-sub-2">Extracting biological nodes, targets, pathways &amp; mechanisms...
+            </div>
           </div>
         </div>
         <div class="synthesis-step" id="synth-step-3">
@@ -1838,7 +2240,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     };
 
     // --- DATASETS EXTRACTED FROM THE 3 PMC PAPERS ---
-    
+
     // 1. PMC8259047: Lateral Flow Immunoassays for COVID-19 Immune Response (David et al.)
     const DATA_PMC8259047 = {
       meta: {
@@ -2037,6 +2439,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     let linkGroup = null;
     let nodeGroup = null;
     let labelGroup = null;
+    let addNodeLayer = null;
+    let addNodeLinkLayer = null;
     let zoomBehavior = null;
     let linkSelection = null;
     let labelSelection = null;
@@ -2045,6 +2449,13 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     let simulationActive = true;
     let sizingMode = 'degree'; // 'degree' or 'uniform'
     let selectedNode = null;
+    let isolatedNode = null;
+    let hasInitiallyIsolated = false;
+    let initialIsolatedClusterIds = new Set();
+    let expansionHistory = []; // Queue of { id, parentId, parentName, nodeIds: Set, linkKeys: Set }
+    const MAX_VISIBLE_EXPANSIONS = 3;
+    const hiddenExpansionNodeIds = new Set();
+    const hiddenExpansionLinkKeys = new Set();
     let selectedCategoryFilters = new Set();
     let searchTerm = "";
 
@@ -2084,7 +2495,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Filter definitions (glows, arrows)
       const defs = svg.append('defs');
-      
+
       // Marker for directed links
       defs.append('marker')
         .attr('id', 'arrow-marker')
@@ -2115,8 +2526,10 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       // Root zoomable group
       gRoot = svg.append('g').attr('class', 'g-root');
       linkGroup = gRoot.append('g').attr('class', 'links-layer');
+      addNodeLinkLayer = gRoot.append('g').attr('class', 'add-node-link-layer');
       labelGroup = gRoot.append('g').attr('class', 'link-labels-layer');
       nodeGroup = gRoot.append('g').attr('class', 'nodes-layer');
+      addNodeLayer = gRoot.append('g').attr('class', 'add-node-layer');
 
       // Zoom behavior
       zoomBehavior = d3.zoom()
@@ -2127,6 +2540,19 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       svg.call(zoomBehavior)
         .on('dblclick.zoom', null); // disable double-click zoom to avoid conflict with node actions
+
+      // Canvas background click clears temporary isolation and restores the original graph
+      function handleCanvasBackgroundClick(event) {
+        if (event.target && event.target.closest && event.target.closest('.node-group, .add-node-group, .floating-panel, .floating-connected-box, .controls-dock, .header-nav, .bottom-hud, .modal-backdrop, .modal-container, .badge-reset-isolation')) {
+          return;
+        }
+        clearIsolation();
+        closeDetailsDrawer();
+      }
+
+      svg.on('click', handleCanvasBackgroundClick);
+      const vp = document.getElementById('viewport-container');
+      if (vp) vp.addEventListener('click', handleCanvasBackgroundClick);
     }
 
     // --- DATA LOADING & ADAPTER ---
@@ -2146,12 +2572,12 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         const fcd = JSON.parse(JSON.stringify(fullCustomDataset));
         const nodes = fcd.nodes.filter(n => {
           if (n.id === targetPmc) return true;
-          return fcd.links.some(l => 
+          return fcd.links.some(l =>
             (l.source === targetPmc && l.target === n.id) ||
             (l.target === targetPmc && l.source === n.id)
           );
         });
-        const links = fcd.links.filter(l => 
+        const links = fcd.links.filter(l =>
           (l.source === targetPmc || l.target === targetPmc)
         );
         currentDataset = {
@@ -2166,10 +2592,10 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           links
         };
       }
-      
+
       // Update top banner
       updatePaperBanner(currentDataset.meta);
-      
+
       // Re-populate category filter chips
       populateCategoryFilters();
 
@@ -2286,13 +2712,16 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Setup D3 Simulation
       simulation = d3.forceSimulation(activeNodes)
-        .force('link', d3.forceLink(activeLinks).id(d => typeof d === 'object' ? d.id : d).distance(paramLinkDist))
-        .force('charge', d3.forceManyBody().strength(paramCharge))
-        .force('center', d3.forceCenter(width / 2, height / 2).strength(0.08))
-        .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + paramCollision))
-        .force('x', d3.forceX(width / 2).strength(0.04))
-        .force('y', d3.forceY(height / 2).strength(0.04))
-        .alphaDecay(0.028);
+        .force('link', d3.forceLink(activeLinks).id(d => typeof d === 'object' ? d.id : d).distance(d => {
+          const isSub = (d.source && d.source.isSubNode) || (d.target && d.target.isSubNode);
+          return isSub ? 190 : paramLinkDist;
+        }))
+        .force('charge', d3.forceManyBody().strength(d => d.isSubNode ? -680 : paramCharge))
+        .force('center', d3.forceCenter(width / 2, height / 2).strength(0.06))
+        .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + (d.isSubNode ? 32 : paramCollision)))
+        .force('x', d3.forceX(width / 2).strength(0.03))
+        .force('y', d3.forceY(height / 2).strength(0.03))
+        .alphaDecay(0.025);
 
       // Simulation Tick Loop
       simulation.on('tick', () => {
@@ -2304,28 +2733,13 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             .attr('y2', d => d.target.y);
         }
 
-        if (labelSelection) {
-          labelSelection.attr('transform', d => {
-            const midX = (d.source.x + d.target.x) / 2;
-            const midY = (d.source.y + d.target.y) / 2;
-            return `translate(${midX}, ${midY})`;
-          });
-
-          labelSelection.each(function() {
-            const g = d3.select(this);
-            const txt = g.select('text').node();
-            if (txt) {
-              const bb = txt.getBBox();
-              g.select('rect')
-                .attr('x', bb.x - 6)
-                .attr('y', bb.y - 2)
-                .attr('width', bb.width + 12);
-            }
-          });
-        }
-
         if (nodeSelection) {
           nodeSelection.attr('transform', d => `translate(${d.x}, ${d.y})`);
+        }
+
+        // Keep dotted Add Node anchored near the isolated parent node
+        if (isolatedNode) {
+          updateAddNodePosition();
         }
       });
 
@@ -2338,7 +2752,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
     // --- REFRESH D3 DOM MESH ---
     function refreshGraphMesh() {
-      // 1. Links Join
+      // 1. Links Join (clean lines without edge descriptions)
       linkSelection = linkGroup.selectAll('.link')
         .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
         .join(
@@ -2355,33 +2769,25 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Link interactions
       linkSelection
-        .on('mouseover', function(event, d) {
+        .on('mouseover', function (event, d) {
           d3.select(this).attr('stroke', 'var(--cyan)').attr('stroke-width', 3);
           const sName = d.source.name || d.source.id || d.source;
           const tName = d.target.name || d.target.id || d.target;
-          d3.select('#hud-status-text').html(`<strong>${sName}</strong> &rarr; <em>${d.relationship}</em> &rarr; <strong>${tName}</strong>`);
+          d3.select('#hud-status-text').html(`<strong>${sName}</strong> &harr; <strong>${tName}</strong>`);
         })
-        .on('mouseout', function() {
+        .on('mouseout', function () {
           d3.select(this).attr('stroke', 'var(--text-dim)').attr('stroke-width', 1.6);
-          d3.select('#hud-status-text').text('Ready • Drag nodes • Double-click node to expand sub-graph');
+          if (isolatedNode) {
+            d3.select('#hud-status-text').html(`<span>Focused: <strong>${isolatedNode.name}</strong> &bull; Click dotted <strong>'+'</strong> node to expand domain</span> <button id="btn-reset-isolation" class="badge-reset-isolation">✕ Show All Nodes</button>`);
+            const btn = document.getElementById('btn-reset-isolation');
+            if (btn) btn.onclick = (e) => { e.stopPropagation(); clearIsolation(); };
+          } else {
+            d3.select('#hud-status-text').text('Ready • Click any node to view connections • Click dotted "+" node to expand domain');
+          }
         });
 
-      // 2. Link Labels Join
-      labelSelection = labelGroup.selectAll('.link-label-group')
-        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
-        .join(
-          enter => {
-            const g = enter.append('g').attr('class', 'link-label-group');
-            g.append('rect').attr('class', 'link-label-bg').attr('height', 16);
-            g.append('text').attr('class', 'link-label-text').attr('dy', '3.5').text(d => d.relationship);
-            return g;
-          },
-          update => {
-            update.select('text').text(d => d.relationship);
-            return update;
-          },
-          exit => exit.remove()
-        );
+      // 2. Link labels are removed for clean graphing model
+      if (labelGroup) labelGroup.selectAll('*').remove();
 
       // 3. Nodes Join
       nodeSelection = nodeGroup.selectAll('.node-group')
@@ -2400,7 +2806,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
               .attr('class', 'node-halo')
               .attr('r', d => getNodeRadius(d) + 5)
               .attr('fill', d => getNodeColor(d))
-              .attr('fill-opacity', 0.15)
+              .attr('fill-opacity', d => (d.importance && d.importance >= 0.8) ? 0.3 : 0.15)
               .style('display', d => d.degree > 4 || d.category === 'Publication' || d.isSubNode ? 'block' : 'none');
 
             g.append('circle')
@@ -2444,15 +2850,13 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           exit => exit.remove()
         );
 
-      // Node Interactions (Hover, Click, Double-Click for Recursive Sub-Graph)
+      // Node Interactions (Single click isolates cluster & presents dotted Add Node)
       nodeSelection
         .on('mouseover', (event, d) => onNodeHover(d))
         .on('mouseout', () => onNodeUnhover())
-        .on('click', (event, d) => onNodeClick(d))
-        .on('dblclick', (event, d) => {
+        .on('click', (event, d) => {
           event.stopPropagation();
-          event.preventDefault();
-          expandNodeSubgraph(d);
+          onNodeClick(d);
         });
     }
 
@@ -2516,6 +2920,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Host Receptor / Enzyme',
             desc: `High-affinity coordination site for substrate interaction and ligand docking with ${pName}.`,
             parentRel: 'Exposes catalytic cleft',
+            importance: 1.0,
             linksTo: [1, 2]
           },
           {
@@ -2524,15 +2929,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Gene / Protein',
             desc: `Conserved polybasic substrate cleavage motif activated during enzymatic processing.`,
             parentRel: 'Cleaves at peptide junction',
+            importance: 0.85,
             linksTo: [2, 3]
-          },
-          {
-            slug: 'allosteric_reg',
-            name: `Allosteric Zinc/Ion Co-Factor`,
-            category: 'Host Receptor / Enzyme',
-            desc: `Critical metal-ion co-factor maintaining tertiary catalytic fold and enzymatic turnover.`,
-            parentRel: 'Stabilizes active conformation',
-            linksTo: [0, 3]
           },
           {
             slug: 'small_mol_inhibitor',
@@ -2540,7 +2938,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Drug / Therapeutic',
             desc: `Competitive molecular inhibitor blocking the active substrate chamber of ${pName}.`,
             parentRel: 'Competitively inhibits activity',
+            importance: 0.75,
             linksTo: [0, 4]
+          },
+          {
+            slug: 'allosteric_reg',
+            name: `Allosteric Zinc/Ion Co-Factor`,
+            category: 'Host Receptor / Enzyme',
+            desc: `Critical metal-ion co-factor maintaining tertiary catalytic fold and enzymatic turnover.`,
+            parentRel: 'Stabilizes active conformation',
+            importance: 0.6,
+            linksTo: [0, 3]
           },
           {
             slug: 'internalization_axis',
@@ -2548,6 +2956,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Disease / Pathology',
             desc: `Downstream endocytic cascade driving receptor-ligand internalization into host cytoplasm.`,
             parentRel: 'Triggers cellular entry cascade',
+            importance: 0.45,
             linksTo: [1, 3]
           }
         ];
@@ -2559,6 +2968,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Viral Target',
             desc: `Conserved surface-exposed domain mediating host docking and viral adhesion.`,
             parentRel: 'Key structural subdomain',
+            importance: 1.0,
             linksTo: [1, 2]
           },
           {
@@ -2567,6 +2977,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Immune Response',
             desc: `Hypervariable conformational epitope targeted by potent human neutralizing antibodies.`,
             parentRel: 'Presents neutralization target',
+            importance: 0.85,
             linksTo: [2, 3]
           },
           {
@@ -2575,6 +2986,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Gene / Protein',
             desc: `Hydrophobic peptide segment inserting into host target membrane during fusion.`,
             parentRel: 'Drives membrane merger',
+            importance: 0.75,
             linksTo: [0, 4]
           },
           {
@@ -2583,6 +2995,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Clinical Metric / Variable',
             desc: `Substitutions conferring steric resistance against polyclonal neutralizing sera.`,
             parentRel: 'Selected by evolutionary pressure',
+            importance: 0.65,
             linksTo: [1, 4]
           },
           {
@@ -2591,34 +3004,20 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Viral Target',
             desc: `Stable oligomeric trimer core anchoring the glycoprotein complex to viral envelope.`,
             parentRel: 'Maintains quaternary structure',
+            importance: 0.5,
             linksTo: [2, 0]
           }
         ];
       } else if (pCat === 'Diagnostic Assay' || nameLow.includes('lfia') || nameLow.includes('test') || nameLow.includes('pcr') || nameLow.includes('assay') || nameLow.includes('rapid') || nameLow.includes('strip')) {
         templates = [
           {
-            slug: 'nano_conjugate',
-            name: `Colloidal Gold Reporter Conjugate`,
-            category: 'Specimen / Matrix',
-            desc: `40nm colloidal gold or europium nanoparticles conjugated with target-specific antibodies.`,
-            parentRel: 'Generates visual colorimetric signal',
-            linksTo: [1, 2]
-          },
-          {
             slug: 'test_capture_line',
             name: `Nitrocellulose Test Line (T-Line)`,
             category: 'Diagnostic Assay',
             desc: `Immobilized capture monoclonal antibody forming the diagnostic sandwich complex.`,
             parentRel: 'Primary read-out zone',
+            importance: 1.0,
             linksTo: [2, 3]
-          },
-          {
-            slug: 'control_reference_line',
-            name: `Quality Reference Control Line (C-Line)`,
-            category: 'Regulatory / Guideline',
-            desc: `Anti-species polyclonal IgG confirming adequate capillary wicking and test validity.`,
-            parentRel: 'Validates chromatographic run',
-            linksTo: [0, 4]
           },
           {
             slug: 'lod_analytical',
@@ -2626,7 +3025,26 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Clinical Metric / Variable',
             desc: `Minimal target analyte concentration reliably distinguished from blank matrix (95% CI).`,
             parentRel: 'Defines analytical sensitivity threshold',
+            importance: 0.85,
             linksTo: [1, 4]
+          },
+          {
+            slug: 'nano_conjugate',
+            name: `Colloidal Gold Reporter Conjugate`,
+            category: 'Specimen / Matrix',
+            desc: `40nm colloidal gold or europium nanoparticles conjugated with target-specific antibodies.`,
+            parentRel: 'Generates visual colorimetric signal',
+            importance: 0.7,
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'control_reference_line',
+            name: `Quality Reference Control Line (C-Line)`,
+            category: 'Regulatory / Guideline',
+            desc: `Anti-species polyclonal IgG confirming adequate capillary wicking and test validity.`,
+            parentRel: 'Validates chromatographic run',
+            importance: 0.55,
+            linksTo: [0, 4]
           },
           {
             slug: 'sample_pad_buffer',
@@ -2634,6 +3052,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Specimen / Matrix',
             desc: `Triton X-100 lysis matrix normalizing pH and filtering mucin or cellular debris.`,
             parentRel: 'Conditioning & flow matrix',
+            importance: 0.45,
             linksTo: [0, 1]
           }
         ];
@@ -2645,31 +3064,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Immune Response',
             desc: `Antigen-binding fragment containing complementarity-determining regions conferring specificity.`,
             parentRel: 'Mediates high-avidity binding',
+            importance: 1.0,
             linksTo: [1, 2]
-          },
-          {
-            slug: 'fc_effector_domain',
-            name: `Fc Receptor (FcγR) Effector Domain`,
-            category: 'Immune Response',
-            desc: `Constant domain engaging macrophage Fc receptors and triggering complement activation.`,
-            parentRel: 'Recruits downstream effector cells',
-            linksTo: [2, 3]
-          },
-          {
-            slug: 'affinity_maturation',
-            name: `Germinal Center Affinity Maturation`,
-            category: 'Gene / Protein',
-            desc: `Somatic hypermutation in germinal center B-cells increasing on-rate and equilibrium Ka.`,
-            parentRel: 'Enhances binding affinity',
-            linksTo: [0, 4]
-          },
-          {
-            slug: 'plasma_memory_clone',
-            name: `Long-Lived Plasma B-Cell Clone`,
-            category: 'Immune Response',
-            desc: `Bone marrow-homing memory plasma cells maintaining durable neutralizing antibody titres.`,
-            parentRel: 'Clonal expansion source',
-            linksTo: [1, 4]
           },
           {
             slug: 'serum_titre_half_life',
@@ -2677,34 +3073,47 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Clinical Metric / Variable',
             desc: `Quantitative decay rate and half-life curve over 180 days post-exposure.`,
             parentRel: 'Kinetic persistence metric',
+            importance: 0.85,
             linksTo: [0, 3]
+          },
+          {
+            slug: 'affinity_maturation',
+            name: `Germinal Center Affinity Maturation`,
+            category: 'Gene / Protein',
+            desc: `Somatic hypermutation in germinal center B-cells increasing on-rate and equilibrium Ka.`,
+            parentRel: 'Enhances binding affinity',
+            importance: 0.75,
+            linksTo: [0, 4]
+          },
+          {
+            slug: 'fc_effector_domain',
+            name: `Fc Receptor (FcγR) Effector Domain`,
+            category: 'Immune Response',
+            desc: `Constant domain engaging macrophage Fc receptors and triggering complement activation.`,
+            parentRel: 'Recruits downstream effector cells',
+            importance: 0.65,
+            linksTo: [2, 3]
+          },
+          {
+            slug: 'plasma_memory_clone',
+            name: `Long-Lived Plasma B-Cell Clone`,
+            category: 'Immune Response',
+            desc: `Bone marrow-homing memory plasma cells maintaining durable neutralizing antibody titres.`,
+            parentRel: 'Clonal expansion source',
+            importance: 0.5,
+            linksTo: [1, 4]
           }
         ];
       } else if (pCat === 'Publication' || nameLow.startsWith('pmc') || nameLow.includes('et al') || nameLow.includes('study')) {
         templates = [
-          {
-            slug: 'patient_cohort',
-            name: `${pName.split(' ')[0]} Clinical Patient Cohort`,
-            category: 'Specimen / Matrix',
-            desc: `Characterized prospective patient cohort with paired RT-PCR and longitudinal serology.`,
-            parentRel: 'Investigates primary patient cohort',
-            linksTo: [1, 2]
-          },
           {
             slug: 'primary_endpoint',
             name: `Primary Diagnostic Sensitivity Finding`,
             category: 'Clinical Metric / Variable',
             desc: `Key empirical endpoint demonstrating statistical concordance across target assay groups.`,
             parentRel: 'Reports primary finding',
+            importance: 1.0,
             linksTo: [2, 3]
-          },
-          {
-            slug: 'validation_methodology',
-            name: `Comparative Gold-Standard Reference Protocol`,
-            category: 'Regulatory / Guideline',
-            desc: `Standardized ROC analysis and RT-qPCR reference protocol validating test performance.`,
-            parentRel: 'Establishes appraisal protocol',
-            linksTo: [0, 4]
           },
           {
             slug: 'pathway_mechanism',
@@ -2712,7 +3121,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Disease / Pathology',
             desc: `Integrative model linking biomarker dynamics to clinical disease presentation.`,
             parentRel: 'Proposes mechanistic pathway',
+            importance: 0.85,
             linksTo: [1, 4]
+          },
+          {
+            slug: 'patient_cohort',
+            name: `${pName.split(' ')[0]} Clinical Patient Cohort`,
+            category: 'Specimen / Matrix',
+            desc: `Characterized prospective patient cohort with paired RT-PCR and longitudinal serology.`,
+            parentRel: 'Investigates primary patient cohort',
+            importance: 0.75,
+            linksTo: [1, 2]
           },
           {
             slug: 'biomarker_correlation',
@@ -2720,25 +3139,28 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Immune Response',
             desc: `Multi-analyte panel correlating early viral load with humoral antibody seroconversion.`,
             parentRel: 'Identifies predictive marker',
+            importance: 0.65,
             linksTo: [0, 3]
+          },
+          {
+            slug: 'validation_methodology',
+            name: `Comparative Gold-Standard Reference Protocol`,
+            category: 'Regulatory / Guideline',
+            desc: `Standardized ROC analysis and RT-qPCR reference protocol validating test performance.`,
+            parentRel: 'Establishes appraisal protocol',
+            importance: 0.5,
+            linksTo: [0, 4]
           }
         ];
       } else if (pCat === 'Specimen / Matrix' || nameLow.includes('blood') || nameLow.includes('serum') || nameLow.includes('swab') || nameLow.includes('saliva') || nameLow.includes('plasma')) {
         templates = [
-          {
-            slug: 'matrix_viscosity',
-            name: `${pName} Viscosity & Mucolytic Matrix`,
-            category: 'Specimen / Matrix',
-            desc: `Physical viscosity and mucin matrix characteristics governing lateral flow capillary speed.`,
-            parentRel: 'Matrix rheology component',
-            linksTo: [1, 2]
-          },
           {
             slug: 'analyte_recovery',
             name: `Analyte Extraction Efficiency Rate`,
             category: 'Clinical Metric / Variable',
             desc: `Quantitative recovery rate of intact viral protein or antibodies from raw specimen matrix.`,
             parentRel: 'Determines sample yield',
+            importance: 0.9,
             linksTo: [2, 3]
           },
           {
@@ -2747,15 +3169,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Regulatory / Guideline',
             desc: `Control matrix bank tested against endemic human coronaviruses, influenza, and RF.`,
             parentRel: 'Eliminates matrix interference',
+            importance: 0.8,
             linksTo: [0, 4]
-          },
-          {
-            slug: 'cellular_debris_filter',
-            name: `In-Line Microfluidic Filtration Membrane`,
-            category: 'Diagnostic Assay',
-            desc: `Separation membrane preventing red blood cell hemolysis from obscuring reading window.`,
-            parentRel: 'Protects detection strip',
-            linksTo: [0, 1]
           },
           {
             slug: 'stability_decay',
@@ -2763,7 +3178,26 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Specimen / Matrix',
             desc: `Thermal stability degradation profile governing sample preservation across temperature swings.`,
             parentRel: 'Governs specimen preservation',
+            importance: 0.65,
             linksTo: [1, 3]
+          },
+          {
+            slug: 'matrix_viscosity',
+            name: `${pName} Viscosity & Mucolytic Matrix`,
+            category: 'Specimen / Matrix',
+            desc: `Physical viscosity and mucin matrix characteristics governing lateral flow capillary speed.`,
+            parentRel: 'Matrix rheology component',
+            importance: 0.55,
+            linksTo: [1, 2]
+          },
+          {
+            slug: 'cellular_debris_filter',
+            name: `In-Line Microfluidic Filtration Membrane`,
+            category: 'Diagnostic Assay',
+            desc: `Separation membrane preventing red blood cell hemolysis from obscuring reading window.`,
+            parentRel: 'Protects detection strip',
+            importance: 0.45,
+            linksTo: [0, 1]
           }
         ];
       } else if (pCat === 'Clinical Metric / Variable' || nameLow.includes('ct') || nameLow.includes('sensitivity') || nameLow.includes('specificity') || nameLow.includes('threshold')) {
@@ -2774,23 +3208,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Clinical Metric / Variable',
             desc: `Clinical range corresponding to peak infectious viral shedding and 98%+ assay sensitivity.`,
             parentRel: 'Stratifies diagnostic accuracy',
+            importance: 1.0,
             linksTo: [1, 2]
-          },
-          {
-            slug: 'concordance_rate',
-            name: `Positive Percent Agreement (PPA 96.4%)`,
-            category: 'Regulatory / Guideline',
-            desc: `Statistical concordance evaluated against simultaneous molecular reference RT-qPCR.`,
-            parentRel: 'Quantifies clinical reliability',
-            linksTo: [2, 3]
-          },
-          {
-            slug: 'false_negative_window',
-            name: `Early-Window False Negative Risk (<5 Days)`,
-            category: 'Disease / Pathology',
-            desc: `Window period preceding detectable seroconversion where viral antigen tests dominate.`,
-            parentRel: 'Defines diagnostic limitation',
-            linksTo: [0, 3]
           },
           {
             slug: 'roc_auc_curve',
@@ -2798,7 +3217,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Clinical Metric / Variable',
             desc: `Comprehensive discrimination metric balancing diagnostic sensitivity and false positive index.`,
             parentRel: 'Evaluates global discriminatory power',
+            importance: 0.85,
             linksTo: [0, 1]
+          },
+          {
+            slug: 'concordance_rate',
+            name: `Positive Percent Agreement (PPA 96.4%)`,
+            category: 'Regulatory / Guideline',
+            desc: `Statistical concordance evaluated against simultaneous molecular reference RT-qPCR.`,
+            parentRel: 'Quantifies clinical reliability',
+            importance: 0.75,
+            linksTo: [2, 3]
           },
           {
             slug: 'diagnostic_odds_ratio',
@@ -2806,34 +3235,29 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Regulatory / Guideline',
             desc: `Independent indicator of test performance summarizing diagnostic strength independent of prevalence.`,
             parentRel: 'Summarizes diagnostic odds',
+            importance: 0.65,
             linksTo: [1, 3]
+          },
+          {
+            slug: 'false_negative_window',
+            name: `Early-Window False Negative Risk (<5 Days)`,
+            category: 'Disease / Pathology',
+            desc: `Window period preceding detectable seroconversion where viral antigen tests dominate.`,
+            parentRel: 'Defines diagnostic limitation',
+            importance: 0.5,
+            linksTo: [0, 3]
           }
         ];
       } else {
         templates = [
-          {
-            slug: 'upstream_regulator',
-            name: `Upstream Regulatory Factor for ${pName}`,
-            category: 'Gene / Protein',
-            desc: `Transcription factor or upstream kinase regulating expression and functional activation of ${pName}.`,
-            parentRel: 'Positively regulates expression',
-            linksTo: [1, 2]
-          },
           {
             slug: 'active_complex',
             name: `${pName} Functional Core Complex`,
             category: pCat !== 'Other' ? pCat : 'Gene / Protein',
             desc: `Core quaternary macromolecular assembly mediating functional biological activity.`,
             parentRel: 'Constitutes functional assembly',
+            importance: 1.0,
             linksTo: [2, 3]
-          },
-          {
-            slug: 'downstream_effector',
-            name: `Downstream Effector Cascade`,
-            category: 'Disease / Pathology',
-            desc: `Intracellular signaling cascade triggered upon activation of ${pName}.`,
-            parentRel: 'Transduces functional signal',
-            linksTo: [0, 4]
           },
           {
             slug: 'target_interaction',
@@ -2841,7 +3265,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Immune Response',
             desc: `High-affinity cognate binding partner forming stable physiological contact with ${pName}.`,
             parentRel: 'Physically binds and engages',
+            importance: 0.85,
             linksTo: [1, 4]
+          },
+          {
+            slug: 'upstream_regulator',
+            name: `Upstream Regulatory Factor for ${pName}`,
+            category: 'Gene / Protein',
+            desc: `Transcription factor or upstream kinase regulating expression and functional activation of ${pName}.`,
+            parentRel: 'Positively regulates expression',
+            importance: 0.7,
+            linksTo: [1, 2]
           },
           {
             slug: 'validation_metric',
@@ -2849,7 +3283,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             category: 'Clinical Metric / Variable',
             desc: `Standardized biomarker index quantifying physiological or diagnostic concentration in biological systems.`,
             parentRel: 'Quantifies expression level',
+            importance: 0.65,
             linksTo: [0, 3]
+          },
+          {
+            slug: 'downstream_effector',
+            name: `Downstream Effector Cascade`,
+            category: 'Disease / Pathology',
+            desc: `Intracellular signaling cascade triggered upon activation of ${pName}.`,
+            parentRel: 'Transduces functional signal',
+            importance: 0.5,
+            linksTo: [0, 4]
           }
         ];
       }
@@ -2871,6 +3315,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           category: tmpl.category,
           desc: tmpl.desc,
           degree: 0,
+          importance: tmpl.importance != null ? tmpl.importance : 0.6,
           isSubNode: true,
           parentOriginId: parentNode.id
         };
@@ -2904,7 +3349,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             if (targetIdx !== idx && targetIdx >= 0 && targetIdx < childIdMap.length) {
               const targetId = childIdMap[targetIdx].id;
               const phrase = interRelPhrases[(idx * 3 + targetIdx) % interRelPhrases.length];
-              const alreadyLinked = newLinks.some(l => 
+              const alreadyLinked = newLinks.some(l =>
                 (l.source === child.id && l.target === targetId) ||
                 (l.source === targetId && l.target === child.id)
               );
@@ -2938,8 +3383,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       triggerShockwave(px, py, getNodeColor(parentNode));
 
       // 2. Radial Blast Force: Push neighboring nodes away to make room for sub-graph
-      const PUSH_RADIUS = 400;
-      const PUSH_FORCE = 42;
+      const PUSH_RADIUS = 520;
+      const PUSH_FORCE = 60;
 
       activeNodes.forEach(other => {
         if (other.id === parentNode.id) return;
@@ -2969,11 +3414,11 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       const baseAngle = Math.random() * Math.PI * 2;
       newNodes.forEach((child, idx) => {
         const angle = baseAngle + (idx / count) * 2 * Math.PI + (Math.random() - 0.5) * 0.25;
-        const dist = 75 + Math.random() * 30;
+        const dist = 210 + (idx % 2 === 0 ? 45 : -25) + Math.random() * 25;
         child.x = px + Math.cos(angle) * dist;
         child.y = py + Math.sin(angle) * dist;
-        child.vx = Math.cos(angle) * 16;
-        child.vy = Math.sin(angle) * 16;
+        child.vx = Math.cos(angle) * 22;
+        child.vy = Math.sin(angle) * 22;
         child.degree = 0;
       });
 
@@ -3000,7 +3445,42 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         }
       });
 
-      // 6. Recompute degrees for accurate node sizing
+      // 6. Manage Sliding Window of 3 Expansions (after 3 expansions, hide 1st expansion and so on)
+      const thisExpNodeIds = new Set(newNodes.map(n => n.id));
+      const thisExpLinkKeys = new Set(newLinks.map(l => `${l.source}-${l.target}`));
+
+      expansionHistory.push({
+        id: Date.now() + Math.random(),
+        parentId: parentNode.id,
+        parentName: parentNode.name,
+        nodeIds: thisExpNodeIds,
+        linkKeys: thisExpLinkKeys
+      });
+
+      let pruneNotice = '';
+      if (expansionHistory.length > MAX_VISIBLE_EXPANSIONS) {
+        // Hide the 1st (oldest) expansion in the FIFO queue
+        const oldestExp = expansionHistory.shift();
+
+        // Determine which nodes from oldestExp are not part of remaining active expansions or parent anchors
+        const remainingActiveNodeIds = new Set();
+        const remainingActiveParentIds = new Set();
+        expansionHistory.forEach(exp => {
+          exp.nodeIds.forEach(id => remainingActiveNodeIds.add(id));
+          remainingActiveParentIds.add(exp.parentId);
+        });
+
+        oldestExp.nodeIds.forEach(id => {
+          if (!remainingActiveNodeIds.has(id) && !remainingActiveParentIds.has(id) && !initialIsolatedClusterIds.has(id)) {
+            hiddenExpansionNodeIds.add(id);
+          }
+        });
+
+        oldestExp.linkKeys.forEach(k => hiddenExpansionLinkKeys.add(k));
+        pruneNotice = ` &bull; <span style="color:#fbbf24;">(Pruned 1st expansion: "${oldestExp.parentName}" to maintain 3-expansion focus)</span>`;
+      }
+
+      // 7. Recompute degrees for accurate node sizing
       const degreeMap = {};
       activeNodes.forEach(n => degreeMap[n.id] = 0);
       activeLinks.forEach(l => {
@@ -3011,41 +3491,85 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       });
       activeNodes.forEach(n => n.degree = degreeMap[n.id] || 0);
 
-      // 7. Update UI, Category Filters & HUD
+      // 8. Update UI, Category Filters & HUD
       populateCategoryFilters();
       document.getElementById('hud-node-count').innerText = activeNodes.length;
       document.getElementById('hud-link-count').innerText = activeLinks.length;
       document.getElementById('hud-status-text').innerHTML = `
         <span style="color:var(--cyan); font-weight:700;">&#9889; Deployed Sub-Graph:</span> 
-        <strong>${parentNode.name}</strong> &rarr; +${newNodes.length} nodes, +${newLinks.length} interconnected pathways
+        <strong>${parentNode.name}</strong> &rarr; +${newNodes.length} nodes (Active Expansions: ${expansionHistory.length}/3)${pruneNotice}
+        <button id="btn-reset-isolation" class="badge-reset-isolation" title="Restore all nodes">✕ Show All Nodes</button>
       `;
+      const btnReset = document.getElementById('btn-reset-isolation');
+      if (btnReset) {
+        btnReset.onclick = (e) => {
+          e.stopPropagation();
+          clearIsolation();
+        };
+      }
 
-      // 8. Re-render DOM mesh
+      // 9. Re-render DOM mesh
       refreshGraphMesh();
 
-      // 9. Reheat simulation
+      // 10. Reheat simulation with expansive sub-graph forces
       if (!simulationActive) {
         simulationActive = true;
         const txtToggle = document.getElementById('txt-toggle-sim');
         if (txtToggle) txtToggle.innerText = "Pause Physics";
       }
       simulation.nodes(activeNodes);
-      simulation.force('link').links(activeLinks);
-      simulation.alpha(0.85).restart();
+      simulation.force('link')
+        .links(activeLinks)
+        .distance(l => ((l.source && l.source.isSubNode) || (l.target && l.target.isSubNode)) ? 190 : paramLinkDist);
+      simulation.force('charge')
+        .strength(d => d.isSubNode ? -680 : paramCharge);
+      simulation.force('collision')
+        .radius(d => getNodeRadius(d) + (d.isSubNode ? 32 : paramCollision));
+      simulation.alpha(0.9).restart();
 
-      // 10. Update details drawer if open for this node
+      // 11. Apply visibility filters (preserves visible cluster + 3 active expansions, hides 1st expansion)
+      applyFiltersAndSearch();
+
+      // 12. Update Dotted Add Node position to stay anchored
+      renderDottedAddNode(parentNode);
+
+      // 13. Center screen smoothly on the expanded cluster!
+      setTimeout(() => {
+        focusNode(parentNode, 1.15);
+      }, 120);
+
+      // 14. Update details drawer if open for this node
       if (selectedNode && selectedNode.id === parentNode.id) {
         openDetailsDrawer(parentNode);
       }
     }
 
     function getNodeRadius(d) {
-      if (sizingMode === 'uniform') return 12;
-      // Degree-based sizing
-      const base = 9;
-      const boost = Math.min(20, d.degree * 2.4);
-      if (d.category === 'Publication') return base + boost + 3;
-      return base + boost;
+      if (d.isAddNode) return 17;
+
+      // Sub-node sizing denotes biological & empirical importance within that paper or topic
+      if (d.isSubNode) {
+        const imp = d.importance != null ? d.importance : 0.6;
+        // Scales from 9px (accessory/supporting) to 23px (primary target/core mechanism)
+        const baseRadius = 9 + (imp * 14);
+        const degreeBonus = Math.min(4, (d.degree || 0) * 1.0);
+        return Math.round(baseRadius + degreeBonus);
+      }
+
+      if (sizingMode === 'uniform') {
+        return d.category === 'Publication' ? 18 : 13;
+      }
+
+      // Publication nodes
+      if (d.category === 'Publication') {
+        return 22 + Math.min(10, (d.degree || 0) * 0.9);
+      }
+
+      // Main entity nodes
+      const imp = d.importance != null ? d.importance : 0.65;
+      const base = 9 + (imp * 6);
+      const boost = Math.min(16, (d.degree || 0) * 2.2);
+      return Math.round(base + boost);
     }
 
     function getNodeColor(d) {
@@ -3055,6 +3579,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
     // --- INTERACTION HANDLERS ---
     function onNodeHover(d) {
+      if (isolatedNode) return; // In isolation mode, keep the isolated focus cluster clear
+
       const connectedNodeIds = new Set([d.id]);
       const connectedLinkIds = new Set();
 
@@ -3086,17 +3612,9 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           return (sId === d.id || tId === d.id) ? getNodeColor(d) : 'var(--text-dim)';
         });
 
-      // Show link labels for connected edges
-      labelGroup.selectAll('.link-label-group')
-        .classed('visible', l => {
-          const sId = l.source.id || l.source;
-          const tId = l.target.id || l.target;
-          return sId === d.id || tId === d.id;
-        });
-
       // Dim non-connected nodes
       nodeGroup.selectAll('.node-group')
-        .each(function(n) {
+        .each(function (n) {
           const isConn = connectedNodeIds.has(n.id);
           d3.select(this).select('.node-circle')
             .classed('highlighted', n.id === d.id)
@@ -3107,21 +3625,22 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         });
 
       // Update status tip
+      const impText = d.importance ? ` &bull; Importance: ${(d.importance * 100).toFixed(0)}%` : '';
       document.getElementById('hud-status-text').innerHTML = `
-        <strong>${d.name}</strong> (${d.category}) &bull; ${d.degree} connections
+        <strong>${d.name}</strong> (${d.category}) &bull; ${d.degree} connections${impText}
       `;
     }
 
     function onNodeUnhover() {
+      if (isolatedNode) return;
+
       linkGroup.selectAll('.link')
         .classed('highlighted', false)
         .classed('dimmed', false)
         .attr('stroke', 'var(--text-dim)');
 
-      labelGroup.selectAll('.link-label-group').classed('visible', false);
-
       nodeGroup.selectAll('.node-group')
-        .each(function() {
+        .each(function () {
           d3.select(this).select('.node-circle')
             .classed('highlighted', false)
             .classed('dimmed', false);
@@ -3130,14 +3649,336 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             .classed('dimmed', false);
         });
 
-      document.getElementById('hud-status-text').innerText = 'Ready • Drag nodes • Double-click node to expand sub-graph';
+      document.getElementById('hud-status-text').innerText = 'Ready • Click any node to view connections • Click dotted "+" node to expand domain';
     }
 
+    // --- NODE CLICK & EXPLORATION ISOLATION ---
     function onNodeClick(d) {
       selectedNode = d;
+
+      if (!hasInitiallyIsolated) {
+        // Initial click: perform the initial isolation (remove background graph)
+        hasInitiallyIsolated = true;
+        isolateNodeAndInterconnected(d);
+      } else {
+        // Subsequent clicks: DO NOT remove/hide the rest of the graph!
+        // Keep all currently visible nodes & expansions, highlight clicked entity
+        focusSelectedNodeInExploration(d);
+      }
+
       openDetailsDrawer(d);
+      focusNode(d);
     }
 
+    function isolateNodeAndInterconnected(d) {
+      isolatedNode = d;
+      selectedNode = d;
+
+      // 1. Gather all directly interconnected neighbor IDs
+      initialIsolatedClusterIds = new Set();
+      initialIsolatedClusterIds.add(d.id);
+
+      activeLinks.forEach(l => {
+        const sId = l.source.id || l.source;
+        const tId = l.target.id || l.target;
+        if (sId === d.id) initialIsolatedClusterIds.add(tId);
+        if (tId === d.id) initialIsolatedClusterIds.add(sId);
+      });
+
+      // 2. Apply visibility filter (shows d + neighbors)
+      applyFiltersAndSearch();
+
+      // 3. Highlight connections to d
+      linkGroup.selectAll('.link')
+        .classed('highlighted', l => {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          return (sId === d.id || tId === d.id);
+        })
+        .attr('stroke', l => {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          return (sId === d.id || tId === d.id) ? getNodeColor(d) : 'var(--text-dim)';
+        });
+
+      // 4. Render Dotted Add Node for domain-specific research
+      renderDottedAddNode(d);
+
+      // 5. Update HUD status with reset button
+      updateHudExplorationStatus(d, initialIsolatedClusterIds.size - 1);
+    }
+
+    function focusSelectedNodeInExploration(d) {
+      isolatedNode = d;
+      selectedNode = d;
+
+      // Gather neighbor IDs of newly clicked node
+      const neighborIds = new Set([d.id]);
+      activeLinks.forEach(l => {
+        const sId = l.source.id || l.source;
+        const tId = l.target.id || l.target;
+        if (sId === d.id) neighborIds.add(tId);
+        if (tId === d.id) neighborIds.add(sId);
+      });
+
+      // Highlight/dim visible nodes without removing anything
+      nodeGroup.selectAll('.node-group')
+        .each(function (n) {
+          const isTarget = (n.id === d.id);
+          const isConn = neighborIds.has(n.id);
+          d3.select(this).select('.node-circle')
+            .classed('highlighted', isTarget)
+            .classed('dimmed', !isConn);
+          d3.select(this).select('.node-label')
+            .classed('highlighted', isTarget)
+            .classed('dimmed', !isConn);
+        });
+
+      // Highlight direct links connected to d
+      linkGroup.selectAll('.link')
+        .each(function (l) {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          const isDirect = (sId === d.id || tId === d.id);
+          d3.select(this)
+            .classed('highlighted', isDirect)
+            .classed('dimmed', !isDirect)
+            .attr('stroke', isDirect ? getNodeColor(d) : 'var(--text-dim)');
+        });
+
+      // Attach Dotted Add Node to this newly clicked node
+      renderDottedAddNode(d);
+
+      // Update HUD status
+      updateHudExplorationStatus(d, neighborIds.size - 1);
+    }
+
+    function updateHudExplorationStatus(d, neighborCount) {
+      const statusEl = document.getElementById('hud-status-text');
+      if (statusEl) {
+        const expBadge = expansionHistory.length > 0 
+          ? ` &bull; Active Expansions: <strong>${expansionHistory.length}/3</strong>` 
+          : '';
+        statusEl.innerHTML = `
+          <span>Focused: <strong>${d.name}</strong> (${neighborCount} connected)${expBadge} &bull; Click dotted <strong>'+'</strong> node to expand domain</span>
+          <button id="btn-reset-isolation" class="badge-reset-isolation" title="Restore all nodes">✕ Show All Nodes</button>
+        `;
+        const btnReset = document.getElementById('btn-reset-isolation');
+        if (btnReset) {
+          btnReset.onclick = (e) => {
+            e.stopPropagation();
+            clearIsolation();
+          };
+        }
+      }
+    }
+
+    function clearIsolation() {
+      isolatedNode = null;
+      selectedNode = null;
+      hasInitiallyIsolated = false;
+      initialIsolatedClusterIds.clear();
+      expansionHistory = [];
+      hiddenExpansionNodeIds.clear();
+      hiddenExpansionLinkKeys.clear();
+
+      if (addNodeLinkLayer) addNodeLinkLayer.selectAll('*').remove();
+      if (addNodeLayer) addNodeLayer.selectAll('*').remove();
+
+      // Reset all node and link dimmed/highlighted classes
+      if (nodeGroup) {
+        nodeGroup.selectAll('.node-group')
+          .each(function () {
+            d3.select(this).select('.node-circle')
+              .classed('highlighted', false)
+              .classed('dimmed', false);
+            d3.select(this).select('.node-label')
+              .classed('highlighted', false)
+              .classed('dimmed', false);
+          });
+      }
+
+      if (linkGroup) {
+        linkGroup.selectAll('.link')
+          .classed('highlighted', false)
+          .classed('dimmed', false)
+          .attr('stroke', 'var(--text-dim)');
+      }
+
+      // Re-apply filters to restore all dataset nodes and links
+      applyFiltersAndSearch();
+
+      const statusEl = document.getElementById('hud-status-text');
+      if (statusEl) {
+        statusEl.innerText = 'Ready • Click any node to view connections • Click dotted "+" node to expand domain';
+      }
+    }
+
+    // --- DOTTED ADD NODE POSITION & ANCHOR HELPER ---
+    function updateAddNodePosition() {
+      if (!isolatedNode || !addNodeLayer || !addNodeLinkLayer) return;
+      const px = (isolatedNode.fx != null) ? isolatedNode.fx : (isolatedNode.x != null ? isolatedNode.x : 0);
+      const py = (isolatedNode.fy != null) ? isolatedNode.fy : (isolatedNode.y != null ? isolatedNode.y : 0);
+      const addX = px + 85;
+      const addY = py - 65;
+
+      addNodeLinkLayer.selectAll('.add-node-dotted-link')
+        .attr('x1', px)
+        .attr('y1', py)
+        .attr('x2', addX)
+        .attr('y2', addY);
+
+      addNodeLayer.selectAll('.add-node-group')
+        .attr('transform', `translate(${addX}, ${addY})`);
+    }
+
+    // --- DOTTED ADD NODE (REPLACES DOUBLE-CLICK FOR DOMAIN-SPECIFIC EXPANSION) ---
+    function renderDottedAddNode(parent) {
+      if (!addNodeLinkLayer || !addNodeLayer) return;
+      addNodeLinkLayer.selectAll('*').remove();
+      addNodeLayer.selectAll('*').remove();
+
+      const px = (parent.fx != null) ? parent.fx : (parent.x != null ? parent.x : 0);
+      const py = (parent.fy != null) ? parent.fy : (parent.y != null ? parent.y : 0);
+      const addX = px + 85;
+      const addY = py - 65;
+
+      // Dotted connection line leading from clicked node to the Add Node
+      addNodeLinkLayer.append('line')
+        .attr('class', 'add-node-dotted-link')
+        .attr('x1', px)
+        .attr('y1', py)
+        .attr('x2', addX)
+        .attr('y2', addY)
+        .attr('stroke', 'var(--cyan)')
+        .attr('stroke-width', 2)
+        .attr('stroke-dasharray', '5,4')
+        .attr('stroke-opacity', 0.9);
+
+      // Interactive Add Node group
+      const g = addNodeLayer.append('g')
+        .attr('class', 'add-node-group')
+        .attr('transform', `translate(${addX}, ${addY})`)
+        .style('cursor', 'pointer');
+
+      // Outer animated marching dotted outline ring (rock-solid, zero transform shift)
+      g.append('circle')
+        .attr('class', 'add-node-dotted-ring')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 21)
+        .attr('fill', 'none')
+        .attr('stroke', 'var(--cyan)')
+        .attr('stroke-width', 2);
+
+      // Inner glowing core
+      g.append('circle')
+        .attr('cx', 0)
+        .attr('cy', 0)
+        .attr('r', 16)
+        .attr('fill', 'rgba(0, 240, 255, 0.22)')
+        .attr('stroke', 'var(--cyan)')
+        .attr('stroke-width', 1.5);
+
+      // Plus icon
+      g.append('text')
+        .attr('text-anchor', 'middle')
+        .attr('dy', 5)
+        .attr('fill', '#ffffff')
+        .attr('font-size', '17')
+        .attr('font-weight', '700')
+        .attr('font-family', 'var(--font-sans)')
+        .style('pointer-events', 'none')
+        .text('+');
+
+      // Expand Domain text label
+      const shortName = parent.name.length > 18 ? parent.name.slice(0, 16) + '...' : parent.name;
+      const labelText = `+ Expand "${shortName}" Domain`;
+      const txt = g.append('text')
+        .attr('class', 'add-node-label')
+        .attr('dx', 28)
+        .attr('dy', 5)
+        .attr('fill', 'var(--cyan)')
+        .attr('font-size', '11.5px')
+        .attr('font-weight', '600')
+        .attr('font-family', 'var(--font-sans)')
+        .style('pointer-events', 'none')
+        .text(labelText);
+
+      // Background pill for label
+      const bbox = txt.node().getBBox();
+      g.insert('rect', '.add-node-label')
+        .attr('x', bbox.x - 6)
+        .attr('y', bbox.y - 3)
+        .attr('width', bbox.width + 12)
+        .attr('height', bbox.height + 6)
+        .attr('rx', 6)
+        .attr('fill', 'rgba(10, 15, 29, 0.92)')
+        .attr('stroke', 'rgba(0, 240, 255, 0.4)')
+        .attr('stroke-dasharray', '3,2')
+        .style('pointer-events', 'none');
+
+      // Clicking takes research to that domain specific (sub-graph expansion)
+      g.on('click', (event) => {
+        event.stopPropagation();
+        event.preventDefault();
+        expandNodeSubgraph(parent);
+      });
+    }
+
+    
+
+    
+    const SCIENTIFIC_TOPIC_EXPLANATIONS = {
+      "spike": "The Spike (S) glycoprotein is a class I viral fusion protein protruding from the coronavirus envelope that mediates host cell attachment and entry. It is organized into two structural subunits: the S1 subunit containing the receptor-binding domain (RBD) that binds target receptors, and the S2 subunit directing viral-host membrane fusion. Because the spike protein serves as the primary target for neutralizing antibody generation and vaccine antigens, structural mutations within this domain critically alter viral infectivity, transmission rates, and antibody neutralization escape.",
+      "ace2": "Angiotensin-Converting Enzyme 2 (ACE2) is a type I integral transmembrane carboxypeptidase expressed extensively across respiratory tract epithelial cells, vascular endothelium, and renal tissues. Under baseline human physiology, it acts as a central counter-regulator of the renin-angiotensin system by hydrolyzing vasoconstrictive angiotensin II into vasodilatory angiotensin-(1-7). Pathologically, it functions as the obligate high-affinity surface receptor for coronaviruses, where viral spike engagement promotes conformational transitions that trigger viral internalization and mucosal cellular infection.",
+      "nucleocapsid": "The Nucleocapsid (N) protein is a highly conserved, multifunctional structural phosphoprotein that packages genomic viral RNA into helical ribonucleoprotein complexes. Beyond structural capsid architecture, it coordinates viral RNA transcription, genome replication kinetics, and early host innate immune suppression by inhibiting type I interferon induction. Due to its abundant intracellular expression during active replication and high relative genetic conservation compared to surface spikes, it serves as the foundational capture target in rapid chromatographic and diagnostic assays.",
+      "tmprss2": "Transmembrane Serine Protease 2 (TMPRSS2) is a cell-surface serine protease predominantly localized across human respiratory, gastrointestinal, and prostatic epithelium. During viral invasion, it proteolytically primes viral surface glycoproteins through selective cleavage at canonical arginine-serine motifs, activating the fusion peptide machinery directly at the host cell membrane. Enzymatic cleavage by TMPRSS2 bypasses slower endosomal pathways, accelerating viral genome release into the cytoplasm and representing an attractive target for therapeutic protease inhibitors.",
+      "rt-pcr": "Real-Time Reverse Transcription Polymerase Chain Reaction (RT-PCR) represents the definitive molecular gold standard for pathogen genomic detection and quantitative viral load surveillance. The methodology employs reverse transcriptase to synthesize complementary DNA from viral RNA templates, followed by exponential sequence-specific amplification tracked via fluorescent hydrolysis probes. The resulting cycle threshold (Ct) values reflect quantitative nucleic acid density, enabling precise clinical demarcation of acute infectivity windows, viral clearance kinetics, and analytical assay benchmarking.",
+      "igg": "Immunoglobulin G (IgG) is the predominant circulating antibody isotype in human serum, responsible for approximately 75% of total humoral immunoglobulin concentration. Synthesized by antigen-primed memory B lymphocytes and long-lived plasma cells, IgG facilitates sustained immune protection through high-affinity antigen neutralization, opsonization, complement cascade activation, and antibody-dependent cellular cytotoxicity. Titers typically emerge 10 to 14 days post-exposure and endure for months or years, establishing durable immunological memory and long-term protection.",
+      "igm": "Immunoglobulin M (IgM) is the primary antibody class produced by the adaptive immune system during initial encounter with a foreign antigenic threat. Configured as a large pentameric macromolecule containing ten antigen-combining sites, it exhibits high functional avidity for repeating epitopes, facilitating potent pathogen agglutination and classical complement activation. Serum IgM concentrations rapidly elevate within 4 to 7 days following acute symptom onset and gradually decline over subsequent weeks, serving as an indispensable serological marker for acute or ongoing primary infection.",
+      "interferon": "Interferons are potent regulatory cytokines secreted by infected host cells to establish an immediate antiviral state throughout surrounding tissues. Binding of type I and type III interferons to their cognate receptors triggers intracellular JAK-STAT phosphorylation, inducing hundreds of interferon-stimulated genes (ISGs) that arrest viral protein synthesis, degrade foreign RNA, and mobilize innate immune effectors. Impairments or autoantibodies against endogenous interferon signalling cascades strongly correlate with unrestrained viral replication and severe hyperinflammatory complications.",
+      "pediatric": "The pediatric nasopharyngeal epithelium demonstrates specialized molecular and immunophenotypic defenses characterized by high baseline antiviral readiness. Airway epithelial cells in children express lower densities of surface ACE2 and TMPRSS2 compared to mature adult cohorts, while simultaneously sustaining higher basal expression of pattern recognition receptors and mucosal interferons. This localized innate defense allows rapid neutralization of viral challenge directly at the primary site of mucosal entry, contributing to milder disease phenotypes and reduced lower respiratory involvement.",
+      "binaxnow": "Rapid lateral flow antigen tests are point-of-care qualitative chromatographic immunoassays engineered to detect viral structural proteins directly from respiratory swabs within 15 minutes. Utilizing capillary action across a nitrocellulose membrane coated with immobilized monoclonal antibodies, these portable cassettes capture target viral antigens to produce clear visual test lines. Their diagnostic utility is maximized during active viral replication windows when viral shedding is highest, providing rapid point-of-care confirmation without reliance on specialized laboratory instrumentation.",
+      "asymptomatic": "Asymptomatic infection defines individuals who harbor, replicate, and shed viable viral pathogens without exhibiting perceptible clinical manifestations or constitutional symptoms. Despite the absence of pulmonary distress or fever, nasopharyngeal viral shedding kinetics in asymptomatic cohorts can reach titers comparable to symptomatic presentations, making them covert drivers of community transmission. Deciphering the immune mechanisms that maintain tissue tolerance in these individuals provides critical insights for vaccination and therapeutic antibody development.",
+      "symptomatic": "The symptomatic adult population exhibits a broad spectrum of clinical disease ranging from mild upper respiratory catarrh to progressive hypoxemic respiratory failure and systemic coagulopathies. Symptom emergence and progression are dictated by the interplay between viral replication dynamics, mucosal tissue destruction, and hyperactivated host systemic inflammatory cascades. Early clinical recognition in this cohort facilitates timely therapeutic intervention with targeted antivirals, monoclonal antibodies, and supportive clinical therapies before irreversible tissue damage occurs.",
+      "swab": "Nasopharyngeal swab collection is the standard clinical sampling procedure for harvesting respiratory epithelial cells and associated secretions from the posterior nasopharyngeal mucosa. Using a flexible applicator with synthetic flocked polyester or Dacron filaments, the swab is gently advanced along the nasal floor to maximize contact with mucosal surfaces where respiratory viruses actively replicate. Adequate cellular harvest and correct transport medium preservation are essential to maintain sample integrity for downstream molecular and antigen diagnostic platforms.",
+      "seroconversion": "Seroconversion marks the critical immunological transition during which pathogen-specific antibodies become detectable in patient serum following natural infection or immunization. This phase reflects the maturation of the adaptive immune apparatus, characterized by the sequential emergence of low-affinity neutralizing IgM antibodies followed by high-affinity, durable IgG antibodies. Tracking seroconversion curves across diverse cohorts yields empirical data on individual immune protection, population seroprevalence, and post-infection durability.",
+      "t-cell": "Antigen-specific memory T cells represent a durable cellular arm of adaptive immunity, encompassing CD4+ helper and CD8+ cytotoxic T lymphocytes that target conserved internal pathogen epitopes. While surface neutralizing antibodies remain susceptible to viral antigenic drift, memory T cells recognize cross-reactive structural fragments, promoting rapid cellular proliferation, cytolytic clearance of infected cells, and effector cytokine release. Robust memory T-cell responses provide durable cross-variant protection against severe clinical pathology even when circulating antibody titers diminish.",
+      "ct < 25": "Diagnostic cycle threshold values below 25 designate elevated semi-quantitative concentrations of viral genomic material in patient clinical samples. These low Ct readings correlate with peak infectious viral shedding, active viral culturability, and maximal analytical sensitivity across rapid lateral flow antigen testing platforms. Clinical identification of patients within this threshold is paramount for infection control, as these individuals present the highest transmission risk to susceptible contacts."
+    };
+
+    function getNodeTopicExplanation(node) {
+      if (!node) return "Topic explanation is being synthesized from biomedical literature databases.";
+
+      const cleanName = (node.name || "").toLowerCase().trim();
+      const cleanCat = (node.category || "").toLowerCase().trim();
+
+      // 1. Search curated scientific topic explanations
+      for (const [key, text] of Object.entries(SCIENTIFIC_TOPIC_EXPLANATIONS)) {
+        if (cleanName.includes(key) || key.includes(cleanName)) {
+          return text;
+        }
+      }
+
+      // 2. Check if node.desc exists and is a substantive description
+      if (node.desc && node.desc.trim().length > 60 && 
+          !node.desc.toLowerCase().includes('entity participating in biological') &&
+          !node.desc.toLowerCase().includes('custom node')) {
+        const descTrim = node.desc.trim();
+        // If it is short, expand into a complete, high-yield 4-5 line scientific explanation
+        if (descTrim.split('.').length < 3) {
+          return `${descTrim} In cellular and physiological environments, this entity participates in coordinated biochemical pathways that regulate molecular homeostasis and downstream biological signaling. Empirical research focuses on characterizing its structural interactions, binding kinetics, and functional role during baseline physiology and pathological disruption. Continued scientific investigation provides valuable mechanistic insights for targeted biomedical intervention and diagnostic assay development.`;
+        }
+        return descTrim;
+      }
+
+      // 3. Dynamic synthesis: 4-5 lines of pure scientific topic explanation (zero meta/node/edge/paper references)
+      const cat = node.category || "Biological Entity";
+      return `${node.name} is a specialized ${cat.toLowerCase()} recognized in biomedical research for its functional role in physiological and molecular processes. Within biological systems, it participates in biochemical signaling cascades, receptor-ligand interactions, and regulatory feedback mechanisms that govern cellular homeostasis. Clinical and laboratory investigations examine its structural characteristics, kinetic properties, and functional responsiveness under varied physiological and pathological conditions. Elucidating the precise mechanisms of this entity facilitates the discovery of targeted diagnostic biomarkers and informs novel therapeutic intervention strategies.`;
+    }
+
+    // --- SIDE DRAWER: DESCRIPTION, CONNECTED ENTITIES & ONLY 2 ACTION BUTTONS ---
     function openDetailsDrawer(node) {
       const drawer = document.getElementById('details-drawer');
       const cfg = CATEGORY_CONFIG[node.category] || CATEGORY_CONFIG['Other'];
@@ -3148,18 +3989,47 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       document.getElementById('drawer-type-badge').style.border = `1px solid ${cfg.color}44`;
 
       document.getElementById('drawer-entity-name').innerText = node.name;
-      document.getElementById('drawer-entity-desc').innerText = node.desc || "Entity participating in biological regulation and diagnostic accuracy.";
-      document.getElementById('drawer-entity-degree').innerText = node.degree || 0;
 
-      const btnExpandText = document.getElementById('btn-expand-subgraph-text');
-      if (btnExpandText) {
-        const shortName = node.name.length > 18 ? node.name.slice(0, 16) + '...' : node.name;
-        btnExpandText.innerHTML = `&#9889; Deploy Sub-Graph for "${shortName}" (Double-Click)`;
+      // 4 to 5 lines of pure scientific topic explanation (zero meta/node/edge/paper references)
+      const topicExplanation = getNodeTopicExplanation(node);
+      document.getElementById('drawer-entity-desc').innerText = topicExplanation;
+
+      // Ensure Interconnected Entities dropdown starts closed on every selection
+      const connDropdown = document.getElementById('drawer-conn-dropdown');
+      if (connDropdown) {
+        connDropdown.open = false;
       }
-      // Populate connections list early to determine exact sources
+      const degreeEl = document.getElementById('drawer-entity-degree'); if (degreeEl) degreeEl.innerText = node.degree || 0;
+
+      // Populate Topic / Paper Significance Card denoting node size
+      const impContainer = document.getElementById('drawer-importance-stat');
+      const valEl = document.getElementById('drawer-entity-importance');
+      if (impContainer && valEl) {
+        const impVal = node.importance != null ? node.importance : (node.category === 'Publication' ? 1.0 : (node.degree > 4 ? 0.85 : 0.6));
+        let impLabel = 'Standard Significance';
+        let impColor = 'var(--text-muted)';
+
+        if (impVal >= 0.85) {
+          impLabel = 'High Significance (Primary Target / Core Finding)';
+          impColor = '#38bdf8';
+        } else if (impVal >= 0.65) {
+          impLabel = 'Moderate-High (Key Biological Mechanism)';
+          impColor = '#c084fc';
+        } else if (impVal >= 0.5) {
+          impLabel = 'Moderate (Regulatory / Supporting Axis)';
+          impColor = '#34d399';
+        } else {
+          impLabel = 'Accessory (Complementary Assay Factor)';
+          impColor = '#94a3b8';
+        }
+        valEl.innerText = impLabel;
+        valEl.style.color = impColor;
+      }
+
+      // Populate connections list (clean: NO edge description)
       const connContainer = document.getElementById('drawer-connections-list');
       connContainer.innerHTML = '';
-      
+
       const related = [];
       activeLinks.forEach(l => {
         const s = l.source;
@@ -3171,94 +4041,122 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         }
       });
 
-      // Determine Source and Open Website logic
-      let sourceText = currentDataset.meta?.pmc || "Literature Extraction";
+      // Determine Paper Reference and Source Website
+      let hasPaperRef = false;
+      let sourceText = "";
+      let originalUrl = null;
       let pmcLinks = [];
-      
+
       if (node.category === "Publication") {
+        hasPaperRef = true;
         sourceText = node.id;
         pmcLinks.push(node.id);
+        originalUrl = node.url || (node.doi ? `https://doi.org/${node.doi}` : null);
+        if (!originalUrl && node.id.startsWith("PMC")) {
+          originalUrl = `https://europepmc.org/article/PMC/${node.id.replace('PMC', '')}`;
+        }
       } else {
         const pubNodes = related.filter(r => r.target.category === "Publication").map(r => r.target.id);
         if (pubNodes.length > 0) {
+          hasPaperRef = true;
           pmcLinks = [...new Set(pubNodes)];
-          if (pmcLinks.length === 1) {
-            sourceText = pmcLinks[0];
-          } else {
-            sourceText = pmcLinks.length + " Sources";
-          }
-        } else if (currentDataset.meta?.pmc && currentDataset.meta.pmc !== "Multi-Source") {
+          sourceText = pmcLinks.length === 1 ? pmcLinks[0] : `${pmcLinks.length} Sources`;
+          const cleanPmc = pmcLinks[0].replace('PMC', '');
+          originalUrl = `https://europepmc.org/article/PMC/${cleanPmc}`;
+        } else if (node.url) {
+          hasPaperRef = true;
+          originalUrl = node.url;
+          sourceText = "External Article";
+        } else if (node.doi) {
+          hasPaperRef = true;
+          originalUrl = `https://doi.org/${node.doi}`;
+          sourceText = `DOI: ${node.doi}`;
+        } else if (!node.isSubNode && currentDataset?.meta?.pmc && currentDataset.meta.pmc !== "Multi-Source" && currentDataset.meta.pmc !== "User Custom") {
+          hasPaperRef = true;
+          sourceText = currentDataset.meta.pmc;
+          originalUrl = `https://europepmc.org/article/PMC/${currentDataset.meta.pmc.replace('PMC', '')}`;
           pmcLinks.push(currentDataset.meta.pmc);
         }
       }
 
-      document.getElementById('drawer-entity-source').innerText = sourceText;
-
-      const openWebBtn = document.getElementById('btn-open-website');
-      if (openWebBtn) {
-        if (pmcLinks.length > 0) {
-          openWebBtn.style.display = "flex";
-          const labelSpan = document.getElementById('btn-open-website-text') || openWebBtn;
-          labelSpan.innerText = pmcLinks.length > 1 ? `Open Sources (${pmcLinks.length}) ↗` : "Open Website ↗";
-          openWebBtn.onclick = () => {
-            pmcLinks.forEach(pmcId => {
-              const cleanId = pmcId.replace('PMC', '');
-              const url = `https://europepmc.org/article/PMC/${cleanId}`;
-              window.open(url, '_blank');
-            });
-          };
-        } else {
-          openWebBtn.style.display = "none";
-        }
-      }
-
+      const srcEl = document.getElementById('drawer-entity-source'); if (srcEl) srcEl.innerText = sourceText || 'Synthetic / Sub-Graph';
       document.getElementById('drawer-conn-count').innerText = related.length;
 
       if (related.length === 0) {
-        connContainer.innerHTML = `<div style="font-size: 12px; color: var(--text-dim);">No direct connections for this entity.</div>`;
+        connContainer.innerHTML = `<div style="font-size: 12px; color: var(--text-dim); padding: 8px 0;">No direct connections for this entity.</div>`;
       } else {
         related.forEach(item => {
           const el = document.createElement('div');
           el.className = 'connected-item';
           const tColor = CATEGORY_CONFIG[item.target.category]?.color || '#94a3b8';
           el.innerHTML = `
-            <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
-              <span style="width:7px; height:7px; border-radius:50%; background:${tColor}; flex-shrink:0;"></span>
-              <span style="font-weight:500; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${item.target.name}</span>
+            <div style="display:flex; align-items:center; gap:8px; overflow:hidden; flex:1;">
+              <span style="width:8px; height:8px; border-radius:50%; background:${tColor}; box-shadow:0 0 8px ${tColor}66; flex-shrink:0;"></span>
+              <div style="display:flex; flex-direction:column; overflow:hidden;">
+                <span style="font-weight:500; color:var(--text-main); font-size:12.5px; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${item.target.name}</span>
+                <span style="font-size:10.5px; color:${tColor}; opacity:0.85;">${item.target.category || 'Entity'}</span>
+              </div>
             </div>
-            <span class="conn-edge-label">${item.rel}</span>
+            <span style="color:var(--text-dim); font-size:11px; flex-shrink:0; padding-left:4px;">→</span>
           `;
+          el.title = `Click to focus on ${item.target.name}`;
           el.addEventListener('click', () => {
-            focusNode(item.target);
-            openDetailsDrawer(item.target);
+            onNodeClick(item.target);
           });
           connContainer.appendChild(el);
         });
       }
 
-      // Configure Original Source link and PaperLens deep link
+      // Configure One-Touch AI Chatbot & Literature Search Links
+      const aiPrompt = `Explain the biological function, mechanisms, and scientific significance of ${node.name} (${node.category}) in biomedical research.`;
+      const encPrompt = encodeURIComponent(aiPrompt);
+
+      const aiChatgpt = document.getElementById('ai-chatgpt');
+      if (aiChatgpt) {
+        aiChatgpt.href = `https://chatgpt.com/?q=${encPrompt}`;
+        aiChatgpt.title = `Ask ChatGPT about "${node.name}"`;
+      }
+      const aiPerplexity = document.getElementById('ai-perplexity');
+      if (aiPerplexity) {
+        aiPerplexity.href = `https://www.perplexity.ai/search?q=${encPrompt}`;
+        aiPerplexity.title = `Search Perplexity AI for "${node.name}" with citations`;
+      }
+      const aiClaude = document.getElementById('ai-claude');
+      if (aiClaude) {
+        aiClaude.href = `https://claude.ai/new?q=${encPrompt}`;
+        aiClaude.title = `Ask Claude about "${node.name}"`;
+      }
+      const aiGemini = document.getElementById('ai-gemini');
+      if (aiGemini) {
+        aiGemini.href = `https://gemini.google.com/app`;
+        aiGemini.title = `Ask Google Gemini about "${node.name}"`;
+      }
+      const aiPubmed = document.getElementById('ai-pubmed');
+      if (aiPubmed) {
+        aiPubmed.href = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(node.name)}`;
+        aiPubmed.title = `Search PubMed literature for "${node.name}"`;
+      }
+
+      // Action Button 1: Open Original Source (HIDDEN if no authentic paper reference)
       const btnOriginal = document.getElementById('btn-open-original-link');
       const txtOriginal = document.getElementById('btn-original-link-text');
-      const btnPaperLens = document.getElementById('btn-open-paper-analyzer');
-
-      let originalUrl = node.url || (node.doi ? `https://doi.org/${node.doi}` : null);
-      if (!originalUrl && currentDataset?.meta?.url) {
-        originalUrl = currentDataset.meta.url;
-      } else if (!originalUrl && pmcLinks.length > 0) {
-        const cleanId = pmcLinks[0].replace('PMC', '');
-        originalUrl = `https://europepmc.org/article/PMC/${cleanId}`;
-      } else if (!originalUrl && currentDataset?.meta?.pmc) {
-        originalUrl = `https://pmc.ncbi.nlm.nih.gov/articles/${currentDataset.meta.pmc}/`;
-      } else if (!originalUrl) {
-        originalUrl = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(node.name)}`;
-      }
 
       if (btnOriginal) {
-        btnOriginal.href = originalUrl;
-        if (txtOriginal) {
-          txtOriginal.innerText = `Open Original Paper Source (${sourceText}) ↗`;
+        if (hasPaperRef && originalUrl) {
+          btnOriginal.style.display = 'flex';
+          btnOriginal.href = originalUrl;
+          if (txtOriginal) {
+            txtOriginal.innerText = `Open Original Source (${sourceText}) ↗`;
+          }
+        } else {
+          // No original paper reference available: hide button!
+          btnOriginal.style.display = 'none';
         }
       }
+
+      // Action Button 2: Deconstruct in PaperLens
+      const btnPaperLens = document.getElementById('btn-open-paper-analyzer');
+      const txtPaperLens = document.getElementById('btn-paper-analyzer-text') || btnPaperLens?.querySelector('span');
 
       if (btnPaperLens) {
         let paperId = '';
@@ -3280,7 +4178,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
             paperTitle = pubTarget.name;
             paperDesc = pubTarget.desc || '';
             paperDoi = pubTarget.doi || '';
-          } else if (currentDataset?.meta) {
+          } else if (currentDataset?.meta && currentDataset.meta.pmc !== "Multi-Source" && currentDataset.meta.pmc !== "User Custom") {
             paperId = currentDataset.meta.pmc || '';
             paperTitle = currentDataset.meta.title || node.name;
             paperDesc = currentDataset.meta.summary || node.desc || '';
@@ -3294,7 +4192,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         }
 
         const params = new URLSearchParams();
-        if (paperId && paperId !== 'Multi-Source') params.set('pmc', paperId);
+        if (paperId && paperId !== 'Multi-Source' && paperId !== 'User Custom') params.set('pmc', paperId);
         if (paperTitle) params.set('title', paperTitle);
         if (paperDesc) params.set('desc', paperDesc.slice(0, 500));
         if (paperDoi) params.set('doi', paperDoi);
@@ -3304,11 +4202,9 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
         btnPaperLens.href = `../paper-analyzer/index.html?${params.toString()}`;
 
-        // Set dynamic label on button
-        const lensSpan = btnPaperLens.querySelector('span');
-        if (lensSpan) {
-          const targetTag = paperId && paperId.startsWith('PMC') ? paperId : (paperTitle ? (paperTitle.length > 20 ? paperTitle.slice(0, 18) + '...' : paperTitle) : 'Paper');
-          lensSpan.innerText = `Deconstruct in PaperLens (${targetTag}) ↗`;
+        if (txtPaperLens) {
+          const targetTag = paperId && paperId.startsWith('PMC') ? paperId : (paperTitle ? (paperTitle.length > 20 ? paperTitle.slice(0, 18) + '...' : paperTitle) : node.name);
+          txtPaperLens.innerText = `Deconstruct in PaperLens (${targetTag}) ↗`;
         }
 
         btnPaperLens.onclick = () => {
@@ -3324,44 +4220,88 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           };
           try {
             sessionStorage.setItem('paperlens_target_paper', JSON.stringify(payload));
-          } catch (e) {}
+          } catch (e) { }
         };
       }
 
-      drawer.classList.add('open');
+      const topBox = document.getElementById('floating-top-box');
+      const bottomBox = document.getElementById('floating-bottom-box');
+      if (topBox) topBox.classList.add('open');
+      if (bottomBox) bottomBox.classList.add('open');
+      if (connDropdown) {
+        connDropdown.classList.add('visible');
+        connDropdown.open = false;
+      }
     }
 
     function closeDetailsDrawer() {
-      document.getElementById('details-drawer').classList.remove('open');
+      const topBox = document.getElementById('floating-top-box');
+      const bottomBox = document.getElementById('floating-bottom-box');
+      const connBox = document.getElementById('drawer-conn-dropdown');
+      if (topBox) topBox.classList.remove('open');
+      if (bottomBox) bottomBox.classList.remove('open');
+      if (connBox) {
+        connBox.classList.remove('visible');
+        connBox.open = false;
+      }
       selectedNode = null;
-      onNodeUnhover();
+      clearIsolation();
     }
 
-    // --- FILTER & SEARCH SYSTEM ---
-    function applyFiltersAndSearch() {
+    // --- UNIFIED VISIBILITY & FILTER SYSTEM ---
+    function isNodeVisible(node) {
+      if (!node) return false;
+
+      // 1. If pruned by sliding 3-expansion limit, hide it
+      if (hiddenExpansionNodeIds.has(node.id)) return false;
+
+      // 2. If in focused exploration mode (after initial isolation):
+      if (hasInitiallyIsolated) {
+        const inInitial = initialIsolatedClusterIds.has(node.id);
+        const inActiveExp = expansionHistory.some(exp => exp.nodeIds.has(node.id) || exp.parentId === node.id);
+        if (!inInitial && !inActiveExp) return false;
+      }
+
+      // 3. Category filter
+      if (!selectedCategoryFilters.has(node.category || 'Other')) return false;
+
+      // 4. Search query
       const q = searchTerm.toLowerCase().trim();
+      if (q) {
+        const matchesName = node.name && node.name.toLowerCase().includes(q);
+        const matchesDesc = node.desc && node.desc.toLowerCase().includes(q);
+        if (!matchesName && !matchesDesc) return false;
+      }
+
+      return true;
+    }
+
+    function isLinkVisible(link) {
+      if (!link) return false;
+      const sId = link.source.id || link.source;
+      const tId = link.target.id || link.target;
+
+      // 1. If either endpoint was pruned by 3-expansion limit, hide link
+      if (hiddenExpansionNodeIds.has(sId) || hiddenExpansionNodeIds.has(tId)) return false;
+
+      // 2. Both endpoints must be visible nodes
+      const sNode = typeof link.source === 'object' ? link.source : activeNodes.find(n => n.id === sId);
+      const tNode = typeof link.target === 'object' ? link.target : activeNodes.find(n => n.id === tId);
+
+      if (!sNode || !tNode) return false;
+      return isNodeVisible(sNode) && isNodeVisible(tNode);
+    }
+
+    function applyFiltersAndSearch() {
+      if (!nodeGroup || !linkGroup) return;
 
       nodeGroup.selectAll('.node-group')
-        .each(function(d) {
-          const matchesCategory = selectedCategoryFilters.has(d.category || 'Other');
-          const matchesQuery = !q || d.name.toLowerCase().includes(q) || (d.desc && d.desc.toLowerCase().includes(q));
-          const visible = matchesCategory && matchesQuery;
-
-          d3.select(this)
-            .style('display', visible ? 'block' : 'none');
-        });
+        .style('display', d => isNodeVisible(d) ? 'block' : 'none');
 
       linkGroup.selectAll('.link')
-        .each(function(l) {
-          const s = l.source;
-          const t = l.target;
-          const sVis = selectedCategoryFilters.has(s.category || 'Other') && (!q || s.name.toLowerCase().includes(q));
-          const tVis = selectedCategoryFilters.has(t.category || 'Other') && (!q || t.name.toLowerCase().includes(q));
-          d3.select(this).style('display', (sVis && tVis) ? 'block' : 'none');
-        });
+        .style('display', l => isLinkVisible(l) ? 'block' : 'none');
     }
 
-    // --- ZOOM & VIEWPORT HELPER ---
     function fitGraphToViewport() {
       if (!activeNodes || activeNodes.length === 0) return;
 
@@ -3391,21 +4331,35 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       );
     }
 
-    function focusNode(node) {
+    function focusNode(node, customScale) {
+      if (!node) return;
       const container = document.getElementById('viewport-container');
       const width = container.clientWidth;
       const height = container.clientHeight;
-      const scale = 1.6;
+      const scale = customScale || 1.35;
 
-      const translateX = width / 2 - node.x * scale;
-      const translateY = height / 2 - node.y * scale;
+      // When details drawer is open on desktop, offset target center so node is centered in the visible canvas area
+      const topBox = document.getElementById('floating-top-box');
+      const drawerIsOpen = topBox && topBox.classList.contains('open');
+      const drawerOffset = (drawerIsOpen && width > 768) ? 190 : 0;
 
-      svg.transition().duration(650).call(
-        zoomBehavior.transform,
-        d3.zoomIdentity.translate(translateX, translateY).scale(scale)
-      );
+      const targetCenterX = (width / 2) - drawerOffset;
+      const targetCenterY = height / 2;
 
-      // Trigger pulse animation
+      const nx = (node.fx != null) ? node.fx : (node.x != null ? node.x : 0);
+      const ny = (node.fy != null) ? node.fy : (node.y != null ? node.y : 0);
+
+      const translateX = targetCenterX - nx * scale;
+      const translateY = targetCenterY - ny * scale;
+
+      svg.transition()
+        .duration(650)
+        .ease(d3.easeCubicOut)
+        .call(
+          zoomBehavior.transform,
+          d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+        );
+
       onNodeHover(node);
     }
 
@@ -3419,13 +4373,18 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     function dragged(event, d) {
       d.fx = event.x;
       d.fy = event.y;
+      if (isolatedNode && d.id === isolatedNode.id) {
+        updateAddNodePosition();
+      }
     }
 
     function dragEnded(event, d) {
       if (!event.active && simulationActive) simulation.alphaTarget(0);
-      // Keep pinned or let float? Pin them for precision layout
       d.fx = event.x;
       d.fy = event.y;
+      if (isolatedNode && d.id === isolatedNode.id) {
+        updateAddNodePosition();
+      }
     }
 
     // --- UI EVENT LISTENERS ---
@@ -3518,6 +4477,25 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         nodeGroup.selectAll('.node-circle').transition().duration(300).attr('r', d => getNodeRadius(d));
       });
 
+      // Label Text Visibility Toggle Listeners
+      const btnLabelStandard = document.getElementById('btn-label-standard');
+      const btnLabelLarge = document.getElementById('btn-label-large');
+      const vpContainer = document.getElementById('viewport-container');
+
+      if (btnLabelStandard && btnLabelLarge && vpContainer) {
+        btnLabelStandard.addEventListener('click', () => {
+          btnLabelStandard.classList.add('active');
+          btnLabelLarge.classList.remove('active');
+          vpContainer.classList.remove('labels-large');
+        });
+
+        btnLabelLarge.addEventListener('click', () => {
+          btnLabelLarge.classList.add('active');
+          btnLabelStandard.classList.remove('active');
+          vpContainer.classList.add('labels-large');
+        });
+      }
+
       // Physics Pause & Reheat
       const btnToggleSim = document.getElementById('btn-toggle-sim');
       btnToggleSim.addEventListener('click', () => {
@@ -3547,31 +4525,6 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Drawer buttons
       document.getElementById('btn-close-drawer').addEventListener('click', closeDetailsDrawer);
-      document.getElementById('btn-focus-node').addEventListener('click', () => {
-        if (selectedNode) focusNode(selectedNode);
-      });
-      document.getElementById('btn-isolate-node').addEventListener('click', () => {
-        if (!selectedNode) return;
-        const neighbors = new Set([selectedNode.id]);
-        activeLinks.forEach(l => {
-          const s = l.source.id || l.source;
-          const t = l.target.id || l.target;
-          if (s === selectedNode.id) neighbors.add(t);
-          if (t === selectedNode.id) neighbors.add(s);
-        });
-        nodeGroup.selectAll('.node-group').style('display', d => neighbors.has(d.id) ? 'block' : 'none');
-        linkGroup.selectAll('.link').style('display', l => {
-          const s = l.source.id || l.source;
-          const t = l.target.id || l.target;
-          return (neighbors.has(s) && neighbors.has(t)) ? 'block' : 'none';
-        });
-      });
-      const btnExpandSub = document.getElementById('btn-expand-node-subgraph');
-      if (btnExpandSub) {
-        btnExpandSub.addEventListener('click', () => {
-          if (selectedNode) expandNodeSubgraph(selectedNode);
-        });
-      }
 
       // Custom Data Modal
       document.getElementById('btn-custom-data').addEventListener('click', openCustomDataModal);
@@ -3604,8 +4557,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Preset buttons in modal
       document.getElementById('btn-load-preset-biomed').addEventListener('click', () => {
-        document.getElementById('input-triplets').value = 
-`TP53 -> p21 : Transactivates
+        document.getElementById('input-triplets').value =
+          `TP53 -> p21 : Transactivates
 TP53 -> MDM2 : Negative autoregulation
 MDM2 -> TP53 : Ubiquitinates & degrades
 BRCA1 -> RAD51 : Homologous recombination repair
@@ -3619,8 +4572,8 @@ BRAF -> MEK : Activates oncogenic survival`;
       });
 
       document.getElementById('btn-load-preset-pharma').addEventListener('click', () => {
-        document.getElementById('input-triplets').value = 
-`Remdesivir -> RdRp (NSP12) : Chain termination inhibitor
+        document.getElementById('input-triplets').value =
+          `Remdesivir -> RdRp (NSP12) : Chain termination inhibitor
 Paxlovid (Nirmatrelvir) -> Mpro (3CL Protease) : Main protease inhibition
 Ritonavir -> CYP3A4 : Pharmacokinetic booster inhibition
 Molnupiravir -> Viral RNA : Lethal mutagenesis incorporation
@@ -3715,7 +4668,7 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
 
           if (currentDataset.meta.articles) {
             currentDataset.meta.articles.forEach((art, i) => {
-              const pmcId = art.pmcid || art.id || `Paper_${i+1}`;
+              const pmcId = art.pmcid || art.id || `Paper_${i + 1}`;
               const pmcFormatted = pmcId.toString().startsWith('PMC') ? pmcId : ('PMC' + pmcId);
               const opt = document.createElement('option');
               opt.value = `custom_${pmcFormatted}`;
@@ -3789,7 +4742,7 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
           localStorage.setItem(GEMINI_MODEL_STORAGE_KEY, autoModel);
           if (modelInput) modelInput.value = autoModel;
         }
-      }).catch(() => {});
+      }).catch(() => { });
       updateGeminiNavStatus();
 
       // Modal open/close handlers
@@ -3927,7 +4880,7 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
         const rawId = (a.pmcid || a.id || `Paper_${i + 1}`).toString().trim();
         const pmcFormatted = rawId.startsWith('PMC') ? rawId : ('PMC' + rawId);
         const bareId = rawId.replace(/^PMC/, '');
-        
+
         let author = a.authorString || 'Researchers et al.';
         if (author.includes(',')) author = author.split(',')[0] + ' et al.';
         const paperLabel = `${author} (${pmcFormatted})`;
@@ -4213,7 +5166,7 @@ Return strictly a single JSON object with this exact structure:
               desc: `Biological entity investigated in study ${pmcId}.`
             });
           }
-          
+
           let rel = 'Investigates';
           if (item.cat === 'Diagnostic Assay') rel = 'Evaluates operational accuracy';
           else if (item.cat === 'Viral Target' || item.cat === 'Host Receptor / Enzyme' || item.cat === 'Gene / Protein') rel = 'Identifies target biomolecule';
@@ -4310,7 +5263,7 @@ Return strictly a single JSON object with this exact structure:
           logEl.innerHTML += `<div style="color:var(--emerald)">[+] Retrieved ${articles.length} open-access research articles!</div>`;
           articles.forEach((a, i) => {
             const t = a.title ? a.title.slice(0, 60) : 'Study';
-            logEl.innerHTML += `<div style="color:var(--cyan)">  ${i+1}. ${t}... (${a.pmcid || a.id || 'PMC'})</div>`;
+            logEl.innerHTML += `<div style="color:var(--cyan)">  ${i + 1}. ${t}... (${a.pmcid || a.id || 'PMC'})</div>`;
           });
         }
 
@@ -4380,7 +5333,7 @@ Return strictly a single JSON object with this exact structure:
 
           if (currentDataset.meta.articles) {
             currentDataset.meta.articles.forEach((art, i) => {
-              const pmcId = art.pmcid || art.id || `Paper_${i+1}`;
+              const pmcId = art.pmcid || art.id || `Paper_${i + 1}`;
               const pmcFormatted = pmcId.toString().startsWith('PMC') ? pmcId : ('PMC' + pmcId);
               const opt = document.createElement('option');
               opt.value = `custom_${pmcFormatted}`;
@@ -4552,4 +5505,5 @@ Return strictly a single JSON object with this exact structure:
     });
   </script>
 </body>
+
 </html>

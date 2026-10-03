@@ -3,6 +3,38 @@
  * Frontend Application Controller
  */
 
+// Persisted HUD layout preferences
+const UI_STATE_KEY = 'epiwatch.hud.v2';
+
+// Matches the .panel-left / .panel-right breakpoint in style.css
+const PHONE_QUERY = '(max-width: 720px)';
+
+const UI_DEFAULTS = {
+  sidebar: true,
+  eventsPanel: true,
+  statsBar: true,
+  legend: false,
+  chart: false
+};
+
+function loadUiState() {
+  let saved = {};
+  try {
+    saved = JSON.parse(localStorage.getItem(UI_STATE_KEY) || '{}') || {};
+  } catch (e) {
+    saved = {};
+  }
+  return { ...UI_DEFAULTS, ...saved };
+}
+
+function saveUiState() {
+  try {
+    localStorage.setItem(UI_STATE_KEY, JSON.stringify(state.ui));
+  } catch (e) {
+    /* storage unavailable — layout simply won't persist */
+  }
+}
+
 // Application State
 const state = {
   events: [],
@@ -16,7 +48,8 @@ const state = {
   isClusteringEnabled: true,
   currentTileLayer: null,
   labelsLayer: null,
-  currentBasemap: 'dark'
+  currentBasemap: 'dark',
+  ui: loadUiState()
 };
 
 // 100% Free Public Basemap Tile Providers (Zero API Key, Zero Watermark)
@@ -54,32 +87,111 @@ const SEVERITY_COLORS = {
 
 // Initialize Application
 document.addEventListener('DOMContentLoaded', () => {
-  initBackgroundParticles();
+  applyUiState();
   initMap();
   initEventListeners();
+  setBtnActive('btnToggleClusters', state.isClusteringEnabled);
   loadData();
   // Auto-refresh every 2 minutes
   setInterval(loadData, 120000);
 });
 
 /* -------------------------------------------------------------
-   Background Particle Animation
+   Floating HUD — panel + disclosure state
+   Every floating surface (filters, alert feed, metric strip) is
+   toggled from the left rail and its state is remembered.
 ------------------------------------------------------------- */
-function initBackgroundParticles() {
-  const container = document.getElementById('bgParticles');
-  if (!container) return;
-  const count = 15;
-  for (let i = 0; i < count; i++) {
-    const p = document.createElement('div');
-    p.className = 'particle';
-    const size = Math.random() * 4 + 2;
-    p.style.width = `${size}px`;
-    p.style.height = `${size}px`;
-    p.style.left = `${Math.random() * 100}vw`;
-    p.style.animationDuration = `${Math.random() * 18 + 12}s`;
-    p.style.animationDelay = `${Math.random() * 10}s`;
-    container.appendChild(p);
+const PANEL_IDS = ['sidebar', 'eventsPanel', 'statsBar'];
+
+// <details> fires `toggle` asynchronously, so restoring the saved layout would
+// otherwise look like user input and re-open panels the user had closed.
+let restoringUi = false;
+
+function applyUiState() {
+  restoringUi = true;
+
+  PANEL_IDS.forEach((id) => {
+    const panel = document.getElementById(id);
+    if (panel) panel.classList.toggle('is-hidden', !state.ui[id]);
+    syncRailButton(id);
+  });
+
+  ['legendDetails', 'chartDetails'].forEach((id) => {
+    const details = document.getElementById(id);
+    if (details) details.open = !!state.ui[id.replace('Details', '')];
+  });
+
+  closeAppsMenu();
+
+  // Release the guard once the queued toggle events have drained
+  setTimeout(() => {
+    restoringUi = false;
+  }, 0);
+}
+
+function syncRailButton(panelId) {
+  const btn = document.querySelector(`.rail-btn[data-panel="${panelId}"]`);
+  if (!btn) return;
+  btn.classList.toggle('is-active', !!state.ui[panelId]);
+  btn.setAttribute('aria-pressed', state.ui[panelId] ? 'true' : 'false');
+}
+
+function togglePanel(panelId) {
+  state.ui[panelId] = !state.ui[panelId];
+
+  // On phones the panels become full-width sheets, so only one can be open.
+  if (state.ui[panelId] && window.matchMedia(PHONE_QUERY).matches) {
+    collapseOtherPanels(panelId);
   }
+
+  const panel = document.getElementById(panelId);
+  if (panel) panel.classList.toggle('is-hidden', !state.ui[panelId]);
+
+  syncRailButton(panelId);
+  saveUiState();
+}
+
+function collapseOtherPanels(exceptId) {
+  ['sidebar', 'eventsPanel'].forEach((id) => {
+    if (id === exceptId || !state.ui[id]) return;
+    state.ui[id] = false;
+    const el = document.getElementById(id);
+    if (el) el.classList.add('is-hidden');
+    syncRailButton(id);
+  });
+}
+
+function enforcePhoneExclusivity() {
+  if (!window.matchMedia(PHONE_QUERY).matches) return;
+  if (!state.ui.sidebar || !state.ui.eventsPanel) return;
+  collapseOtherPanels('sidebar');
+  saveUiState();
+}
+
+function ensurePanelOpen(panelId) {
+  if (state.ui[panelId]) return;
+  togglePanel(panelId);
+}
+
+/* -------------------------------------------------------------
+   Overflow menu (cross-project navigation)
+------------------------------------------------------------- */
+function toggleAppsMenu(event) {
+  if (event) event.stopPropagation();
+  const menu = document.getElementById('appsMenu');
+  const btn = document.getElementById('btnAppsMenu');
+  if (!menu) return;
+
+  const open = !menu.classList.contains('open');
+  menu.classList.toggle('open', open);
+  if (btn) btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+
+function closeAppsMenu() {
+  const menu = document.getElementById('appsMenu');
+  const btn = document.getElementById('btnAppsMenu');
+  if (menu) menu.classList.remove('open');
+  if (btn) btn.setAttribute('aria-expanded', 'false');
 }
 
 /* -------------------------------------------------------------
@@ -96,8 +208,8 @@ function initMap() {
     zoomControl: false
   });
 
-  // Custom Zoom Control top-right
-  L.control.zoom({ position: 'topright' }).addTo(state.map);
+  // Zoom lives in the bottom-right gutter so the floating toolbar owns the top-right
+  L.control.zoom({ position: 'bottomright' }).addTo(state.map);
 
   // Create pane for reference labels (below markers, above base tiles)
   state.map.createPane('labels');
@@ -426,14 +538,16 @@ function resetMapView() {
 function toggleClusters() {
   state.isClusteringEnabled = !state.isClusteringEnabled;
   if (state.isClusteringEnabled) {
+    state.markersMap.forEach((m) => state.map.removeLayer(m));
     state.map.addLayer(state.clusterGroup);
-    showToast('Clustering enabled', 'info');
+    showToast('Marker clustering enabled', 'info');
   } else {
     state.map.removeLayer(state.clusterGroup);
     // Add raw markers directly
     state.markersMap.forEach((m) => m.addTo(state.map));
-    showToast('Clustering disabled', 'info');
+    showToast('Marker clustering disabled', 'info');
   }
+  setBtnActive('btnToggleClusters', state.isClusteringEnabled);
 }
 
 function toggleBasemap() {
@@ -532,6 +646,8 @@ function highlightEventCard(id) {
   document.querySelectorAll('.event-card').forEach((c) => c.classList.remove('highlighted'));
   const card = document.getElementById(`card-${id}`);
   if (card) {
+    // The card only exists while the alert feed is on-screen
+    ensurePanelOpen('eventsPanel');
     card.classList.add('highlighted');
     card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
@@ -548,6 +664,8 @@ function getSeverityIcon(sev) {
 
 /* -------------------------------------------------------------
    Chart Rendering
+   The canvas lives inside a collapsed <details>, so it has no size
+   until the user opens that section — resize on reveal.
 ------------------------------------------------------------- */
 function renderChart(diseaseStats) {
   const canvas = document.getElementById('diseaseChart');
@@ -578,7 +696,7 @@ function renderChart(diseaseStats) {
             '#00ff88',
             '#a855f7'
           ],
-          borderColor: '#0d1e2d',
+          borderColor: 'rgba(8, 18, 29, 0.9)',
           borderWidth: 2,
           hoverOffset: 4
         }
@@ -591,21 +709,24 @@ function renderChart(diseaseStats) {
         legend: {
           position: 'right',
           labels: {
-            boxWidth: 10,
-            color: '#7a9bb5',
-            font: { size: 10, family: 'Inter' },
-            padding: 8
+            boxWidth: 9,
+            boxHeight: 9,
+            color: '#8aa8c0',
+            font: { size: 9.5, family: 'Inter' },
+            padding: 7
           }
         },
         tooltip: {
-          backgroundColor: '#0a1520',
+          backgroundColor: 'rgba(8, 18, 29, 0.96)',
           titleColor: '#e8f4ff',
           bodyColor: '#00cfff',
           borderColor: 'rgba(0, 207, 255, 0.3)',
-          borderWidth: 1
+          borderWidth: 1,
+          padding: 9,
+          displayColors: false
         }
       },
-      cutout: '68%'
+      cutout: '66%'
     }
   });
 }
@@ -685,11 +806,6 @@ function closeModal(event) {
   if (modal) modal.classList.remove('open');
 }
 
-// Close modal on Escape
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') closeModal(null);
-});
-
 /* -------------------------------------------------------------
    Manual Refresh Trigger
 ------------------------------------------------------------- */
@@ -749,9 +865,64 @@ function escapeHtml(text) {
     .replace(/'/g, '&#039;');
 }
 
+function setBtnActive(id, active) {
+  const btn = document.getElementById(id);
+  if (btn) btn.classList.toggle('is-on', !!active);
+}
+
 function initEventListeners() {
-  // ESC key
+  // Two open panels would stack on top of each other on a phone
+  window.addEventListener('resize', enforcePhoneExclusivity);
+
+  // Dismiss the overflow menu on outside click
+  document.addEventListener('click', (e) => {
+    const menu = document.getElementById('appsMenu');
+    if (menu && menu.classList.contains('open') && !menu.contains(e.target)) {
+      closeAppsMenu();
+    }
+  });
+
+  // Persist + respond to the collapsed analysis sections
+  [['legendDetails', 'legend'], ['chartDetails', 'chart']].forEach(([id, key]) => {
+    const details = document.getElementById(id);
+    if (!details) return;
+
+    details.addEventListener('toggle', () => {
+      if (restoringUi) return;
+
+      state.ui[key] = details.open;
+      saveUiState();
+
+      if (key === 'chart' && details.open) {
+        // The canvas lives inside the filters panel — reveal it if it is hidden
+        ensurePanelOpen('sidebar');
+        // Give the panel its layout back before Chart.js measures the canvas
+        requestAnimationFrame(() => {
+          if (state.chart) state.chart.resize();
+        });
+      }
+    });
+  });
+
   window.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') closeModal(null);
+    // Escape closes the topmost thing: menu, then modal
+    if (e.key === 'Escape') {
+      const menu = document.getElementById('appsMenu');
+      if (menu && menu.classList.contains('open')) {
+        closeAppsMenu();
+        return;
+      }
+      closeModal(null);
+      return;
+    }
+
+    // "/" jumps to search, but never while the user is already typing
+    const typing = ['INPUT', 'TEXTAREA', 'SELECT'].includes(document.activeElement?.tagName);
+    if (e.key === '/' && !typing) {
+      e.preventDefault();
+      ensurePanelOpen('sidebar');
+      const search = document.getElementById('filterSearch');
+      if (search) search.focus();
+    }
   });
 }

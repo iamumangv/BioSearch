@@ -3,6 +3,7 @@
    ============================================ */
 
 #explore-section {
+  display: none;
   position: relative;
   z-index: 5;
   background: rgba(3, 4, 14, 0.72);

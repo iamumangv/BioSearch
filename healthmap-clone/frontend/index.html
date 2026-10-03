@@ -29,234 +29,263 @@
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
-  <!-- Animated background particles -->
-  <div class="bg-particles" id="bgParticles"></div>
+  <!-- ============================================================
+       Base layer — the map fills the entire viewport
+       ============================================================ -->
+  <div class="map-container">
+    <div id="map"></div>
 
-  <!-- Header -->
-  <header class="header" id="mainHeader">
-    <div class="header-inner">
-      <div class="logo-group">
-        <div class="logo-icon">
-          <svg viewBox="0 0 40 40" fill="none">
-            <circle cx="20" cy="20" r="18" stroke="#00ff88" stroke-width="1.5" opacity="0.3"/>
-            <circle cx="20" cy="20" r="12" stroke="#00ff88" stroke-width="1.5" opacity="0.5"/>
-            <circle cx="20" cy="20" r="5" fill="#00ff88"/>
-            <line x1="20" y1="2" x2="20" y2="8" stroke="#00ff88" stroke-width="1.5"/>
-            <line x1="20" y1="32" x2="20" y2="38" stroke="#00ff88" stroke-width="1.5"/>
-            <line x1="2" y1="20" x2="8" y2="20" stroke="#00ff88" stroke-width="1.5"/>
-            <line x1="32" y1="20" x2="38" y2="20" stroke="#00ff88" stroke-width="1.5"/>
-          </svg>
-        </div>
-        <div class="logo-text">
-          <span class="logo-name">EpiWatch</span>
-          <span class="logo-tagline">Global Disease Monitor</span>
-        </div>
-      </div>
-
-      <nav class="header-nav">
-        <a href="../../index.html" class="nav-portal-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(0, 255, 136, 0.08); border: 1px solid rgba(0, 255, 136, 0.3); border-radius: 8px; color: #00ff88; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;" title="Return to BioSearch Hub">
-          &larr; BioSearch Home
-        </a>
-        <a href="../../graphing-model/demo.html" class="nav-portal-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(0, 240, 255, 0.08); border: 1px solid rgba(0, 240, 255, 0.3); border-radius: 8px; color: #00f0ff; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;" title="Open BioGraph 3D Knowledge Mesh">
-          BioGraph Studio ↗
-        </a>
-        <a href="../../paper-analyzer/index.html" class="nav-portal-btn" style="display: inline-flex; align-items: center; gap: 6px; padding: 6px 12px; background: rgba(168, 85, 247, 0.08); border: 1px solid rgba(168, 85, 247, 0.3); border-radius: 8px; color: #c084fc; font-size: 13px; font-weight: 500; text-decoration: none; transition: all 0.2s;" title="Deconstruct in PaperLens">
-          PaperLens ↗
-        </a>
-        <div class="live-indicator" id="liveIndicator">
-          <span class="pulse-dot"></span>
-          <span>LIVE</span>
-        </div>
-        <div class="last-updated" id="lastUpdated">Connecting...</div>
-        <button class="btn-refresh" id="btnRefresh" onclick="triggerRefresh()">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M23 4v6h-6M1 20v-6h6"/>
-            <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
-          </svg>
-          Refresh
-        </button>
-      </nav>
-    </div>
-  </header>
-
-  <!-- Stats Bar -->
-  <div class="stats-bar" id="statsBar">
-    <div class="stat-item" id="statTotal">
-      <span class="stat-value" id="statTotalVal">—</span>
-      <span class="stat-label">Total Events</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-value critical" id="statActiveVal">—</span>
-      <span class="stat-label">Active Outbreaks</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-value" id="statCountriesVal">—</span>
-      <span class="stat-label">Countries Affected</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-value warning" id="statHighVal">—</span>
-      <span class="stat-label">High Severity</span>
-    </div>
-    <div class="stat-divider"></div>
-    <div class="stat-item">
-      <span class="stat-value danger" id="statCriticalVal">—</span>
-      <span class="stat-label">Critical Alerts</span>
+    <div class="map-loading" id="mapLoading">
+      <div class="loading-spinner"></div>
+      <p>Fetching global outbreak data…</p>
     </div>
   </div>
 
-  <!-- Main Layout -->
-  <main class="main-layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" id="sidebar">
-      <!-- Filters -->
-      <section class="sidebar-section">
-        <h2 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/>
+  <!-- ============================================================
+       Floating HUD — every panel is an overlay on the map
+       ============================================================ -->
+  <div class="hud-layer">
+
+    <!-- ── Top left · brand + feed status ─────────────────── -->
+    <header class="glass brandbar" id="mainHeader">
+      <div class="logo-icon">
+        <svg viewBox="0 0 40 40" fill="none">
+          <circle cx="20" cy="20" r="18" stroke="#00ff88" stroke-width="1.5" opacity="0.3"/>
+          <circle cx="20" cy="20" r="12" stroke="#00ff88" stroke-width="1.5" opacity="0.5"/>
+          <circle cx="20" cy="20" r="5" fill="#00ff88"/>
+          <line x1="20" y1="2" x2="20" y2="8" stroke="#00ff88" stroke-width="1.5"/>
+          <line x1="20" y1="32" x2="20" y2="38" stroke="#00ff88" stroke-width="1.5"/>
+          <line x1="2" y1="20" x2="8" y2="20" stroke="#00ff88" stroke-width="1.5"/>
+          <line x1="32" y1="20" x2="38" y2="20" stroke="#00ff88" stroke-width="1.5"/>
+        </svg>
+      </div>
+      <div class="logo-text">
+        <span class="logo-name">EpiWatch</span>
+        <span class="logo-tagline">Global Disease Monitor</span>
+      </div>
+      <div class="status-chip" id="liveIndicator">
+        <span class="pulse-dot"></span>
+        <span class="status-word">LIVE</span>
+        <span class="status-divider"></span>
+        <span class="last-updated" id="lastUpdated">Connecting…</span>
+      </div>
+    </header>
+
+    <!-- ── Metric strip · shown/hidden from the rail ───────── -->
+    <section class="glass statstrip" id="statsBar" aria-label="Global outbreak metrics">
+      <div class="statstrip-metrics">
+        <div class="stat" id="statTotal" title="Total outbreak events tracked">
+          <span class="stat-value" id="statTotalVal">—</span>
+          <span class="stat-label">Events</span>
+        </div>
+        <div class="stat" title="Outbreaks still being actively monitored">
+          <span class="stat-value" id="statActiveVal">—</span>
+          <span class="stat-label">Active</span>
+        </div>
+        <div class="stat" title="Distinct countries with reported events">
+          <span class="stat-value accent-blue" id="statCountriesVal">—</span>
+          <span class="stat-label">Countries</span>
+        </div>
+        <div class="stat" title="Events classified as high severity">
+          <span class="stat-value warning" id="statHighVal">—</span>
+          <span class="stat-label">High</span>
+        </div>
+        <div class="stat" title="Events classified as critical severity">
+          <span class="stat-value danger" id="statCriticalVal">—</span>
+          <span class="stat-label">Critical</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ── Top right · tool cluster ────────────────────────── -->
+    <div class="glass controlbar" role="toolbar" aria-label="Map & data tools">
+      <button class="icon-btn" id="btnRefresh" onclick="triggerRefresh()" title="Refresh surveillance feeds">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M23 4v6h-6M1 20v-6h6"/>
+          <path d="M3.51 9a9 9 0 0114.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0020.49 15"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="btnToggleBasemap" onclick="toggleBasemap()" title="Switch basemap (Dark / Satellite / Street)">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="12 2 2 7 12 12 22 7 12 2"/>
+          <polyline points="2 17 12 22 22 17"/>
+          <polyline points="2 12 12 17 22 12"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="btnToggleClusters" onclick="toggleClusters()" title="Toggle marker clustering">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
+          <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+        </svg>
+      </button>
+      <button class="icon-btn" id="btnZoomAll" onclick="resetMapView()" title="Reset world view">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+        </svg>
+      </button>
+
+      <span class="control-divider"></span>
+
+      <!-- Cross-project navigation, tucked into one menu -->
+      <div class="menu-wrap">
+        <button class="icon-btn" id="btnAppsMenu" onclick="toggleAppsMenu(event)" aria-haspopup="true" aria-expanded="false" title="Other BioSearch tools">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/>
+            <rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>
           </svg>
-          Filters
-        </h2>
-
-        <div class="filter-group">
-          <label class="filter-label" for="filterDays">Time Range</label>
-          <select class="filter-select" id="filterDays" onchange="applyFilters()">
-            <option value="7">Last 7 days</option>
-            <option value="30" selected>Last 30 days</option>
-            <option value="90">Last 90 days</option>
-            <option value="180">Last 6 months</option>
-            <option value="365">Last year</option>
-          </select>
+        </button>
+        <div class="menu" id="appsMenu" role="menu">
+          <a class="menu-item menu-item--green" href="../../index.html" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+            <span>BioSearch Home</span>
+          </a>
+          <a class="menu-item menu-item--cyan" href="../../graphing-model/demo.html" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="2.5"/><circle cx="5" cy="18" r="2.5"/><circle cx="19" cy="18" r="2.5"/><path d="M10.5 7 6.5 15.6M13.5 7l4 8.6M7.5 18h9"/></svg>
+            <span>BioGraph Studio</span>
+          </a>
+          <a class="menu-item menu-item--purple" href="../../paper-analyzer/index.html" role="menuitem">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6M9 13h6M9 17h4"/></svg>
+            <span>PaperLens</span>
+          </a>
         </div>
+      </div>
+    </div>
 
-        <div class="filter-group">
-          <label class="filter-label" for="filterDisease">Disease</label>
-          <select class="filter-select" id="filterDisease" onchange="applyFilters()">
-            <option value="">All Diseases</option>
-          </select>
-        </div>
+    <!-- ── Left · panel rail (always visible) ───────────────── -->
+    <nav class="glass rail" aria-label="Panel visibility">
+      <button class="rail-btn is-active" data-panel="sidebar" onclick="togglePanel('sidebar')" aria-pressed="true" title="Filters">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="4" y1="8" x2="20" y2="8"/><circle cx="9" cy="8" r="2.4"/>
+          <line x1="4" y1="16" x2="20" y2="16"/><circle cx="15" cy="16" r="2.4"/>
+        </svg>
+        <span>Filters</span>
+      </button>
+      <button class="rail-btn is-active" data-panel="eventsPanel" onclick="togglePanel('eventsPanel')" aria-pressed="true" title="Alert feed">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M8 6h13M8 12h13M8 18h13M3.6 6h.01M3.6 12h.01M3.6 18h.01"/>
+        </svg>
+        <span>Alerts</span>
+      </button>
+      <button class="rail-btn is-active" data-panel="statsBar" onclick="togglePanel('statsBar')" aria-pressed="true" title="Metrics">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M3 20.5h18"/><rect x="4.5" y="11" width="3.6" height="6.5" rx="1"/>
+          <rect x="10.2" y="6" width="3.6" height="11.5" rx="1"/><rect x="15.9" y="14" width="3.6" height="3.5" rx="1"/>
+        </svg>
+        <span>Metrics</span>
+      </button>
 
-        <div class="filter-group">
-          <label class="filter-label" for="filterSeverity">Severity</label>
-          <select class="filter-select" id="filterSeverity" onchange="applyFilters()">
-            <option value="">All Severities</option>
-            <option value="critical">🔴 Critical</option>
-            <option value="high">🟠 High</option>
-            <option value="medium">🟡 Medium</option>
-            <option value="low">🟢 Low</option>
-          </select>
-        </div>
+      <span class="rail-divider"></span>
 
-        <div class="filter-group">
-          <label class="filter-label" for="filterSource">Data Source</label>
-          <select class="filter-select" id="filterSource" onchange="applyFilters()">
-            <option value="">All Sources (Free APIs)</option>
-            <option value="WHO">WHO</option>
-            <option value="CDC">CDC</option>
-            <option value="ECDC">ECDC</option>
-            <option value="Disease.sh">Disease.sh</option>
-            <option value="Global News">Global News</option>
-          </select>
+      <button class="rail-btn rail-btn--danger" id="btnClearFilters" onclick="clearFilters()" title="Clear every active filter">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6 6 18M6 6l12 12"/></svg>
+        <span>Clear</span>
+      </button>
+    </nav>
+
+    <!-- ── Left · filters + tools panel ────────────────────── -->
+    <aside class="glass panel panel-left" id="sidebar" aria-label="Filters and analysis tools">
+      <div class="panel-head">
+        <h2 class="panel-title">Filters</h2>
+        <button class="icon-btn icon-btn--ghost" onclick="togglePanel('sidebar')" title="Collapse panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
+      </div>
+
+      <div class="panel-body">
+        <div class="filter-grid">
+          <div class="filter-group">
+            <label class="filter-label" for="filterDays">Time Range</label>
+            <select class="filter-select" id="filterDays" onchange="applyFilters()">
+              <option value="7">Last 7 days</option>
+              <option value="30">Last 30 days</option>
+              <option value="90">Last 90 days</option>
+              <option value="180">Last 6 months</option>
+              <option value="365" selected>Last year</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filterDisease">Disease</label>
+            <select class="filter-select" id="filterDisease" onchange="applyFilters()">
+              <option value="">All Diseases</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filterSeverity">Severity</label>
+            <select class="filter-select" id="filterSeverity" onchange="applyFilters()">
+              <option value="">All Severities</option>
+              <option value="critical">Critical</option>
+              <option value="high">High</option>
+              <option value="medium">Medium</option>
+              <option value="low">Low</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label class="filter-label" for="filterSource">Source</label>
+            <select class="filter-select" id="filterSource" onchange="applyFilters()">
+              <option value="">All Sources</option>
+              <option value="WHO">WHO</option>
+              <option value="CDC">CDC</option>
+              <option value="ECDC">ECDC</option>
+              <option value="Disease.sh">Disease.sh</option>
+              <option value="Global News">Global News</option>
+            </select>
+          </div>
         </div>
 
         <div class="filter-group">
           <label class="filter-label" for="filterSearch">Search</label>
           <div class="search-input-wrap">
-            <input type="text" class="filter-input" id="filterSearch" placeholder="Search events..." oninput="applyFilters()" />
+            <input type="text" class="filter-input" id="filterSearch" placeholder="Search events…" oninput="applyFilters()" />
             <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
             </svg>
           </div>
         </div>
 
-        <button class="btn-clear-filters" id="btnClearFilters" onclick="clearFilters()">Clear All Filters</button>
-      </section>
+        <!-- Secondary tools, collapsed by default -->
+        <details class="disclosure" id="chartDetails">
+          <summary class="disclosure-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            <span>Disease Distribution</span>
+          </summary>
+          <div class="chart-wrap"><canvas id="diseaseChart"></canvas></div>
+        </details>
 
-      <!-- Legend -->
-      <section class="sidebar-section">
-        <h2 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/>
-          </svg>
-          Severity Legend
-        </h2>
-        <div class="legend">
-          <div class="legend-item"><span class="legend-dot critical"></span><span>Critical — Immediate action required</span></div>
-          <div class="legend-item"><span class="legend-dot high"></span><span>High — Active outbreak</span></div>
-          <div class="legend-item"><span class="legend-dot medium"></span><span>Medium — Under monitoring</span></div>
-          <div class="legend-item"><span class="legend-dot low"></span><span>Low — Advisory / Watch</span></div>
-        </div>
-      </section>
-
-      <!-- Top Diseases Chart -->
-      <section class="sidebar-section">
-        <h2 class="section-title">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16">
-            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
-          </svg>
-          Disease Distribution
-        </h2>
-        <div class="chart-wrap">
-          <canvas id="diseaseChart"></canvas>
-        </div>
-      </section>
-
-      <!-- Event count -->
-      <div class="sidebar-event-count" id="sidebarEventCount">
-        Loading events...
+        <details class="disclosure" id="legendDetails">
+          <summary class="disclosure-head">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+            <span>Severity Legend</span>
+          </summary>
+          <div class="legend">
+            <div class="legend-item"><span class="legend-dot critical"></span><span>Critical — immediate action</span></div>
+            <div class="legend-item"><span class="legend-dot high"></span><span>High — active outbreak</span></div>
+            <div class="legend-item"><span class="legend-dot medium"></span><span>Medium — under monitoring</span></div>
+            <div class="legend-item"><span class="legend-dot low"></span><span>Low — advisory / watch</span></div>
+          </div>
+        </details>
       </div>
     </aside>
 
-    <!-- Map Area -->
-    <div class="map-container">
-      <div id="map"></div>
-
-      <!-- Map Controls Overlay -->
-      <div class="map-overlay-controls">
-        <button class="map-btn" id="btnZoomAll" onclick="resetMapView()" title="Reset view">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
-          </svg>
-        </button>
-        <button class="map-btn" id="btnToggleClusters" onclick="toggleClusters()" title="Toggle clustering">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
-          </svg>
-        </button>
-        <button class="map-btn" id="btnToggleBasemap" onclick="toggleBasemap()" title="Switch Map Layer (Dark Canvas / Satellite / Street)">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polygon points="12 2 2 7 12 12 22 7 12 2"/>
-            <polyline points="2 17 12 22 22 17"/>
-            <polyline points="2 12 12 17 22 12"/>
-          </svg>
-        </button>
-      </div>
-
-      <!-- Loading overlay -->
-      <div class="map-loading" id="mapLoading">
-        <div class="loading-spinner"></div>
-        <p>Fetching global outbreak data...</p>
-      </div>
-    </div>
-
-    <!-- Event List Panel -->
-    <div class="events-panel" id="eventsPanel">
-      <div class="events-panel-header">
-        <h2>Recent Alerts</h2>
+    <!-- ── Right · alert feed ──────────────────────────────── -->
+    <section class="glass panel panel-right" id="eventsPanel" aria-label="Recent alerts">
+      <div class="panel-head">
+        <h2 class="panel-title">Recent Alerts</h2>
         <span class="events-count-badge" id="eventCountBadge">0</span>
+        <button class="icon-btn icon-btn--ghost" onclick="togglePanel('eventsPanel')" title="Collapse panel">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><polyline points="6 9 12 15 18 9"/></svg>
+        </button>
       </div>
-      <div class="events-list" id="eventsList">
-        <!-- Events will be injected here -->
-      </div>
-    </div>
-  </main>
+      <div class="events-list" id="eventsList"></div>
+      <div class="panel-foot" id="sidebarEventCount">Loading events…</div>
+    </section>
+  </div>
 
   <!-- Detail Modal -->
   <div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
-    <div class="modal" id="modal">
+    <div class="modal" id="modal" role="dialog" aria-modal="true">
       <button class="modal-close" onclick="closeModal(null)" id="btnModalClose">✕</button>
       <div class="modal-content" id="modalContent"></div>
     </div>

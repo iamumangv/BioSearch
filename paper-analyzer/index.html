@@ -3,88 +3,82 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PaperLens — Research Paper Deep Intelligence &amp; Topology Analyzer | BioSearch</title>
-  <meta name="description" content="AI-powered scientific literature intelligence engine. Deconstruct core research questions, exact benchmark numbers, component ablation studies, intellectual lineage, interactive topology graphs, and comparative related papers." />
-  
+  <title>PaperLens — Research Paper Analysis Workbench · BioSearch</title>
+  <meta name="description" content="A structured reading desk for primary literature: research question and hypothesis, reported benchmark figures, component ablations, intellectual lineage, and citation topology for each paper." />
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet" />
-  
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+
   <!-- Stylesheet -->
   <link rel="stylesheet" href="css/style.css" />
 </head>
 <body>
 
-  <!-- Top Sticky Navigation Bar -->
+  <!-- Masthead -->
   <header class="top-navbar">
     <div class="nav-container">
-      <a href="../index.html" class="brand-group" title="Back to BioSearch Platform">
+      <a href="../index.html" class="brand-group" title="Back to BioSearch">
         <div class="brand-icon">
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00f0ff" stroke-width="2.2">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
             <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"></path>
             <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"></path>
           </svg>
         </div>
         <div class="brand-text">
-          <h1>BioSearch <span>PaperLens</span></h1>
-          <div class="brand-tag">Deep Research Intelligence</div>
+          <h1>PaperLens <span>BioSearch</span></h1>
+          <div class="brand-tag">Analysis Workbench</div>
         </div>
       </a>
 
-      <!-- Center Active Paper Selector Dropdown -->
       <div class="nav-center-selector">
-        <span class="selector-label">Paper:</span>
-        <select id="paper-select" class="paper-dropdown" aria-label="Select Landmark Paper"></select>
+        <label class="selector-label" for="paper-select">Record</label>
+        <select id="paper-select" class="paper-dropdown" aria-label="Select paper"></select>
       </div>
 
-      <!-- Action Buttons -->
       <div class="nav-actions">
-        <button class="btn-nav" id="btn-export-dossier" title="Export Full Analysis to Markdown">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <button class="btn-nav" id="btn-export-dossier" title="Export this analysis as Markdown">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
             <polyline points="7 10 12 15 17 10"></polyline>
             <line x1="12" y1="15" x2="12" y2="3"></line>
           </svg>
-          <span>Export Dossier</span>
+          <span>Export</span>
         </button>
 
         <button class="btn-nav primary" id="btn-analyze-custom">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
             <line x1="12" y1="5" x2="12" y2="19"></line>
             <line x1="5" y1="12" x2="19" y2="12"></line>
           </svg>
-          <span>Analyze Custom Paper</span>
+          <span>Analyze Paper</span>
         </button>
 
-        <a href="../index.html" class="btn-nav" title="Return to Main Portal">
-          <span>Home ↗</span>
+        <a href="../index.html" class="btn-nav" title="Return to BioSearch home">
+          <span>Home</span>
         </a>
       </div>
     </div>
   </header>
 
-  <!-- Landmark Preset Chips Subnav -->
-  <nav class="presets-bar" aria-label="Landmark Papers Quick Navigation">
+  <!-- Corpus rail -->
+  <nav class="presets-bar" aria-label="Indexed papers">
     <div class="presets-container">
-      <span class="preset-title-tag">Landmark Presets:</span>
+      <span class="preset-title-tag">Corpus</span>
       <div class="preset-chips-list" id="preset-chips"></div>
     </div>
   </nav>
 
-  <!-- Main Content Layout -->
   <main class="main-layout">
 
-    <!-- Paper Overview Hero Banner -->
-    <section class="paper-hero-banner" id="paper-overview">
+    <!-- Article header -->
+    <article class="paper-hero-banner" id="paper-overview">
       <div class="hero-meta-row">
         <span class="meta-badge" id="paper-category">Structural Biology &amp; AI</span>
         <span class="meta-item bold" id="paper-journal">Nature</span>
-        <span class="meta-item">&middot;</span>
         <span class="meta-item" id="paper-year">2024</span>
-        <span class="meta-item">&middot;</span>
-        <span class="meta-item" id="paper-citations">1,840+ Citations</span>
-        <span class="meta-item">&middot;</span>
+        <span class="meta-item" id="paper-citations">1,840 citations</span>
         <a href="#" target="_blank" rel="noopener" class="meta-doi-link" id="paper-doi">DOI: 10.1038/s41586-024-07487-w</a>
         <a href="#" target="_blank" rel="noopener" class="meta-badge category" id="paper-pmcid">PMC11116235</a>
       </div>
@@ -95,48 +89,30 @@
       <div class="paper-summary-box">
         <p id="paper-summary">AlphaFold 3 introduces a unified diffusion-based architecture that jointly predicts 3D structures of complexes across all biomolecular classes—proteins, DNA, RNA, ligands, ions, and chemical modifications—with atomic accuracy, surpassing specialized docking and folding tools.</p>
       </div>
-    </section>
+    </article>
 
-    <!-- Sticky Section Navigator Bar -->
-    <nav class="sticky-section-nav" aria-label="Paper Analysis Sections">
-      <a href="#section-core-question" class="section-nav-link active">
-        <span>1. Core Question</span>
-      </a>
-      <a href="#section-key-findings" class="section-nav-link">
-        <span>2. Key Findings &amp; Benchmarks</span>
-      </a>
-      <a href="#section-ablation-studies" class="section-nav-link">
-        <span>3. Ablation Studies</span>
-      </a>
-      <a href="#section-lineage-foundation" class="section-nav-link">
-        <span>4. Lineage &amp; Foundation</span>
-      </a>
-      <a href="#section-paper-graph" class="section-nav-link">
-        <span>5. Paper Graph</span>
-      </a>
-      <a href="#section-related-papers" class="section-nav-link">
-        <span>6. Related Papers</span>
-      </a>
+    <!-- Section index -->
+    <nav class="sticky-section-nav" aria-label="Analysis sections">
+      <a href="#section-core-question" class="section-nav-link active"><span class="idx">01</span><span>Research Question</span></a>
+      <a href="#section-key-findings" class="section-nav-link"><span class="idx">02</span><span>Findings &amp; Benchmarks</span></a>
+      <a href="#section-ablation-studies" class="section-nav-link"><span class="idx">03</span><span>Ablations</span></a>
+      <a href="#section-lineage-foundation" class="section-nav-link"><span class="idx">04</span><span>Lineage</span></a>
+      <a href="#section-paper-graph" class="section-nav-link"><span class="idx">05</span><span>Citation Graph</span></a>
+      <a href="#section-related-papers" class="section-nav-link"><span class="idx">06</span><span>Related Work</span></a>
+      <div class="reading-progress"><span id="reading-progress-bar"></span></div>
     </nav>
 
-    <!-- SECTION 1: Core Research Question -->
     <section class="section-wrapper" id="section-core-question"></section>
-
-    <!-- SECTION 2: Key Findings -->
     <section class="section-wrapper" id="section-key-findings"></section>
-
-    <!-- SECTION 3: Ablation Studies -->
     <section class="section-wrapper" id="section-ablation-studies"></section>
-
-    <!-- SECTION 4: Lineage & Foundation -->
     <section class="section-wrapper" id="section-lineage-foundation"></section>
 
-    <!-- SECTION 5: Paper Knowledge Graph Section -->
+    <!-- Citation topology -->
     <section class="section-wrapper" id="section-paper-graph">
       <div class="section-card">
         <div class="card-header">
           <div class="card-icon cyan">
-            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
               <circle cx="18" cy="5" r="3"></circle>
               <circle cx="6" cy="12" r="3"></circle>
               <circle cx="18" cy="19" r="3"></circle>
@@ -145,49 +121,46 @@
             </svg>
           </div>
           <div>
-            <div class="section-badge cyan">Interactive Topology Mesh</div>
-            <h2 class="card-title">Paper Knowledge &amp; Influence Graph</h2>
+            <div class="section-badge cyan">Citation Topology</div>
+            <h2 class="card-title">Knowledge &amp; Influence Graph</h2>
           </div>
         </div>
 
-        <!-- Graph Filter & Controls Toolbar -->
         <div class="graph-toolbar">
           <div class="filter-pills-group">
-            <button class="filter-pill active" data-filter="all">All Topologies</button>
-            <button class="filter-pill" data-filter="foundation">Foundational Lineage</button>
-            <button class="filter-pill" data-filter="method">Core Architecture</button>
-            <button class="filter-pill" data-filter="entity">Target Entities</button>
-            <button class="filter-pill" data-filter="benchmark">Validation Benchmarks</button>
+            <button class="filter-pill active" data-filter="all">All nodes</button>
+            <button class="filter-pill" data-filter="foundation">Foundational lineage</button>
+            <button class="filter-pill" data-filter="method">Core architecture</button>
+            <button class="filter-pill" data-filter="entity">Target entities</button>
+            <button class="filter-pill" data-filter="benchmark">Validation</button>
           </div>
 
           <div class="graph-action-buttons">
-            <button class="btn-graph-tool" id="btn-graph-zoom-in" title="Zoom In">+</button>
-            <button class="btn-graph-tool" id="btn-graph-zoom-out" title="Zoom Out">&minus;</button>
-            <button class="btn-graph-tool" id="btn-graph-reset" title="Reset View">&#x21bb;</button>
+            <button class="btn-graph-tool" id="btn-graph-zoom-in" title="Zoom in" aria-label="Zoom in">+</button>
+            <button class="btn-graph-tool" id="btn-graph-zoom-out" title="Zoom out" aria-label="Zoom out">&minus;</button>
+            <button class="btn-graph-tool" id="btn-graph-reset" title="Reset view" aria-label="Reset view">&#x21bb;</button>
           </div>
         </div>
 
-        <!-- Graph Viewport & Inspector Layout -->
         <div class="graph-display-layout">
           <div class="graph-viewport-box" id="graph-viewport">
             <canvas id="paper-graph-canvas"></canvas>
-            <div class="graph-hint">Drag nodes &middot; Scroll to zoom &middot; Click node to inspect details</div>
+            <div class="graph-hint">Drag to move &middot; Scroll to zoom &middot; Select a node to inspect</div>
           </div>
 
-          <!-- Topology Inspector Drawer -->
           <aside class="graph-inspector-panel" id="graph-inspector">
             <div class="inspector-header">
-              <div class="inspector-node-type" id="inspector-node-group">Primary Publication</div>
+              <div class="inspector-node-type" id="inspector-node-group">Primary publication</div>
               <h3 class="inspector-node-name" id="inspector-node-title">AlphaFold 3</h3>
             </div>
 
             <div class="inspector-details-box">
-              <div class="inspector-label">Node Description</div>
-              <p class="inspector-info-text" id="inspector-node-info">Click any entity, paper, or method in the graph to inspect structural relationships and telemetry.</p>
+              <div class="inspector-label">Description</div>
+              <p class="inspector-info-text" id="inspector-node-info">Select any paper, method, or entity in the graph to read its role and its connections.</p>
             </div>
 
             <div>
-              <div class="inspector-label">Connected Graph Edges</div>
+              <div class="inspector-label">Connected edges</div>
               <div class="inspector-edges-list" id="inspector-node-edges"></div>
             </div>
           </aside>
@@ -195,40 +168,39 @@
       </div>
     </section>
 
-    <!-- SECTION 6: Related Papers -->
     <section class="section-wrapper" id="section-related-papers"></section>
 
   </main>
 
-  <!-- Modal: Custom Paper Ingestion & Gemini AI Synthesis -->
-  <div class="modal-overlay" id="custom-paper-modal" role="dialog" aria-modal="true">
+  <!-- Ingest dialog -->
+  <div class="modal-overlay" id="custom-paper-modal" role="dialog" aria-modal="true" aria-labelledby="modal-heading">
     <div class="modal-dialog">
       <div class="modal-header">
-        <h3 class="modal-title">Analyze Custom Research Paper</h3>
-        <button class="btn-modal-close" id="btn-close-modal" aria-label="Close modal">&times;</button>
+        <h3 class="modal-title" id="modal-heading">Analyze a paper</h3>
+        <button class="btn-modal-close" id="btn-close-modal" aria-label="Close dialog">&times;</button>
       </div>
 
       <div class="modal-body">
         <div class="form-group">
-          <label class="form-label" for="custom-input-title">Paper Title / Topic</label>
-          <input type="text" id="custom-input-title" class="form-input" placeholder="e.g., Cryo-EM structure of human respiratory syncytial virus polymerase" />
+          <label class="form-label" for="custom-input-title">Title or topic</label>
+          <input type="text" id="custom-input-title" class="form-input" placeholder="e.g. Cryo-EM structure of human respiratory syncytial virus polymerase" />
         </div>
 
         <div class="form-row">
           <div class="form-group">
-            <label class="form-label" for="custom-input-pmcid">PubMed Central (PMC ID)</label>
-            <input type="text" id="custom-input-pmcid" class="form-input" placeholder="e.g., PMC8259047" />
+            <label class="form-label" for="custom-input-pmcid">PubMed Central ID</label>
+            <input type="text" id="custom-input-pmcid" class="form-input" placeholder="e.g. PMC8259047" />
           </div>
           <div class="form-group">
-            <label class="form-label" for="custom-input-doi">DOI (Optional)</label>
-            <input type="text" id="custom-input-doi" class="form-input" placeholder="e.g., 10.1038/s41586-021-03819-2" />
+            <label class="form-label" for="custom-input-doi">DOI (optional)</label>
+            <input type="text" id="custom-input-doi" class="form-input" placeholder="e.g. 10.1038/s41586-021-03819-2" />
           </div>
         </div>
 
         <div class="form-group">
-          <label class="form-label" for="custom-input-text">Paper Abstract or Full-Text Excerpt</label>
-          <textarea id="custom-input-text" class="form-textarea" placeholder="Paste the paper abstract, problem statement, and key findings here. PaperLens will extract the core hypothesis, exact quantitative numbers, ablation studies, lineage, and graph structure..."></textarea>
-          <div class="form-help">Optionally powered by Google Gemini API if configured in your .env file.</div>
+          <label class="form-label" for="custom-input-text">Abstract or full-text excerpt</label>
+          <textarea id="custom-input-text" class="form-textarea" placeholder="Paste the abstract, problem statement, and reported results. PaperLens extracts the research question, quantitative findings, ablations, lineage, and graph structure."></textarea>
+          <div class="form-help">Uses the Gemini endpoint when a key is configured in <code>.env</code>; otherwise falls back to local heuristic extraction.</div>
         </div>
 
         <div class="modal-status" id="analysis-status"></div>
@@ -236,26 +208,24 @@
 
       <div class="modal-actions">
         <button class="btn-modal secondary" id="btn-cancel-modal">Cancel</button>
-        <button class="btn-modal primary" id="btn-execute-analysis">Extract &amp; Synthesize</button>
+        <button class="btn-modal primary" id="btn-execute-analysis">Extract &amp; Analyze</button>
       </div>
     </div>
   </div>
 
-  <!-- Platform Footer -->
   <footer class="portal-footer">
     <div class="footer-content">
-      <div class="footer-brand">BioSearch PaperLens &middot; Scientific Intelligence</div>
-      <div class="footer-text">Rigorous hypothesis decomposition, causal ablation verification, and topological literature graphs.</div>
+      <div class="footer-brand">PaperLens · BioSearch</div>
+      <div class="footer-text">A reading desk for primary literature: hypothesis decomposition, reported figures, component ablations, and citation topology.</div>
       <div class="footer-links">
-        <a href="../index.html" class="footer-link">BioSearch Home</a>
-        <a href="../graphing-model/demo.html" class="footer-link">Knowledge Graphing Model</a>
-        <a href="../healthmap-clone/frontend/index.html" class="footer-link">HealthMap Surveillance</a>
-        <a href="../model-viewer.html" class="footer-link">3D Molecular Viewer</a>
+        <a href="../index.html" class="footer-link">BioSearch</a>
+        <a href="../graphing-model/demo.html" class="footer-link">Graphing model</a>
+        <a href="../healthmap-clone/frontend/index.html" class="footer-link">HealthMap</a>
+        <a href="../model-viewer.html" class="footer-link">Molecular viewer</a>
       </div>
     </div>
   </footer>
 
-  <!-- Scripts -->
   <script src="js/papers-data.js"></script>
   <script src="js/graph-visualizer.js"></script>
   <script src="js/analyzer.js"></script>
