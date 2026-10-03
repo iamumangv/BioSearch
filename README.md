@@ -190,9 +190,31 @@ Website_Draft/
 │   ├── index.html
 │   ├── threat_map.js
 │   └── threat_map.css
+├── paper-analyzer/             # 📑 PaperLens: Deep Research Intelligence & Topology Engine
+│   ├── index.html              # Main PaperLens application
+│   ├── css/style.css           # Glassmorphic cyber-biomedical design system
+│   └── js/
+│       ├── papers-data.js      # Landmark datasets (AlphaFold 3, Prime Editing, ESMFold, Med-PaLM 2, etc.)
+│       ├── graph-visualizer.js # Canvas force-directed topology simulation with node inspector
+│       └── analyzer.js         # Reactive UI, section rendering, custom paper synthesis & exports
 └── graphing-model/             # 🕸️ BioGraph Knowledge Graph Studio
     ├── demo.html               # Main knowledge graph app
     ├── index.html              # Mirror of demo.html
     ├── fetch_pmc_and_generate_graph.py  # Python CLI generator
     └── README.md               # BioGraph specific documentation
 ```
+
+---
+
+## 📑 BioSearch PaperLens — Research Paper Deep Analyzer
+
+Accessible directly at: [`http://localhost:8080/paper-analyzer/index.html`](http://localhost:8080/paper-analyzer/index.html)
+
+PaperLens provides structured, verifiable deep decomposition of scientific publications across 6 core pillars:
+1. **Core Research Question:** The exact hypothesis ($H_1$), formal problem formulation, status quo bottleneck, and falsification criteria.
+2. **Key Findings:** Quantitative headline results with exact benchmark metrics (PoseBusters, CASP15, TM-score, MedQA, ROC-AUC, $p$-values) and qualitative breakthroughs.
+3. **Ablation Studies:** Component-by-component necessity analysis isolating the causal contribution of each subsystem when perturbed or removed.
+4. **Lineage & Foundation:** Direct ancestral frameworks and landmark papers, explicitly contrasting inherited concepts with key divergences.
+5. **Interactive Paper Knowledge Graph:** Real-time force-directed canvas graph with particle telemetry, topology filters, and interactive node inspector.
+6. **Related Papers:** Semantic and methodological comparison grid highlighting shared concepts, competitor status, and key differences.
+
