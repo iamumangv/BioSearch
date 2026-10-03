@@ -51,20 +51,28 @@ This guide explains how to dynamically retrieve research papers on **any scienti
 
 ## 2. Method A: Zero-Code Dynamic Search via Web UI
 
-BioGraph Studio contains a built-in **Live PMC / PubMed Query Engine** that connects directly to the scientific literature from your browser without installing anything.
+BioGraph Studio contains a built-in **Live PMC / PubMed Query Engine** that connects directly to the scientific literature from your browser without installing anything, augmented with **Google Gemini API** for LLM-powered entity and relationship synthesis.
 
-### Steps:
+### Instant Search from Main Website:
+You can query any scientific topic directly from the BioSearch homepage (`index.html`) using the **"Search Graph"** input or trending topic pills.
+It routes automatically to:
+```
+graphing-model/demo.html?query=CRISPR-Cas9
+```
+Upon arrival, the system displays the high-tech synthesis radar, retrieves relevant open-access papers, activates Gemini entity extraction, and weaves the 3D force-directed knowledge graph in real time!
+
+### Manual Search in Studio:
 1. Open [`graphing-model/demo.html`](demo.html) in your browser.
-2. Click the **"Graph Any Data"** button in the top navigation bar.
-3. Select the **"🌐 Live PMC / PubMed Query"** tab.
+2. Click the **"✨ Gemini AI"** button in the top navigation bar to configure your optional Gemini API key (stored securely in browser localStorage).
+3. Click **"Graph Any Data"** &rarr; **"🌐 Live PMC / PubMed Query"** tab.
 4. Enter any research topic or query string, for example:
    - `CRISPR Cas9 gene editing therapeutics`
    - `mRNA vaccine lipid nanoparticle delivery`
    - `CAR-T cell exhaustion immunotherapy`
    - `PMC8259047 OR PMC11462910 OR PMC8293341`
-5. Select the paper limit (3, 5, or 8 papers).
+5. Ensure **"Extract extra nodes & relations with Gemini API"** is checked.
 6. Click **"Fetch & Generate Graph"**.
-7. The browser fetches the papers via Europe PMC API, parses titles, abstracts, and relationships, and immediately renders the interactive force-directed graph!
+7. The browser fetches papers via Europe PMC API, synthesizes deep entity nodes and directional biological relationships with Gemini API (or the high-precision semantic fallback), and immediately renders the interactive force-directed graph!
 
 ---
 
@@ -80,11 +88,19 @@ Python 3.8+ (standard library only; no extra pip packages required).
 python fetch_pmc_and_generate_graph.py --topic "CRISPR-Cas9 gene editing" --max-papers 5 --output crispr_graph.json
 ```
 
+### With Google Gemini API Entity Synthesis:
+```bash
+python fetch_pmc_and_generate_graph.py --topic "AlphaFold 3 protein complexes" --gemini-api-key "AIzaSy..." --model "gemini-3.1-flash-lite" --output alphafold_graph.json
+```
+*(Or set the `GEMINI_API_KEY` and `GEMINI_MODEL` environment variables in `.env`)*
+
 ### Command Options:
 | Flag | Description | Default | Example |
 | :--- | :--- | :--- | :--- |
 | `--topic` | Research topic or PMC identifiers | `"COVID-19 rapid antigen tests ACE2"` | `--topic "Alzheimer amyloid beta microglia"` |
 | `--max-papers` | Number of articles to retrieve | `5` | `--max-papers 8` |
+| `--gemini-api-key` | Google Gemini API key for LLM node synthesis | `""` (or `$GEMINI_API_KEY`) | `--gemini-api-key "AIzaSy..."` |
+| `--model` | Google Gemini model identifier | `"gemini-3.1-flash-lite"` (or `$GEMINI_MODEL`) | `--model "gemini-3.1-flash-lite"` |
 | `--format` | Output format (`json` or `triplets`) | `json` | `--format triplets` |
 | `--output` | Destination file path | stdout | `--output my_graph.json` |
 

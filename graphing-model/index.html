@@ -981,6 +981,147 @@
       text-decoration: underline;
     }
 
+    /* Synthesis Progress Overlay */
+    .synthesis-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(6, 9, 19, 0.88);
+      backdrop-filter: blur(20px);
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+    .synthesis-overlay.visible {
+      opacity: 1;
+      pointer-events: auto;
+    }
+    .synthesis-modal {
+      width: 90%;
+      max-width: 520px;
+      background: rgba(13, 19, 34, 0.95);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6), 0 0 30px rgba(0, 240, 255, 0.2);
+      text-align: center;
+      position: relative;
+    }
+    .synthesis-radar {
+      width: 72px;
+      height: 72px;
+      margin: 0 auto 18px;
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .radar-pulse {
+      position: absolute;
+      inset: 0;
+      border-radius: 50%;
+      border: 2px solid var(--cyan);
+      opacity: 0.8;
+      animation: radarPing 2s cubic-bezier(0, 0, 0.2, 1) infinite;
+    }
+    .radar-pulse.outer {
+      animation-delay: 0.8s;
+      border-color: var(--purple);
+    }
+    @keyframes radarPing {
+      75%, 100% {
+        transform: scale(2);
+        opacity: 0;
+      }
+    }
+    .radar-icon {
+      font-size: 28px;
+      z-index: 2;
+    }
+    .synthesis-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 4px 10px;
+      border-radius: var(--radius-full);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+      color: var(--cyan);
+      margin-bottom: 12px;
+    }
+    .synthesis-title {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .synthesis-desc {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 24px;
+    }
+    .synthesis-steps {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      text-align: left;
+    }
+    .synthesis-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      padding: 10px 14px;
+      border-radius: var(--radius-md);
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      transition: all 0.3s ease;
+    }
+    .synthesis-step.active {
+      background: rgba(0, 240, 255, 0.08);
+      border-color: rgba(0, 240, 255, 0.4);
+    }
+    .synthesis-step.completed {
+      background: rgba(16, 185, 129, 0.08);
+      border-color: rgba(16, 185, 129, 0.4);
+    }
+    .step-icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: 700;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .synthesis-step.active .step-icon {
+      background: var(--cyan);
+      color: #060913;
+    }
+    .synthesis-step.completed .step-icon {
+      background: var(--emerald);
+      color: #ffffff;
+    }
+    .step-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-main);
+    }
+    .step-sub {
+      font-size: 11px;
+      color: var(--text-dim);
+      margin-top: 2px;
+    }
+
     /* Responsive */
     @media (max-width: 900px) {
       .search-box {
@@ -1049,6 +1190,11 @@
 
     <!-- Right Actions -->
     <div class="nav-right">
+      <button id="btn-gemini-modal" class="btn" style="background: rgba(139, 92, 246, 0.16); border: 1px solid rgba(139, 92, 246, 0.45); color: #c4b5fd;" title="Configure Google Gemini AI Key &amp; Settings">
+        <span style="font-size:13px;">✨</span>
+        <span id="gemini-nav-label">Gemini AI</span>
+      </button>
+
       <button id="btn-custom-data" class="btn btn-primary" title="Input custom graph data (JSON, Triplets, CSV)">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
           <path d="M12 5v14m-7-7h14"></path>
@@ -1351,6 +1497,15 @@
                 <a href="#" class="live-topic-quick" data-q="CAR-T cell exhaustion immunotherapy" style="color:var(--cyan); text-decoration:none;">CAR-T Exhaustion</a>
               </div>
             </div>
+
+            <!-- Gemini AI Integration Setting -->
+            <div style="display:flex; align-items:center; justify-content:space-between; background:rgba(139, 92, 246, 0.08); border:1px solid rgba(139, 92, 246, 0.25); padding:8px 12px; border-radius:var(--radius-sm); font-size:12px;">
+              <label style="display:flex; align-items:center; gap:8px; cursor:pointer;">
+                <input type="checkbox" id="check-use-gemini" checked style="accent-color:var(--purple);" />
+                <span>Extract extra nodes &amp; relations with <strong>Gemini API</strong></span>
+              </label>
+              <a href="#" id="link-open-gemini-settings" style="color:var(--cyan); text-decoration:none; font-size:11px;">Configure Gemini Key &rarr;</a>
+            </div>
           </div>
           <div id="live-search-log" style="font-family:var(--font-mono); font-size:11px; background:#080c16; border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px; height:120px; overflow-y:auto; color:var(--text-muted); line-height:1.5;">
             Ready to query PubMed Central & Europe PMC REST API...
@@ -1399,6 +1554,109 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         <button id="btn-apply-custom-data" class="btn btn-primary">
           Generate &amp; Render Graph &rarr;
         </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal: Gemini API Key & AI Settings -->
+  <div id="gemini-modal" class="modal-overlay">
+    <div class="modal-card" style="max-width: 580px;">
+      <div class="modal-header">
+        <div class="modal-title" style="display:flex; align-items:center; gap:8px;">
+          <span style="color:#c4b5fd;">✨</span> Google Gemini AI Knowledge Engine
+        </div>
+        <button id="btn-close-gemini-modal" class="drawer-close-btn">&times;</button>
+      </div>
+      <div class="modal-body" style="padding: 24px;">
+        <p style="font-size: 13px; color: var(--text-muted); line-height: 1.6; margin-bottom: 16px;">
+          When searching for a new research topic, BioSearch retrieves open-access publications from Europe PMC / PubMed and uses <strong>Google Gemini API</strong> to analyze the paper abstracts, automatically synthesizing additional biological entities (genes, viral targets, receptors, pathways, clinical metrics) and extracting scientific relationships.
+        </p>
+
+        <div style="background: rgba(139, 92, 246, 0.08); border: 1px solid rgba(139, 92, 246, 0.25); border-radius: var(--radius-md); padding: 14px; margin-bottom: 20px;">
+          <label style="display:block; font-size: 12px; font-weight: 600; color: #c4b5fd; margin-bottom: 8px;">
+            Google Gemini API Key
+          </label>
+          <div style="display:flex; gap:8px;">
+            <input type="password" id="gemini-api-key-input" class="search-input" placeholder="AIzaSy..." style="flex:1;" />
+            <button id="btn-toggle-key-visibility" class="btn" style="padding:6px 12px;" title="Show/Hide Key">👁️</button>
+          </div>
+          <div style="display:flex; align-items:center; justify-content:space-between; margin-top:8px; font-size:11px;">
+            <span id="gemini-key-status" style="color:var(--text-dim);">Stored locally in your browser</span>
+            <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener" style="color:var(--cyan); text-decoration:none;">
+              Get free Gemini API key at Google AI Studio &nearr;
+            </a>
+          </div>
+
+          <div style="margin-top: 14px; border-top: 1px solid rgba(139, 92, 246, 0.2); padding-top: 12px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 6px;">
+              <label for="gemini-model-input" style="font-size: 12px; font-weight: 600; color: #c4b5fd;">
+                Gemini Model
+              </label>
+              <span id="gemini-model-status" style="font-size: 11px; color: var(--text-dim);">Default: gemini-3.1-flash-lite</span>
+            </div>
+            <input type="text" id="gemini-model-input" class="search-input" value="gemini-3.1-flash-lite" placeholder="gemini-3.1-flash-lite" style="width:100%; font-family: monospace; font-size: 12px;" />
+            <div style="display:flex; gap:8px; margin-top:8px; font-size:11px; align-items:center;">
+              <span style="color:var(--text-dim);">Presets:</span>
+              <button type="button" class="gemini-model-preset-btn" data-model="gemini-3.1-flash-lite" style="background:rgba(139,92,246,0.18); border:1px solid rgba(139,92,246,0.4); color:#c4b5fd; padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer;">gemini-3.1-flash-lite</button>
+              <button type="button" class="gemini-model-preset-btn" data-model="gemini-1.5-flash" style="background:transparent; border:1px solid var(--border); color:var(--text-muted); padding:2px 8px; border-radius:4px; font-size:11px; cursor:pointer;">gemini-1.5-flash</button>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex; gap:10px; margin-bottom: 16px;">
+          <button id="btn-test-gemini-key" class="btn" style="flex:1;">
+            <span>Test Connection</span>
+          </button>
+          <button id="btn-save-gemini-key" class="btn btn-primary" style="flex:1;">
+            <span>Save Key</span>
+          </button>
+        </div>
+
+        <div id="gemini-test-result" style="font-size: 12px; min-height: 24px;"></div>
+      </div>
+      <div class="modal-footer">
+        <button id="btn-close-gemini-footer" class="btn" style="margin-left:auto;">Done</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Synthesis Progress Overlay (shown during graph generation) -->
+  <div id="synthesis-overlay" class="synthesis-overlay">
+    <div class="synthesis-modal">
+      <div class="synthesis-radar">
+        <div class="radar-pulse"></div>
+        <div class="radar-pulse outer"></div>
+        <div class="radar-icon">🧬</div>
+      </div>
+      <div class="synthesis-badge">
+        <span class="badge-dot" style="width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan);"></span>
+        <span id="synthesis-phase-tag">Europe PMC &amp; Gemini AI Knowledge Synthesis</span>
+      </div>
+      <h2 class="synthesis-title" id="synthesis-title">Building Knowledge Graph</h2>
+      <p class="synthesis-desc" id="synthesis-topic-text">Topic: CRISPR-Cas9</p>
+
+      <div class="synthesis-steps">
+        <div class="synthesis-step active" id="synth-step-1">
+          <div class="step-icon"><span>1</span></div>
+          <div class="step-text">
+            <div class="step-name">Querying Europe PMC &amp; PubMed Literature</div>
+            <div class="step-sub" id="synth-sub-1">Retrieving peer-reviewed papers...</div>
+          </div>
+        </div>
+        <div class="synthesis-step" id="synth-step-2">
+          <div class="step-icon"><span>2</span></div>
+          <div class="step-text">
+            <div class="step-name">Gemini AI Entity &amp; Relationship Synthesis</div>
+            <div class="step-sub" id="synth-sub-2">Extracting biological nodes, targets, pathways &amp; mechanisms...</div>
+          </div>
+        </div>
+        <div class="synthesis-step" id="synth-step-3">
+          <div class="step-icon"><span>3</span></div>
+          <div class="step-text">
+            <div class="step-name">Force-Directed Graph Compilation</div>
+            <div class="step-sub" id="synth-sub-3">Calculating physics mesh &amp; rendering...</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -1642,7 +1900,19 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     window.addEventListener('DOMContentLoaded', () => {
       initSvgAndZoom();
       initUIListeners();
-      loadDataset('combined');
+      initGeminiUI();
+
+      // Check if arriving from main website with a topic query (e.g. ?query=CRISPR-Cas9)
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryTopic = urlParams.get('query') || urlParams.get('q') || urlParams.get('topic');
+      if (queryTopic) {
+        // Set search inputs and auto-generate knowledge graph for that topic
+        document.getElementById('live-search-topic').value = queryTopic;
+        document.getElementById('node-search').value = queryTopic;
+        runLiveTopicSearch(queryTopic);
+      } else {
+        loadDataset('combined');
+      }
     });
 
     function initSvgAndZoom() {
@@ -2481,94 +2751,430 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
       }
     }
 
-    // --- LIVE PMC REST API QUERY ENGINE ---
-    async function runLivePmcSearch() {
-      const topic = document.getElementById('live-search-topic').value.trim();
-      const limit = document.getElementById('live-search-limit').value;
-      const logEl = document.getElementById('live-search-log');
+    // --- GEMINI API INTEGRATION & SETTINGS ---
+    const GEMINI_STORAGE_KEY = 'biograph_gemini_api_key';
+    const GEMINI_MODEL_STORAGE_KEY = 'biograph_gemini_model';
+    const DEFAULT_GEMINI_MODEL = 'gemini-3.1-flash-lite';
+    // Fallback key if not provided via .env or settings UI
+    const DEFAULT_GEMINI_API_KEY = '';
 
-      if (!topic) {
-        logEl.innerHTML = `<span style="color:var(--rose)">[!] Please enter a research topic or query terms.</span>`;
-        return;
+    function getGeminiApiKey() {
+      return (localStorage.getItem(GEMINI_STORAGE_KEY) || (window.GEMINI_API_KEY || DEFAULT_GEMINI_API_KEY)).trim();
+    }
+
+    function getGeminiModel() {
+      return (localStorage.getItem(GEMINI_MODEL_STORAGE_KEY) || (window.GEMINI_MODEL || DEFAULT_GEMINI_MODEL)).trim();
+    }
+
+    function initGeminiUI() {
+      const savedKey = getGeminiApiKey();
+      const savedModel = getGeminiModel();
+      const keyInput = document.getElementById('gemini-api-key-input');
+      const modelInput = document.getElementById('gemini-model-input');
+      const testResult = document.getElementById('gemini-test-result');
+
+      if (modelInput) {
+        modelInput.value = savedModel;
       }
 
-      logEl.innerHTML = `<div>[*] Connecting to Europe PMC REST API...</div>`;
-      logEl.innerHTML += `<div>[*] Searching literature for: "${topic}" (limit: ${limit})...</div>`;
+      if (keyInput) {
+        keyInput.value = savedKey;
+      }
 
-      try {
-        const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(topic)}&format=json&pageSize=${limit}&resultType=core`;
-        const resp = await fetch(url);
-        if (!resp.ok) throw new Error(`HTTP error ${resp.status}`);
-        const data = await resp.json();
-        const articles = data.resultList?.result || [];
-
-        if (articles.length === 0) {
-          logEl.innerHTML += `<div style="color:var(--rose)">[-] No articles returned. Try broadening the search keywords.</div>`;
-          return;
+      // Auto-load from local .env if served via HTTP server
+      fetch('../.env').catch(() => fetch('.env')).then(r => r && r.ok ? r.text() : '').then(txt => {
+        if (!txt) return;
+        const keyMatch = txt.match(/GEMINI_API_KEY\s*=\s*["']?([^"'\r\n#]+)["']?/);
+        if (keyMatch && keyMatch[1] && keyMatch[1].trim() && !keyMatch[1].includes('your_gemini')) {
+          const autoKey = keyMatch[1].trim();
+          localStorage.setItem(GEMINI_STORAGE_KEY, autoKey);
+          if (keyInput) keyInput.value = autoKey;
+          updateGeminiNavStatus();
         }
+        const modelMatch = txt.match(/GEMINI_MODEL\s*=\s*["']?([^"'\r\n#]+)["']?/);
+        if (modelMatch && modelMatch[1] && modelMatch[1].trim()) {
+          const autoModel = modelMatch[1].trim();
+          localStorage.setItem(GEMINI_MODEL_STORAGE_KEY, autoModel);
+          if (modelInput) modelInput.value = autoModel;
+        }
+      }).catch(() => {});
+      updateGeminiNavStatus();
 
-        logEl.innerHTML += `<div style="color:var(--emerald)">[+] Retrieved ${articles.length} open-access research articles!</div>`;
-        articles.forEach((a, i) => {
-          const t = a.title ? a.title.slice(0, 60) : 'Study';
-          logEl.innerHTML += `<div style="color:var(--cyan)">  ${i+1}. ${t}... (${a.pmcid || a.id || 'PMC'})</div>`;
+      // Modal open/close handlers
+      const btnOpen = document.getElementById('btn-gemini-modal');
+      const btnClose = document.getElementById('btn-close-gemini-modal');
+      const btnDone = document.getElementById('btn-close-gemini-footer');
+      const linkOpen = document.getElementById('link-open-gemini-settings');
+      const modal = document.getElementById('gemini-modal');
+
+      function openModal(e) {
+        if (e) e.preventDefault();
+        if (modal) modal.classList.add('open');
+      }
+      function closeModal() {
+        if (modal) modal.classList.remove('open');
+      }
+
+      if (btnOpen) btnOpen.addEventListener('click', openModal);
+      if (linkOpen) linkOpen.addEventListener('click', openModal);
+      if (btnClose) btnClose.addEventListener('click', closeModal);
+      if (btnDone) btnDone.addEventListener('click', closeModal);
+
+      // Model preset buttons
+      document.querySelectorAll('.gemini-model-preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const m = btn.getAttribute('data-model');
+          if (m && modelInput) {
+            modelInput.value = m;
+            localStorage.setItem(GEMINI_MODEL_STORAGE_KEY, m);
+          }
         });
+      });
 
-        logEl.innerHTML += `<div>[*] Extracting biological entities & semantic relationships...</div>`;
-        const graphData = extractEntitiesFromArticles(articles);
-        logEl.innerHTML += `<div style="color:var(--emerald)">[+] Generated ${graphData.nodes.length} entities & ${graphData.links.length} relationships!</div>`;
-        logEl.innerHTML += `<div>[*] Rendering interactive force-directed graph...</div>`;
+      // Key toggle visibility
+      const btnToggle = document.getElementById('btn-toggle-key-visibility');
+      if (btnToggle && keyInput) {
+        btnToggle.addEventListener('click', () => {
+          keyInput.type = keyInput.type === 'password' ? 'text' : 'password';
+        });
+      }
 
-        currentDataset = {
-          meta: {
-            title: `Live PMC Network: ${topic}`,
-            authors: `Extracted dynamically across ${articles.length} publications via Europe PMC API`,
-            journal: "Real-Time BioGraph Literature Engine",
-            pmc: articles.map(a => a.pmcid || a.id).filter(Boolean).slice(0, 3).join(", "),
-            url: `https://europepmc.org/search?query=${encodeURIComponent(topic)}`,
-            summary: `Automated knowledge graph extracted from: ${articles.map(a => a.title).slice(0, 2).join('; ')}`
-          },
-          nodes: graphData.nodes,
-          links: graphData.links
-        };
+      // Save key & model
+      const btnSave = document.getElementById('btn-save-gemini-key');
+      if (btnSave && keyInput) {
+        btnSave.addEventListener('click', () => {
+          const val = keyInput.value.trim();
+          const chosenModel = modelInput ? (modelInput.value.trim() || DEFAULT_GEMINI_MODEL) : DEFAULT_GEMINI_MODEL;
+          localStorage.setItem(GEMINI_MODEL_STORAGE_KEY, chosenModel);
+          if (val) {
+            localStorage.setItem(GEMINI_STORAGE_KEY, val);
+            if (testResult) {
+              testResult.innerHTML = `<span style="color:var(--emerald);">✓ Saved! Using model <strong>${chosenModel}</strong>. Gemini AI entity synthesis is enabled.</span>`;
+            }
+          } else {
+            localStorage.removeItem(GEMINI_STORAGE_KEY);
+            if (testResult) {
+              testResult.innerHTML = `<span style="color:var(--text-muted);">Key cleared. Using local semantic extractor.</span>`;
+            }
+          }
+          updateGeminiNavStatus();
+        });
+      }
 
-        setTimeout(() => {
-          closeCustomDataModal();
-          document.getElementById('dataset-selector').value = 'custom';
-          updatePaperBanner(currentDataset.meta);
-          populateCategoryFilters();
-          renderGraph();
-        }, 700);
-
-      } catch (err) {
-        logEl.innerHTML += `<div style="color:var(--rose)">[-] Live query error: ${err.message}. You can also use the Natural Triplets tab.</div>`;
+      // Test key & model
+      const btnTest = document.getElementById('btn-test-gemini-key');
+      if (btnTest && keyInput) {
+        btnTest.addEventListener('click', async () => {
+          const val = keyInput.value.trim();
+          const chosenModel = (modelInput ? modelInput.value.trim() : '') || getGeminiModel();
+          if (!val) {
+            if (testResult) testResult.innerHTML = `<span style="color:var(--rose);">Please enter a key to test.</span>`;
+            return;
+          }
+          if (testResult) testResult.innerHTML = `<span style="color:var(--cyan);">Connecting to Google Gemini (${chosenModel})...</span>`;
+          try {
+            const resp = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${chosenModel}:generateContent?key=${val}`, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                contents: [{ parts: [{ text: `Respond strictly with valid JSON: {"status": "ok", "model": "${chosenModel}"}` }] }],
+                generationConfig: { responseMimeType: "application/json" }
+              })
+            });
+            if (!resp.ok) {
+              const errData = await resp.json().catch(() => ({}));
+              throw new Error(errData.error?.message || `HTTP ${resp.status}`);
+            }
+            if (testResult) {
+              testResult.innerHTML = `<span style="color:var(--emerald);">✓ Connection verified! <strong>${chosenModel}</strong> is active and ready.</span>`;
+            }
+            localStorage.setItem(GEMINI_STORAGE_KEY, val);
+            localStorage.setItem(GEMINI_MODEL_STORAGE_KEY, chosenModel);
+            updateGeminiNavStatus();
+          } catch (err) {
+            if (testResult) {
+              testResult.innerHTML = `<span style="color:var(--rose);">✗ Test failed with ${chosenModel}: ${err.message}</span>`;
+            }
+          }
+        });
       }
     }
 
-    function extractEntitiesFromArticles(articles) {
-      const BIOMED_TERMS = {
-        "Gene / Protein": ["cas9", "crispr", "ace2", "tp53", "brca1", "egfr", "kras", "p21", "rad51", "parp1", "spike", "nucleocapsid", "interferon", "interleukin", "il-6", "tnf", "t cell", "b cell"],
-        "Host Receptor / Enzyme": ["receptor", "tmprss2", "polymerase", "protease", "kinase", "helicase", "synthase"],
-        "Diagnostic Assay": ["rt-pcr", "pcr", "elisa", "lfia", "antigen test", "rapid test", "sequencing", "qpcr", "western blot"],
-        "Disease / Pathology": ["covid-19", "sars-cov-2", "infection", "cancer", "carcinoma", "pneumonia", "ards", "sepsis", "tumor"],
-        "Drug / Therapeutic": ["vaccine", "antibody", "monoclonal", "inhibitor", "remdesivir", "paxlovid", "mrna", "dexamethasone"],
-        "Specimen / Matrix": ["serum", "plasma", "nasopharyngeal", "saliva", "blood", "epithelium", "mucosa", "swab"]
-      };
+    function updateGeminiNavStatus() {
+      const navBtn = document.getElementById('btn-gemini-modal');
+      const navLabel = document.getElementById('gemini-nav-label');
+      const statusLabel = document.getElementById('gemini-key-status');
+      const key = getGeminiApiKey();
 
-      const REL_RULES = [
-        { regex: /binds to|interacts with|complexes with/i, label: "Binds to" },
-        { regex: /inhibits|blocks|suppresses/i, label: "Inhibits" },
-        { regex: /activates|upregulates|induces|promotes/i, label: "Activates / Upregulates" },
-        { regex: /detects|measures|screens for/i, label: "Detects / Quantifies" },
-        { regex: /causes|leads to|results in/i, label: "Causes / Mediates" },
-        { regex: /regulates|modulates/i, label: "Regulates" },
-        { regex: /expressed in|found in/i, label: "Expressed in" }
-      ];
+      if (key) {
+        if (navLabel) navLabel.innerText = "Gemini AI (Active)";
+        if (navBtn) {
+          navBtn.style.background = "rgba(16, 185, 129, 0.15)";
+          navBtn.style.borderColor = "rgba(16, 185, 129, 0.4)";
+          navBtn.style.color = "#34d399";
+        }
+        if (statusLabel) statusLabel.innerText = "Active: Key configured locally";
+      } else {
+        if (navLabel) navLabel.innerText = "Gemini AI";
+        if (navBtn) {
+          navBtn.style.background = "rgba(139, 92, 246, 0.16)";
+          navBtn.style.borderColor = "rgba(139, 92, 246, 0.45)";
+          navBtn.style.color = "#c4b5fd";
+        }
+        if (statusLabel) statusLabel.innerText = "Stored locally in your browser";
+      }
+    }
+
+    // --- GEMINI API KNOWLEDGE GRAPH EXTRACTION (PER-PAPER FIDELITY) ---
+    async function callGeminiKnowledgeGraphApi(articles, topic, apiKey) {
+      const idAliasMap = new Map();
+      const papersSummary = [];
+      const paperIdsList = [];
+
+      articles.forEach((a, i) => {
+        const rawId = (a.pmcid || a.id || `Paper_${i + 1}`).toString().trim();
+        const pmcFormatted = rawId.startsWith('PMC') ? rawId : ('PMC' + rawId);
+        const bareId = rawId.replace(/^PMC/, '');
+        
+        let author = a.authorString || 'Researchers et al.';
+        if (author.includes(',')) author = author.split(',')[0] + ' et al.';
+        const paperLabel = `${author} (${pmcFormatted})`;
+
+        // Standardize alias mapping
+        idAliasMap.set(rawId, pmcFormatted);
+        idAliasMap.set(bareId, pmcFormatted);
+        idAliasMap.set(pmcFormatted, pmcFormatted);
+        idAliasMap.set(`Paper_${i + 1}`, pmcFormatted);
+
+        paperIdsList.push(pmcFormatted);
+
+        const title = a.title || 'Untitled';
+        const abstract = (a.abstractText || a.title || '').slice(0, 1500);
+
+        papersSummary.push(`[PAPER ${i + 1}]
+ID: ${pmcFormatted}
+Citation: ${paperLabel}
+Title: ${title}
+Abstract: ${abstract}`);
+      });
+
+      const prompt = `You are a world-class bioinformatician and biomedical knowledge graph engineer.
+Analyze these open-access scientific publications retrieved from Europe PMC/PubMed for the research query: "${topic}".
+
+RESEARCH PAPERS:
+${papersSummary.join('\n\n')}
+
+CRITICAL ARCHITECTURE REQUIREMENT (DEMO GRAPH FIDELITY):
+Just like the BioSearch flagship demo graph (which models detailed scientific constellations around each publication), you MUST scrape and extract 4 to 6 specific, high-value grounded nodes FOR EACH RESEARCH PAPER above:
+
+1. A "Publication" node for the paper itself (use the exact paper ID provided: ${paperIdsList.join(', ')}).
+2. Diagnostic Assay / Technology / Experimental Platform investigated in that paper (e.g. specific test name, assay kit, sequencing platform, therapeutic delivery system).
+3. Biological Target / Gene / Protein / Host Receptor / Enzyme examined in that paper (e.g. viral spike, nucleocapsid, host ACE2, TMPRSS2, cytokines, Cas9, guide RNA).
+4. Specific Clinical Metric / Quantitative Finding / Variable discovered in that paper (e.g. sensitivity %, specificity, cycle threshold Ct < 25, read time, antibody titer, off-target rate).
+5. Specimen / Biological Matrix / Patient Cohort tested in that paper (e.g. nasopharyngeal swab, capillary blood, serum, pediatric cohort, saliva, tissue).
+6. Clinical Outcome / Disease State / Regulatory Guideline addressed (e.g. seroconversion, WHO target, SAHPRA approval, mild COVID-19, primary hyperoxaluria).
+
+MANDATORY GRAPH RELATIONSHIPS (EDGES):
+1. Paper-to-Entity Links:
+   EVERY paper node MUST have direct outgoing edges to ALL of the specific entities extracted from that paper!
+   Use descriptive relationships:
+   - Paper -> Assay: "Evaluates operational accuracy" / "Deploys methodology"
+   - Paper -> Target/Gene: "Investigates target antigen" / "Profiles target gene"
+   - Paper -> Metric: "Discovers clinical finding" / "Measures threshold"
+   - Paper -> Specimen: "Validated on clinical specimen" / "Tests patient cohort"
+   - Paper -> Guideline/Outcome: "Benchmarks against standard" / "Reports clinical outcome"
+2. Entity-to-Entity & Cross-Paper Links:
+   Create 8 to 18 high-value biological & scientific links between entities (within and across papers that share biology or targets):
+   - Assay -> Target: "Detects / Captures"
+   - Target -> Receptor: "Binds with high affinity to"
+   - Receptor -> Outcome: "Mediates viral entry"
+   - Assay -> Metric: "Achieves pooled sensitivity"
+   - Metric -> Guideline: "Exceeds threshold criteria"
+   - Assay -> Specimen: "Requires matrix"
+
+ALLOWED CATEGORIES (Strictly use these exact strings):
+- "Publication"
+- "Diagnostic Assay"
+- "Viral Target"
+- "Host Receptor / Enzyme"
+- "Immune Response"
+- "Clinical Metric / Variable"
+- "Regulatory / Guideline"
+- "Disease / Pathology"
+- "Specimen / Matrix"
+- "Gene / Protein"
+- "Drug / Therapeutic"
+- "Other"
+
+OUTPUT FORMAT:
+Return strictly a single JSON object with this exact structure:
+{
+  "nodes": [
+    { "id": "PMC_ID", "name": "Author et al. (PMC_ID)", "category": "Publication", "desc": "Evaluated 30 lateral flow immunoassays..." },
+    { "id": "EntityId", "name": "Display Name", "category": "CategoryName", "desc": "Brief scientific role or finding..." }
+  ],
+  "links": [
+    { "source": "PMC_ID", "target": "EntityId", "relationship": "RelationshipLabel" }
+  ]
+}`;
+
+      const model = getGeminiModel();
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+      const resp = await fetch(endpoint, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents: [{ parts: [{ text: prompt }] }],
+          generationConfig: {
+            responseMimeType: "application/json",
+            temperature: 0.15
+          }
+        })
+      });
+
+      if (!resp.ok) {
+        const errJson = await resp.json().catch(() => ({}));
+        throw new Error(errJson.error?.message || `Gemini API HTTP ${resp.status}`);
+      }
+
+      const data = await resp.json();
+      const rawText = data.candidates?.[0]?.content?.parts?.[0]?.text;
+      if (!rawText) throw new Error("Empty response from Gemini API");
+
+      const parsed = JSON.parse(rawText);
+      if (!parsed.nodes || !Array.isArray(parsed.nodes) || !parsed.links || !Array.isArray(parsed.links)) {
+        throw new Error("Invalid graph format in Gemini response");
+      }
+
+      const nodeMap = new Map();
+
+      // Pre-seed canonical publication nodes for all papers
+      articles.forEach((art, idx) => {
+        const canonicalId = paperIdsList[idx];
+        let author = art.authorString || 'Researchers et al.';
+        if (author.includes(',')) author = author.split(',')[0] + ' et al.';
+        const paperLabel = `${author} (${canonicalId})`;
+        nodeMap.set(canonicalId, {
+          id: canonicalId,
+          name: paperLabel,
+          category: "Publication",
+          desc: `${(art.title || '').replace(/\.$/, '')}. Source: Europe PMC.`
+        });
+      });
+
+      // Insert and normalize all entity nodes
+      parsed.nodes.forEach(n => {
+        if (!n || !n.id || !n.name) return;
+        const normId = idAliasMap.get(n.id) || n.id;
+        if (nodeMap.has(normId) && nodeMap.get(normId).category === 'Publication') {
+          if (n.desc) nodeMap.get(normId).desc = n.desc;
+          if (n.name && n.name.length > 5) nodeMap.get(normId).name = n.name;
+        } else {
+          nodeMap.set(normId, {
+            id: normId,
+            name: n.name,
+            category: CATEGORY_CONFIG[n.category] ? n.category : inferCategory(n.name),
+            desc: n.desc || `Entity identified by Gemini AI in research on ${topic}.`
+          });
+        }
+      });
+
+      // Filter and validate links
+      const cleanLinks = [];
+      const seenLinks = new Set();
+      parsed.links.forEach(l => {
+        if (!l || !l.source || !l.target) return;
+        const s = idAliasMap.get(l.source) || l.source;
+        const t = idAliasMap.get(l.target) || l.target;
+        if (!nodeMap.has(s) || !nodeMap.has(t) || s === t) return;
+        const key = `${s}->${t}`;
+        const revKey = `${t}->${s}`;
+        if (!seenLinks.has(key) && !seenLinks.has(revKey)) {
+          seenLinks.add(key);
+          cleanLinks.push({
+            source: s,
+            target: t,
+            relationship: l.relationship || 'Interacts with'
+          });
+        }
+      });
+
+      // GUARANTEE DEMO FIDELITY: Ensure every paper node has at least 3 connected edges
+      articles.forEach((art, idx) => {
+        const canonicalId = paperIdsList[idx];
+        const existingEdges = cleanLinks.filter(l => l.source === canonicalId || l.target === canonicalId);
+        if (existingEdges.length < 3) {
+          const text = `${art.title || ''} ${art.abstractText || ''}`.toLowerCase();
+          for (const [eId, entity] of nodeMap.entries()) {
+            if (entity.category === 'Publication' || eId === canonicalId) continue;
+            if (text.includes(entity.name.toLowerCase()) || text.includes(eId.toLowerCase())) {
+              const key = `${canonicalId}->${eId}`;
+              const revKey = `${eId}->${canonicalId}`;
+              if (!seenLinks.has(key) && !seenLinks.has(revKey)) {
+                seenLinks.add(key);
+                let rel = 'Investigates / Evaluates';
+                if (entity.category === 'Diagnostic Assay') rel = 'Deploys methodology';
+                else if (entity.category === 'Viral Target' || entity.category === 'Host Receptor / Enzyme') rel = 'Investigates target';
+                else if (entity.category === 'Clinical Metric / Variable') rel = 'Reports clinical finding';
+                else if (entity.category === 'Specimen / Matrix') rel = 'Validated on specimen';
+                else if (entity.category === 'Regulatory / Guideline') rel = 'Benchmarks against standard';
+                cleanLinks.push({ source: canonicalId, target: eId, relationship: rel });
+              }
+            }
+          }
+        }
+      });
+
+      return {
+        nodes: Array.from(nodeMap.values()),
+        links: cleanLinks,
+        geminiUsed: true
+      };
+    }
+
+    // --- ENHANCED SEMANTIC FALLBACK EXTRACTOR (PER-PAPER DEMO FIDELITY) ---
+    function extractEntitiesEnhancedFallback(articles, topic) {
+      const BIOMED_LEXICON = {
+        "Gene / Protein": [
+          "cas9", "crispr", "sgrna", "dcas9", "ace2", "tp53", "brca1", "brca2", "egfr", "kras", "p21", "rad51", "parp1", "spike",
+          "nucleocapsid", "interferon", "interleukin", "il-6", "tnf", "t cell", "b cell", "cd4", "cd8", "pd-1", "pdl1", "myc", "her2",
+          "akt", "mtor", "nf-kb", "stat3", "vegf", "cd19", "car-t", "mrna", "trna"
+        ],
+        "Host Receptor / Enzyme": [
+          "receptor", "tmprss2", "polymerase", "protease", "kinase", "helicase", "synthase", "hydrolase", "endonuclease", "ligase",
+          "translocase", "rdrp", "3cl-pro", "mpro", "furin", "integrase", "phosphatase"
+        ],
+        "Diagnostic Assay": [
+          "rt-pcr", "pcr", "elisa", "lfia", "antigen test", "rapid test", "sequencing", "qpcr", "western blot", "cryo-em", "mass spectrometry",
+          "flow cytometry", "single-cell rna-seq", "ngs", "alphafold", "lateral flow"
+        ],
+        "Disease / Pathology": [
+          "covid-19", "sars-cov-2", "infection", "cancer", "carcinoma", "pneumonia", "ards", "sepsis", "tumor", "melanoma", "lymphoma",
+          "cytokine storm", "autoimmunity", "leukemia", "inflammation", "metastasis"
+        ],
+        "Drug / Therapeutic": [
+          "vaccine", "antibody", "monoclonal", "inhibitor", "remdesivir", "paxlovid", "dexamethasone", "chemotherapy", "olaparib",
+          "cetuximab", "pembrolizumab", "lipid nanoparticle", "lnp", "aav vector", "checkpoint inhibitor"
+        ],
+        "Specimen / Matrix": [
+          "serum", "plasma", "nasopharyngeal", "saliva", "blood", "epithelium", "mucosa", "swab", "tissue", "biopsy", "cell culture"
+        ],
+        "Clinical Metric / Variable": [
+          "cycle threshold", "ct value", "sensitivity", "specificity", "viral load", "titers", "plddt", "overall survival", "progression-free",
+          "read time", "turnaround", "seroconversion"
+        ],
+        "Regulatory / Guideline": [
+          "who standard", "fda emergency use", "sahpra approval", "nih guidelines", "quadas-2", "clinical trial phase", "guidelines"
+        ]
+      };
 
       const nodesMap = new Map();
       const links = [];
+      const seen = new Set();
 
-      articles.forEach(art => {
-        const pmcId = art.pmcid || art.id || `Paper_${Math.random().toString(36).substr(2, 5)}`;
+      articles.forEach((art, idx) => {
+        const rawId = (art.pmcid || art.id || `Paper_${idx + 1}`).toString().trim();
+        const pmcId = rawId.startsWith('PMC') ? rawId : ('PMC' + rawId);
         const title = (art.title || '').replace(/\.$/, '');
         const abstract = art.abstractText || '';
         let author = art.authorString || 'Researchers et al.';
@@ -2579,75 +3185,236 @@ Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
           id: pmcId,
           name: paperLabel,
           category: "Publication",
-          desc: `${title}. DOI: ${art.doi || 'N/A'}`
+          desc: `${title}. Source: Europe PMC.`
         });
 
         const fullText = `${title}. ${abstract}`;
         const foundInPaper = [];
 
-        Object.keys(BIOMED_TERMS).forEach(cat => {
-          BIOMED_TERMS[cat].forEach(kw => {
+        Object.keys(BIOMED_LEXICON).forEach(cat => {
+          BIOMED_LEXICON[cat].forEach(kw => {
             const re = new RegExp(`\\b${kw}\\b`, 'i');
             if (re.test(fullText)) {
               const displayName = kw.charAt(0).toUpperCase() + kw.slice(1);
-              if (!foundInPaper.includes(displayName)) foundInPaper.push({ name: displayName, cat });
-            }
-          });
-        });
-
-        // Register nodes
-        foundInPaper.forEach(item => {
-          if (!nodesMap.has(item.name)) {
-            nodesMap.set(item.name, {
-              id: item.name,
-              name: item.name,
-              category: item.cat,
-              desc: `Entity analyzed in scientific study ${pmcId}.`
-            });
-          }
-          links.push({
-            source: pmcId,
-            target: item.name,
-            relationship: "Investigates / Reports"
-          });
-        });
-
-        // Link entities together based on sentence proximity
-        const sentences = fullText.split(/[.!?]\s+/);
-        sentences.forEach(s => {
-          const sLower = s.toLowerCase();
-          const present = foundInPaper.filter(item => sLower.includes(item.name.toLowerCase()));
-          if (present.length >= 2) {
-            let rel = "Correlated with";
-            for (let r of REL_RULES) {
-              if (r.regex.test(s)) {
-                rel = r.label;
-                break;
+              if (!foundInPaper.some(f => f.name.toLowerCase() === displayName.toLowerCase())) {
+                foundInPaper.push({ name: displayName, cat });
               }
             }
-            for (let i = 0; i < present.length - 1; i++) {
-              links.push({
-                source: present[i].name,
-                target: present[i+1].name,
-                relationship: rel
-              });
-            }
+          });
+        });
+
+        // Ensure at least 3-4 structured nodes exist per paper
+        if (foundInPaper.length < 3) {
+          foundInPaper.push({ name: `${title.slice(0, 24)}... Platform`, cat: "Diagnostic Assay" });
+          foundInPaper.push({ name: `Clinical Findings (${pmcId})`, cat: "Clinical Metric / Variable" });
+          foundInPaper.push({ name: `Target Pathology (${pmcId})`, cat: "Disease / Pathology" });
+        }
+
+        // Register entity nodes and link from this paper
+        foundInPaper.forEach(item => {
+          const eId = item.name;
+          if (!nodesMap.has(eId)) {
+            nodesMap.set(eId, {
+              id: eId,
+              name: item.name,
+              category: item.cat,
+              desc: `Biological entity investigated in study ${pmcId}.`
+            });
+          }
+          
+          let rel = 'Investigates';
+          if (item.cat === 'Diagnostic Assay') rel = 'Evaluates operational accuracy';
+          else if (item.cat === 'Viral Target' || item.cat === 'Host Receptor / Enzyme' || item.cat === 'Gene / Protein') rel = 'Identifies target biomolecule';
+          else if (item.cat === 'Clinical Metric / Variable') rel = 'Measures quantitative metric';
+          else if (item.cat === 'Specimen / Matrix') rel = 'Validated on specimen';
+          else if (item.cat === 'Regulatory / Guideline') rel = 'Benchmarks against standard';
+
+          const k = `${pmcId}->${eId}`;
+          if (!seen.has(k)) {
+            seen.add(k);
+            links.push({ source: pmcId, target: eId, relationship: rel });
           }
         });
-      });
 
-      // Deduplicate links
-      const cleanLinks = [];
-      const seen = new Set();
-      links.forEach(l => {
-        const k = `${l.source}-${l.target}-${l.relationship}`;
-        if (!seen.has(k) && l.source !== l.target) {
-          seen.add(k);
-          cleanLinks.push(l);
+        // Connect co-occurring entities within the paper
+        for (let i = 0; i < foundInPaper.length - 1; i++) {
+          const s = foundInPaper[i].name;
+          const t = foundInPaper[i + 1].name;
+          const k = `${s}->${t}`;
+          if (!seen.has(k)) {
+            seen.add(k);
+            links.push({ source: s, target: t, relationship: "Interacts / Correlated with" });
+          }
         }
       });
 
-      return { nodes: Array.from(nodesMap.values()), links: cleanLinks };
+      return {
+        nodes: Array.from(nodesMap.values()),
+        links: links,
+        geminiUsed: false
+      };
+    }
+
+    // --- REAL-TIME LITERATURE RETRIEVAL & KNOWLEDGE GRAPH ENGINE ---
+    async function runLiveTopicSearch(topic, limit = 5) {
+      if (!topic || !topic.trim()) return;
+      const cleanTopic = topic.trim();
+
+      const overlay = document.getElementById('synthesis-overlay');
+      const topicText = document.getElementById('synthesis-topic-text');
+      const step1 = document.getElementById('synth-step-1');
+      const step2 = document.getElementById('synth-step-2');
+      const step3 = document.getElementById('synth-step-3');
+      const sub1 = document.getElementById('synth-sub-1');
+      const sub2 = document.getElementById('synth-sub-2');
+      const sub3 = document.getElementById('synth-sub-3');
+      const logEl = document.getElementById('live-search-log');
+
+      // Display synthesis overlay
+      if (overlay) {
+        if (topicText) topicText.innerText = `Topic: "${cleanTopic}"`;
+        if (step1) { step1.className = 'synthesis-step active'; if (sub1) sub1.innerText = 'Connecting to Europe PMC REST API...'; }
+        if (step2) { step2.className = 'synthesis-step'; if (sub2) sub2.innerText = 'Pending paper retrieval...'; }
+        if (step3) { step3.className = 'synthesis-step'; if (sub3) sub3.innerText = 'Pending entity synthesis...'; }
+        overlay.classList.add('visible');
+      }
+
+      if (logEl) {
+        logEl.innerHTML = `<div>[*] Connecting to Europe PMC REST API...</div>`;
+        logEl.innerHTML += `<div>[*] Searching literature for: "${cleanTopic}" (limit: ${limit})...</div>`;
+      }
+
+      try {
+        // Step 1: Query Europe PMC REST API
+        const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(cleanTopic)}&format=json&pageSize=${limit}&resultType=core`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP error ${resp.status}`);
+        const data = await resp.json();
+        let articles = data.resultList?.result || [];
+
+        if (articles.length === 0) {
+          // Broaden keyword if zero results
+          const fallbackTerm = cleanTopic.split(/[\s-]+/)[0];
+          if (fallbackTerm && fallbackTerm !== cleanTopic) {
+            const fbResp = await fetch(`https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(fallbackTerm)}&format=json&pageSize=${limit}&resultType=core`);
+            if (fbResp.ok) {
+              const fbData = await fbResp.json();
+              articles = fbData.resultList?.result || [];
+            }
+          }
+        }
+
+        if (articles.length === 0) {
+          throw new Error(`No open-access articles found for "${cleanTopic}". Try broader biomedical keywords.`);
+        }
+
+        // Mark Step 1 Complete
+        if (step1) {
+          step1.className = 'synthesis-step completed';
+          if (sub1) sub1.innerText = `Retrieved ${articles.length} open-access peer-reviewed papers`;
+        }
+
+        if (logEl) {
+          logEl.innerHTML += `<div style="color:var(--emerald)">[+] Retrieved ${articles.length} open-access research articles!</div>`;
+          articles.forEach((a, i) => {
+            const t = a.title ? a.title.slice(0, 60) : 'Study';
+            logEl.innerHTML += `<div style="color:var(--cyan)">  ${i+1}. ${t}... (${a.pmcid || a.id || 'PMC'})</div>`;
+          });
+        }
+
+        // Step 2: Gemini AI synthesis
+        if (step2) {
+          step2.className = 'synthesis-step active';
+          if (sub2) sub2.innerText = 'Extracting entities & relationships with Gemini API...';
+        }
+
+        const apiKey = getGeminiApiKey();
+        const checkGemini = document.getElementById('check-use-gemini');
+        const shouldUseGemini = (!checkGemini || checkGemini.checked) && !!apiKey;
+
+        let graphData;
+        if (shouldUseGemini) {
+          const model = getGeminiModel();
+          if (logEl) logEl.innerHTML += `<div>[*] Querying Google Gemini (${model}) API for biological knowledge graph extraction...</div>`;
+          try {
+            graphData = await callGeminiKnowledgeGraphApi(articles, cleanTopic, apiKey);
+            if (logEl) logEl.innerHTML += `<div style="color:var(--emerald)">[+] Gemini AI (${model}) successfully synthesized ${graphData.nodes.length} nodes & ${graphData.links.length} relationships!</div>`;
+            if (sub2) sub2.innerText = `Gemini AI (${model}) synthesized ${graphData.nodes.length} nodes & ${graphData.links.length} relationships`;
+          } catch (geminiErr) {
+            console.warn("Gemini API call failed, falling back to semantic extractor:", geminiErr);
+            if (logEl) logEl.innerHTML += `<div style="color:var(--amber)">[!] Gemini (${model}) notice: ${geminiErr.message}. Used BioGraph semantic fallback.</div>`;
+            graphData = extractEntitiesEnhancedFallback(articles, cleanTopic);
+            if (sub2) sub2.innerText = `Synthesized ${graphData.nodes.length} nodes (Used BioGraph semantic fallback)`;
+          }
+        } else {
+          if (logEl) logEl.innerHTML += `<div>[*] Synthesizing entities via BioGraph Semantic Engine (Gemini key not configured)...</div>`;
+          graphData = extractEntitiesEnhancedFallback(articles, cleanTopic);
+          if (sub2) sub2.innerText = `Synthesized ${graphData.nodes.length} nodes & ${graphData.links.length} edges (Enter Gemini Key for LLM reasoning)`;
+        }
+
+        if (step2) step2.className = 'synthesis-step completed';
+
+        // Step 3: Graph Compilation & Layout
+        if (step3) {
+          step3.className = 'synthesis-step active';
+          if (sub3) sub3.innerText = 'Compiling force-directed physics mesh...';
+        }
+
+        const activeModel = getGeminiModel();
+        currentDataset = {
+          meta: {
+            title: `Knowledge Graph: ${cleanTopic}`,
+            authors: `Synthesized from ${articles.length} publications${graphData.geminiUsed ? ' via Google Gemini (' + activeModel + ')' : ' via BioGraph Engine'}`,
+            journal: "Real-Time BioSearch Knowledge Engine",
+            pmc: articles.map(a => a.pmcid || a.id).filter(Boolean).slice(0, 3).join(", "),
+            url: `https://europepmc.org/search?query=${encodeURIComponent(cleanTopic)}`,
+            summary: `Living knowledge graph generated across open-access papers on ${cleanTopic}. ${graphData.nodes.length} biological entities connected across ${graphData.links.length} scientific mechanisms.`
+          },
+          nodes: graphData.nodes,
+          links: graphData.links
+        };
+
+        const selector = document.getElementById('dataset-selector');
+        if (selector) selector.value = 'custom';
+
+        closeCustomDataModal();
+        updatePaperBanner(currentDataset.meta);
+        populateCategoryFilters();
+        renderGraph();
+
+        if (step3) {
+          step3.className = 'synthesis-step completed';
+          if (sub3) sub3.innerText = 'Physics mesh active & rendered';
+        }
+
+        // Auto zoom fit
+        setTimeout(() => {
+          fitGraphToViewport();
+          if (overlay) overlay.classList.remove('visible');
+        }, 600);
+
+      } catch (err) {
+        console.error("Live topic search error:", err);
+        if (overlay) overlay.classList.remove('visible');
+        if (logEl) {
+          logEl.innerHTML += `<div style="color:var(--rose)">[-] Search error: ${err.message}</div>`;
+        }
+        alert(`Could not synthesize graph for "${cleanTopic}": ${err.message}`);
+      }
+    }
+
+    async function runLivePmcSearch() {
+      const topicInput = document.getElementById('live-search-topic');
+      const topic = topicInput ? topicInput.value.trim() : '';
+      const limitInput = document.getElementById('live-search-limit');
+      const limit = limitInput ? +(limitInput.value || 5) : 5;
+
+      if (!topic) {
+        const logEl = document.getElementById('live-search-log');
+        if (logEl) logEl.innerHTML = `<span style="color:var(--rose)">[!] Please enter a research topic or query terms.</span>`;
+        return;
+      }
+      runLiveTopicSearch(topic, limit);
     }
 
     function parseTripletsToGraph(text) {

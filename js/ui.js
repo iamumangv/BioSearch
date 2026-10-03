@@ -130,35 +130,54 @@ export function initUI(scrollController) {
 
   if (statsSection) counterObserver.observe(statsSection);
 
-  // ─── Topic Pill Tag Selectors ───────────────────────────────────────────────
+  // ─── Topic Pill Tag Selectors & Graph Search Redirection ────────────────────
+  function handleGraphSearch(forcedQuery) {
+    const query = (forcedQuery || (searchInput ? searchInput.value : '')).trim();
+    if (!query) {
+      if (searchInput) {
+        searchInput.placeholder = "Please enter a gene or research keyword, e.g. CRISPR Cas9...";
+        searchInput.focus();
+      }
+      return;
+    }
+
+    if (searchSubmitBtn) {
+      searchSubmitBtn.innerHTML = `
+        <span style="display:inline-block; width:12px; height:12px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:rippleExpand 0.6s linear infinite; margin-right:6px; vertical-align:middle;"></span>
+        <span>Synthesizing Graph...</span>
+      `;
+    }
+
+    // Direct user to graphing model and generate graph for that topic
+    window.location.href = `graphing-model/demo.html?query=${encodeURIComponent(query)}`;
+  }
+
   document.querySelectorAll('.pill-tag').forEach(pill => {
     pill.addEventListener('click', () => {
+      const topic = pill.textContent.trim();
       if (searchInput) {
-        searchInput.value = pill.textContent.trim();
+        searchInput.value = topic;
         searchInput.focus();
       }
       if (searchBox) {
         searchBox.classList.add('highlight');
-        setTimeout(() => searchBox.classList.remove('highlight'), 800);
       }
+      handleGraphSearch(topic);
     });
   });
 
-  // Search Submit Action
+  // Search Submit Action (Button & Enter Key)
   const searchSubmitBtn = document.getElementById('search-submit-btn');
-  if (searchSubmitBtn && searchInput) {
-    searchSubmitBtn.addEventListener('click', () => {
-      const query = searchInput.value.trim();
-      if (!query) {
-        searchInput.placeholder = "Please enter a gene or research keyword...";
-        searchInput.focus();
-        return;
+  if (searchSubmitBtn) {
+    searchSubmitBtn.addEventListener('click', () => handleGraphSearch());
+  }
+
+  if (searchInput) {
+    searchInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        e.preventDefault();
+        handleGraphSearch();
       }
-      searchSubmitBtn.textContent = "Querying Graph...";
-      setTimeout(() => {
-        searchSubmitBtn.textContent = "Search Graph";
-        alert(`Querying BioSearch Knowledge Graph for "${query}"...\nFound 1,420 connected nodes across PubMed & bioRxiv.`);
-      }, 600);
     });
   }
 
