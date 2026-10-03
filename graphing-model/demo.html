@@ -1,0 +1,2757 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BioGraph Studio — Generalized Knowledge Graph &amp; Biomedical Research Model</title>
+  <meta name="description" content="Generalized interactive force-directed graphing model for biomedical literature and custom datasets. Explore entity relationships across PMC8259047, PMC11462910, and PMC8293341, or create custom graphs." />
+  
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+
+  <!-- D3.js v7 CDN with fallback -->
+  <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+
+  <style>
+    :root {
+      --bg-base: #060913;
+      --bg-surface: #0d1322;
+      --bg-surface-elevated: #151e34;
+      --bg-translucent: rgba(13, 19, 34, 0.82);
+      --bg-card: rgba(18, 26, 47, 0.75);
+      --border-subtle: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(0, 240, 255, 0.25);
+      
+      --text-main: #f1f5f9;
+      --text-muted: #94a3b8;
+      --text-dim: #64748b;
+      
+      --cyan: #00f0ff;
+      --cyan-glow: rgba(0, 240, 255, 0.35);
+      --purple: #8b5cf6;
+      --purple-glow: rgba(139, 92, 246, 0.35);
+      --emerald: #10b981;
+      --amber: #f59e0b;
+      --rose: #f43f5e;
+      --indigo: #6366f1;
+      --teal: #14b8a6;
+      
+      --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 16px;
+      --radius-full: 9999px;
+      
+      --shadow-lg: 0 10px 30px -10px rgba(0, 0, 0, 0.5), 0 0 20px -5px var(--cyan-glow);
+    }
+
+    [data-theme="light"] {
+      --bg-base: #f8fafc;
+      --bg-surface: #ffffff;
+      --bg-surface-elevated: #f1f5f9;
+      --bg-translucent: rgba(255, 255, 255, 0.88);
+      --bg-card: rgba(255, 255, 255, 0.85);
+      --border-subtle: rgba(0, 0, 0, 0.08);
+      --border-highlight: rgba(0, 160, 220, 0.3);
+      --text-main: #0f172a;
+      --text-muted: #475569;
+      --text-dim: #94a3b8;
+      --shadow-lg: 0 10px 25px -5px rgba(0, 0, 0, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background: var(--bg-base);
+      color: var(--text-main);
+      overflow: hidden;
+      width: 100vw;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      user-select: none;
+    }
+
+    /* Top Navigation Bar */
+    .top-nav {
+      height: 60px;
+      background: var(--bg-translucent);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      z-index: 50;
+      flex-shrink: 0;
+    }
+
+    .nav-left {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .brand-link {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .brand-logo-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, var(--cyan), var(--purple));
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    .brand-text {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .brand-title {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: 15px;
+      letter-spacing: -0.3px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .brand-badge {
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+
+    .brand-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .nav-divider {
+      width: 1px;
+      height: 24px;
+      background: var(--border-subtle);
+    }
+
+    /* Dataset Selector Dropdown & Tabs */
+    .dataset-control-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .dataset-label {
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--text-muted);
+    }
+
+    .dataset-select {
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px;
+      font-size: 13px;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      outline: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      min-width: 280px;
+    }
+
+    .dataset-select:focus, .dataset-select:hover {
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    .nav-center {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    /* Search bar inside topnav */
+    .search-box {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 240px;
+      transition: width 0.3s ease;
+    }
+
+    .search-box:focus-within {
+      width: 320px;
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 10px;
+      pointer-events: none;
+      color: var(--text-dim);
+    }
+
+    .search-input {
+      width: 100%;
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 6px 12px 6px 32px;
+      color: var(--text-main);
+      font-size: 13px;
+      font-family: var(--font-sans);
+      outline: none;
+      transition: all 0.2s ease;
+    }
+
+    .search-input:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    .search-clear {
+      position: absolute;
+      right: 8px;
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 14px;
+      display: none;
+    }
+
+    .search-clear.active {
+      display: block;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: var(--text-dim);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.2), rgba(139, 92, 246, 0.25));
+      border-color: var(--cyan);
+      color: #ffffff;
+      box-shadow: 0 0 10px var(--cyan-glow);
+    }
+
+    .btn-primary:hover {
+      background: linear-gradient(135deg, rgba(0, 240, 255, 0.35), rgba(139, 92, 246, 0.4));
+      border-color: #5eead4;
+    }
+
+    .btn-icon-only {
+      padding: 6px 8px;
+    }
+
+    /* Main Studio Container */
+    .studio-layout {
+      position: relative;
+      flex: 1;
+      display: flex;
+      overflow: hidden;
+    }
+
+    /* Left Floating Control Dock */
+    .controls-dock {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 20;
+      width: 290px;
+      max-height: calc(100vh - 100px);
+      overflow-y: auto;
+      background: var(--bg-card);
+      backdrop-filter: blur(20px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      padding: 16px;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.2s ease;
+    }
+
+    .controls-dock.collapsed {
+      transform: translateX(-310px);
+    }
+
+    .dock-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 10px;
+    }
+
+    .dock-title {
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: -0.2px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dock-toggle-btn {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      z-index: 19;
+      display: none;
+    }
+
+    .dock-toggle-btn.visible {
+      display: flex;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* Filter Tag Chips */
+    .filter-tags-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .filter-chip {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .filter-chip.active {
+      background: rgba(255, 255, 255, 0.1);
+      color: var(--text-main);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    .filter-chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+
+    .filter-chip-count {
+      font-size: 9px;
+      background: rgba(0,0,0,0.3);
+      padding: 1px 4px;
+      border-radius: 4px;
+      color: var(--text-dim);
+    }
+
+    /* Sliders */
+    .slider-group {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .slider-info {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-muted);
+    }
+
+    .slider-input {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 4px;
+      border-radius: 2px;
+      background: var(--bg-surface-elevated);
+      outline: none;
+    }
+
+    .slider-input::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      background: var(--cyan);
+      cursor: pointer;
+      box-shadow: 0 0 6px var(--cyan-glow);
+    }
+
+    /* Quick Action Buttons in dock */
+    .action-button-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+    }
+
+    /* Canvas / Viewport Area */
+    .viewport-canvas-container {
+      flex: 1;
+      width: 100%;
+      height: 100%;
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, rgba(13, 22, 45, 0.5) 0%, rgba(6, 9, 19, 0.95) 100%);
+      overflow: hidden;
+      cursor: grab;
+    }
+
+    .viewport-canvas-container.grabbing {
+      cursor: grabbing;
+    }
+
+    #graph-svg {
+      width: 100%;
+      height: 100%;
+      display: block;
+    }
+
+    /* Floating Viewport Toolbars (HUD) */
+    .bottom-hud {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 25;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-full);
+      padding: 6px 16px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .hud-stat {
+      font-size: 12px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hud-stat strong {
+      color: var(--cyan);
+      font-family: var(--font-mono);
+    }
+
+    .hud-divider {
+      width: 1px;
+      height: 14px;
+      background: var(--border-subtle);
+    }
+
+    .hud-tip {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    /* Zoom / Navigation floating controls */
+    .zoom-controls {
+      position: absolute;
+      right: 20px;
+      bottom: 20px;
+      z-index: 25;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 6px;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .zoom-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: var(--radius-sm);
+      border: 1px solid transparent;
+      background: var(--bg-surface-elevated);
+      color: var(--text-main);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+    .zoom-btn:hover {
+      border-color: var(--cyan);
+      color: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan-glow);
+    }
+
+    /* Right Entity Inspector Drawer */
+    .details-drawer {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      bottom: 16px;
+      width: 380px;
+      z-index: 30;
+      background: var(--bg-card);
+      backdrop-filter: blur(24px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: translateX(420px);
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .details-drawer.open {
+      transform: translateX(0);
+    }
+
+    .drawer-header {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .drawer-title-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .drawer-badge {
+      align-self: flex-start;
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      padding: 2px 8px;
+      border-radius: 4px;
+    }
+
+    .drawer-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -0.3px;
+      color: var(--text-main);
+      line-height: 1.3;
+    }
+
+    .drawer-close-btn {
+      background: none;
+      border: none;
+      color: var(--text-dim);
+      cursor: pointer;
+      font-size: 18px;
+      padding: 4px;
+      line-height: 1;
+      border-radius: 4px;
+      transition: color 0.2s;
+    }
+
+    .drawer-close-btn:hover {
+      color: var(--rose);
+    }
+
+    .drawer-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+    }
+
+    .drawer-section-title {
+      font-size: 11px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: var(--text-dim);
+      margin-bottom: 8px;
+    }
+
+    .drawer-description {
+      font-size: 13px;
+      line-height: 1.6;
+      color: var(--text-muted);
+      background: rgba(255, 255, 255, 0.03);
+      padding: 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .drawer-stats-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .drawer-stat-card {
+      background: var(--bg-surface-elevated);
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .drawer-stat-val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--cyan);
+      font-family: var(--font-mono);
+    }
+
+    .drawer-stat-lbl {
+      font-size: 11px;
+      color: var(--text-dim);
+    }
+
+    .connected-entities-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .connected-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 8px 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-surface-elevated);
+      border: 1px solid var(--border-subtle);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .connected-item:hover {
+      border-color: var(--cyan);
+      background: rgba(0, 240, 255, 0.05);
+    }
+
+    .conn-edge-label {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--text-dim);
+      background: rgba(0, 0, 0, 0.3);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+
+    .drawer-footer {
+      padding: 14px 20px;
+      border-top: 1px solid var(--border-subtle);
+      background: rgba(0, 0, 0, 0.15);
+      display: flex;
+      gap: 8px;
+    }
+
+    /* Modal for Custom Data Input / Modeling */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 100;
+      background: rgba(2, 6, 18, 0.85);
+      backdrop-filter: blur(12px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s ease;
+    }
+
+    .modal-overlay.open {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .modal-card {
+      width: 90%;
+      max-width: 780px;
+      max-height: 85vh;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg);
+      box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.8), 0 0 30px var(--cyan-glow);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      transform: scale(0.96);
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+
+    .modal-overlay.open .modal-card {
+      transform: scale(1);
+    }
+
+    .modal-header {
+      padding: 18px 24px;
+      border-bottom: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .modal-title {
+      font-family: var(--font-display);
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .modal-tabs {
+      display: flex;
+      gap: 8px;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 12px;
+    }
+
+    .modal-tab {
+      padding: 6px 14px;
+      font-size: 13px;
+      font-weight: 500;
+      border-radius: var(--radius-sm);
+      border: 1px solid var(--border-subtle);
+      background: var(--bg-surface-elevated);
+      color: var(--text-muted);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .modal-tab.active {
+      background: rgba(0, 240, 255, 0.15);
+      color: var(--cyan);
+      border-color: var(--cyan);
+    }
+
+    .code-editor-area {
+      width: 100%;
+      height: 250px;
+      background: #080c16;
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 12px;
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.5;
+      resize: vertical;
+      outline: none;
+    }
+
+    .code-editor-area:focus {
+      border-color: var(--cyan);
+      box-shadow: 0 0 12px var(--cyan-glow);
+    }
+
+    .modal-footer {
+      padding: 16px 24px;
+      border-top: 1px solid var(--border-subtle);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.2);
+    }
+
+    /* SVG styling */
+    .link {
+      stroke-opacity: 0.55;
+      transition: stroke-opacity 0.2s, stroke 0.2s, stroke-width 0.2s;
+    }
+
+    .link.highlighted {
+      stroke-opacity: 1 !important;
+      stroke-width: 3px !important;
+    }
+
+    .link.dimmed {
+      stroke-opacity: 0.08 !important;
+    }
+
+    .node-group {
+      cursor: pointer;
+    }
+
+    .node-circle {
+      stroke: #ffffff;
+      stroke-width: 2px;
+      transition: r 0.2s, stroke 0.2s, stroke-width 0.2s, fill-opacity 0.2s;
+    }
+
+    .node-circle.pulse {
+      animation: pulseAnimation 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseAnimation {
+      0% { r: 16; }
+      50% { r: 21; }
+      100% { r: 16; }
+    }
+
+    .node-circle.highlighted {
+      stroke: var(--cyan) !important;
+      stroke-width: 4px !important;
+      filter: drop-shadow(0 0 10px var(--cyan-glow));
+    }
+
+    .node-circle.dimmed {
+      fill-opacity: 0.2 !important;
+      stroke-opacity: 0.3 !important;
+    }
+
+    .node-label {
+      font-family: var(--font-sans);
+      font-size: 11px;
+      font-weight: 500;
+      fill: var(--text-main);
+      pointer-events: none;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+      transition: opacity 0.2s, font-weight 0.2s;
+    }
+
+    .node-label.dimmed {
+      opacity: 0.15;
+    }
+
+    .node-label.highlighted {
+      font-weight: 700;
+      font-size: 13px;
+      fill: var(--cyan);
+    }
+
+    .link-label-group {
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+      opacity: 0;
+    }
+
+    .link-label-group.visible {
+      opacity: 1;
+    }
+
+    .link-label-bg {
+      fill: var(--bg-surface-elevated);
+      stroke: var(--border-subtle);
+      stroke-width: 1px;
+      rx: 4;
+      ry: 4;
+    }
+
+    .link-label-text {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      fill: var(--text-muted);
+      text-anchor: middle;
+    }
+
+    /* Paper citation pill in header */
+    .paper-reference-banner {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      z-index: 15;
+      background: var(--bg-card);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+      padding: 10px 14px;
+      max-width: 420px;
+      font-size: 12px;
+      color: var(--text-muted);
+      box-shadow: var(--shadow-lg);
+      transition: opacity 0.3s;
+    }
+
+    .paper-reference-banner.hidden {
+      display: none;
+    }
+
+    .paper-banner-title {
+      font-weight: 600;
+      color: var(--text-main);
+      margin-bottom: 2px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .pmc-link {
+      color: var(--cyan);
+      text-decoration: none;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .pmc-link:hover {
+      text-decoration: underline;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .search-box {
+        display: none;
+      }
+      .controls-dock {
+        width: calc(100vw - 32px);
+        max-height: 50vh;
+      }
+      .details-drawer {
+        width: calc(100vw - 32px);
+      }
+      .dataset-select {
+        min-width: 180px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Navigation -->
+  <nav class="top-nav">
+    <div class="nav-left">
+      <a href="../index.html" class="brand-link" title="Return to BioSearch Portal">
+        <div class="brand-logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.2">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M12 2v4m0 12v4M2 12h4m12 0h4m-3.5-6.5l-2.8 2.8m-7.4 7.4l-2.8 2.8m0-13l2.8 2.8m7.4 7.4l2.8 2.8"></path>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <div class="brand-title">
+            BioGraph Model
+            <span class="brand-badge">Generalized Engine</span>
+          </div>
+          <div class="brand-sub">Scientific Entity &amp; Literature Knowledge Mesh</div>
+        </div>
+      </a>
+
+      <div class="nav-divider"></div>
+
+      <!-- Dataset Switcher -->
+      <div class="dataset-control-group">
+        <span class="dataset-label">Active Dataset:</span>
+        <select id="dataset-selector" class="dataset-select" aria-label="Select Graph Dataset">
+          <option value="combined">🔬 Multi-Paper Synthesis (PMC8259047 + PMC11462910 + PMC8293341)</option>
+          <option value="pmc8259047">📑 PMC8259047: 30 Lateral Flow Immunoassays (COVID-19 Immune Response)</option>
+          <option value="pmc11462910">📑 PMC11462910: Rapid Antigen Tests vs RT-PCR (Diagnostic Accuracy Meta-Analysis)</option>
+          <option value="pmc8293341">📑 PMC8293341: Innate Immunity in Children &amp; ACE2 Receptor Expression</option>
+          <option value="custom">✨ Custom User Graph Data...</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Center Search -->
+    <div class="nav-center">
+      <div class="search-box">
+        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"></circle>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+        </svg>
+        <input type="text" id="node-search" class="search-input" placeholder="Search genes, assays, papers..." autocomplete="off" />
+        <button id="search-clear" class="search-clear" title="Clear search">&times;</button>
+      </div>
+    </div>
+
+    <!-- Right Actions -->
+    <div class="nav-right">
+      <button id="btn-custom-data" class="btn btn-primary" title="Input custom graph data (JSON, Triplets, CSV)">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M12 5v14m-7-7h14"></path>
+        </svg>
+        <span>Graph Any Data</span>
+      </button>
+
+      <button id="btn-export-json" class="btn" title="Export Current Graph Data as JSON">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        <span>Export</span>
+      </button>
+
+      <button id="btn-theme-toggle" class="btn btn-icon-only" title="Toggle Dark/Light Mode">
+        <svg id="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:none;">
+          <circle cx="12" cy="12" r="5"></circle>
+          <line x1="12" y1="1" x2="12" y2="3"></line>
+          <line x1="12" y1="21" x2="12" y2="23"></line>
+          <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+          <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+          <line x1="1" y1="12" x2="3" y2="12"></line>
+          <line x1="21" y1="12" x2="23" y2="12"></line>
+          <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+          <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>
+        <svg id="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>
+      </button>
+
+      <a href="../index.html" class="btn" title="Back to BioSearch Home">
+        <span>&larr; BioSearch</span>
+      </a>
+    </div>
+  </nav>
+
+  <!-- Studio Main -->
+  <main class="studio-layout">
+    
+    <!-- Dock Toggle Button when closed -->
+    <button id="btn-show-dock" class="btn btn-primary dock-toggle-btn" title="Open Controls Dock">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <polyline points="13 17 18 12 13 7"></polyline>
+        <polyline points="6 17 11 12 6 7"></polyline>
+      </svg>
+      <span>Controls</span>
+    </button>
+
+    <!-- Controls Dock -->
+    <aside id="controls-dock" class="controls-dock">
+      <div class="dock-header">
+        <div class="dock-title">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2">
+            <line x1="4" y1="21" x2="4" y2="14"></line>
+            <line x1="4" y1="10" x2="4" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="12"></line>
+            <line x1="12" y1="8" x2="12" y2="3"></line>
+            <line x1="20" y1="21" x2="20" y2="16"></line>
+            <line x1="20" y1="12" x2="20" y2="3"></line>
+            <line x1="1" y1="14" x2="7" y2="14"></line>
+            <line x1="9" y1="8" x2="15" y2="8"></line>
+            <line x1="17" y1="16" x2="23" y2="16"></line>
+          </svg>
+          Graph Model Controls
+        </div>
+        <button id="btn-hide-dock" class="drawer-close-btn" title="Collapse Dock">&times;</button>
+      </div>
+
+      <!-- Categories Filter -->
+      <div>
+        <div class="section-label">
+          <span>Entity Categories</span>
+          <span id="category-filter-count">All Visible</span>
+        </div>
+        <div id="filter-chips-container" class="filter-tags-grid">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+
+      <!-- Physics Simulation Controls -->
+      <div>
+        <div class="section-label">
+          <span>Force Simulation Dynamics</span>
+        </div>
+        <div class="slider-group">
+          <div class="slider-row">
+            <div class="slider-info">
+              <span>Link Distance</span>
+              <span id="val-link-dist">120</span>
+            </div>
+            <input type="range" id="slider-link-dist" class="slider-input" min="40" max="300" value="120" />
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-info">
+              <span>Charge Repulsion</span>
+              <span id="val-charge">-450</span>
+            </div>
+            <input type="range" id="slider-charge" class="slider-input" min="-1200" max="-100" value="-450" />
+          </div>
+
+          <div class="slider-row">
+            <div class="slider-info">
+              <span>Collision Radius</span>
+              <span id="val-collision">38</span>
+            </div>
+            <input type="range" id="slider-collision" class="slider-input" min="15" max="80" value="38" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Display Options -->
+      <div>
+        <div class="section-label">
+          <span>Node Visualization Mode</span>
+        </div>
+        <div class="action-button-grid">
+          <button id="btn-size-degree" class="btn active" title="Size nodes proportional to number of connected edges">
+            Degree Sized
+          </button>
+          <button id="btn-size-uniform" class="btn" title="Uniform sized nodes">
+            Uniform Sized
+          </button>
+        </div>
+      </div>
+
+      <!-- Quick Action Utilities -->
+      <div class="action-button-grid">
+        <button id="btn-toggle-sim" class="btn" title="Pause or restart simulation forces">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="6" y="4" width="4" height="16"></rect>
+            <rect x="14" y="4" width="4" height="16"></rect>
+          </svg>
+          <span id="txt-toggle-sim">Pause Physics</span>
+        </button>
+        <button id="btn-reheat" class="btn" title="Reheat and re-disperse the network">
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M23 4v6h-6"></path>
+            <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+          </svg>
+          <span>Reheat</span>
+        </button>
+      </div>
+
+      <div style="font-size: 11px; color: var(--text-dim); line-height: 1.4; border-top: 1px solid var(--border-subtle); padding-top: 10px;">
+        💡 <strong>Tip:</strong> Click any node to open its full evidence drawer. Drag nodes to pin them in 2D space. Hover over edges to inspect scientific relationships.
+      </div>
+    </aside>
+
+    <!-- Source Article Reference Banner (Top Right) -->
+    <div id="paper-banner" class="paper-reference-banner">
+      <div class="paper-banner-title">
+        <span id="banner-paper-name">Source Paper</span>
+        <a id="banner-pmc-link" href="#" target="_blank" rel="noopener noreferrer" class="pmc-link">
+          <span>View on PMC</span> &rarr;
+        </a>
+      </div>
+      <div id="banner-paper-desc" style="font-size: 11px; margin-top: 4px; line-height: 1.4;">
+        Paper summary details appear here.
+      </div>
+    </div>
+
+    <!-- Graph Viewport -->
+    <div id="viewport-container" class="viewport-canvas-container">
+      <svg id="graph-svg"></svg>
+    </div>
+
+    <!-- Bottom HUD Stats -->
+    <div class="bottom-hud">
+      <div class="hud-stat">
+        <span>Entities:</span>
+        <strong id="hud-node-count">0</strong>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-stat">
+        <span>Relationships:</span>
+        <strong id="hud-link-count">0</strong>
+      </div>
+      <div class="hud-divider"></div>
+      <div class="hud-tip" id="hud-status-text">
+        Ready &bull; Drag nodes or click to inspect
+      </div>
+    </div>
+
+    <!-- Zoom & Canvas Controls -->
+    <div class="zoom-controls">
+      <button id="btn-zoom-in" class="zoom-btn" title="Zoom in">+</button>
+      <button id="btn-zoom-out" class="zoom-btn" title="Zoom out">&minus;</button>
+      <button id="btn-zoom-fit" class="zoom-btn" title="Fit graph to screen">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polyline points="15 3 21 3 21 9"></polyline>
+          <polyline points="9 21 3 21 3 15"></polyline>
+          <line x1="21" y1="3" x2="14" y2="10"></line>
+          <line x1="3" y1="21" x2="10" y2="14"></line>
+        </svg>
+      </button>
+      <button id="btn-zoom-reset" class="zoom-btn" title="Reset zoom (100%)">1:1</button>
+    </div>
+
+    <!-- Entity Details Side Drawer -->
+    <aside id="details-drawer" class="details-drawer">
+      <div class="drawer-header">
+        <div class="drawer-title-group">
+          <span id="drawer-type-badge" class="drawer-badge" style="background: rgba(0, 240, 255, 0.15); color: var(--cyan);">
+            Entity
+          </span>
+          <h2 id="drawer-entity-name" class="drawer-title">Entity Name</h2>
+        </div>
+        <button id="btn-close-drawer" class="drawer-close-btn" title="Close drawer">&times;</button>
+      </div>
+
+      <div class="drawer-body">
+        <div>
+          <div class="drawer-section-title">Scientific Overview &amp; Context</div>
+          <div id="drawer-entity-desc" class="drawer-description">
+            Description from publication...
+          </div>
+        </div>
+
+        <div class="drawer-stats-grid">
+          <div class="drawer-stat-card">
+            <div id="drawer-entity-degree" class="drawer-stat-val">0</div>
+            <div class="drawer-stat-lbl">Connected Edges</div>
+          </div>
+          <div class="drawer-stat-card">
+            <div id="drawer-entity-source" class="drawer-stat-val" style="font-size: 13px; font-family: var(--font-sans);">Primary</div>
+            <div class="drawer-stat-lbl">Literature Source</div>
+          </div>
+        </div>
+
+        <div>
+          <div class="drawer-section-title">Interconnected Relationships (<span id="drawer-conn-count">0</span>)</div>
+          <div id="drawer-connections-list" class="connected-entities-list">
+            <!-- Dynamic connected items -->
+          </div>
+        </div>
+      </div>
+
+      <div class="drawer-footer">
+        <button id="btn-focus-node" class="btn btn-primary" style="flex: 1;" title="Center camera on this node">
+          Focus on Canvas
+        </button>
+        <button id="btn-isolate-node" class="btn" style="flex: 1;" title="Isolate connected subgraph">
+          Isolate Cluster
+        </button>
+      </div>
+    </aside>
+  </main>
+
+  <!-- Modal: Graph Any Data Studio -->
+  <div id="custom-data-modal" class="modal-overlay">
+    <div class="modal-card">
+      <div class="modal-header">
+        <div class="modal-title">
+          Graph Any Data &mdash; Custom Modeling Engine
+        </div>
+        <button id="btn-close-modal" class="drawer-close-btn">&times;</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="modal-tabs">
+          <button class="modal-tab active" data-tab="live-pmc">🌐 Live PMC / PubMed Query</button>
+          <button class="modal-tab" data-tab="triplets">Natural Triplets (A &rarr; B : Relation)</button>
+          <button class="modal-tab" data-tab="json">JSON Schema</button>
+          <button class="modal-tab" data-tab="csv">CSV</button>
+        </div>
+
+        <!-- Live PMC Search Tab -->
+        <div id="tab-content-live-pmc">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 12px;">
+            Search PubMed Central / Europe PMC directly across millions of open-access scientific papers. The engine automatically parses titles, abstracts, and MeSH terms to build an interactive entity relationship graph.
+          </p>
+          <div style="display:flex; flex-direction:column; gap:10px; margin-bottom: 12px;">
+            <div style="display:flex; gap:10px;">
+              <input type="text" id="live-search-topic" class="search-input" style="flex:1; padding:8px 14px;" placeholder="Enter scientific topic (e.g. CRISPR Cas9 off-target, ACE2 pediatric COVID, mRNA vaccine)..." value="CRISPR Cas9 gene editing therapeutics" />
+              <button id="btn-run-live-search" class="btn btn-primary" style="white-space:nowrap; padding:8px 16px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Fetch &amp; Generate Graph</span>
+              </button>
+            </div>
+            <div style="display:flex; align-items:center; justify-content:space-between; font-size:11px; color:var(--text-dim);">
+              <div style="display:flex; gap:6px; align-items:center;">
+                <span>Papers to retrieve:</span>
+                <select id="live-search-limit" class="dataset-select" style="min-width:70px; padding:3px 6px; font-size:11px;">
+                  <option value="3">3 papers</option>
+                  <option value="5" selected>5 papers</option>
+                  <option value="8">8 papers</option>
+                </select>
+              </div>
+              <div style="display:flex; gap:6px;">
+                <span>Quick Topics:</span>
+                <a href="#" class="live-topic-quick" data-q="PMC8259047 OR PMC11462910 OR PMC8293341" style="color:var(--cyan); text-decoration:none;">The 3 PMC Papers</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="mRNA vaccine lipid nanoparticle delivery" style="color:var(--cyan); text-decoration:none;">mRNA LNP</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="CAR-T cell exhaustion immunotherapy" style="color:var(--cyan); text-decoration:none;">CAR-T Exhaustion</a>
+              </div>
+            </div>
+          </div>
+          <div id="live-search-log" style="font-family:var(--font-mono); font-size:11px; background:#080c16; border:1px solid var(--border-subtle); border-radius:var(--radius-md); padding:10px; height:120px; overflow-y:auto; color:var(--text-muted); line-height:1.5;">
+            Ready to query PubMed Central & Europe PMC REST API...
+          </div>
+        </div>
+
+        <div id="tab-content-triplets" style="display: none;">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            Enter one entity relationship per line in the format: <code>Subject -> Object : Relationship</code> or <code>Subject | Object | Relationship</code>. The model will automatically construct and compute node degrees, categories, and forces!
+          </p>
+          <textarea id="input-triplets" class="code-editor-area" placeholder="SARS-CoV-2 -> Spike Protein : Encodes
+Spike Protein -> ACE2 Receptor : Binds with high affinity
+ACE2 Receptor -> Upper Airway Epithelium : Expressed on cell surface
+Pfizer BNT162b2 -> Spike Protein : Elicits neutralizing antibodies
+Remdesivir -> RNA-Dependent RNA Polymerase : Inhibits replication"></textarea>
+        </div>
+
+        <div id="tab-content-json" style="display: none;">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            Full JSON structure with custom node categories, colors, and relationship labels:
+          </p>
+          <textarea id="input-json" class="code-editor-area" placeholder="{\n  &quot;nodes&quot;: [\n    { &quot;id&quot;: &quot;Node1&quot;, &quot;name&quot;: &quot;Node 1&quot;, &quot;category&quot;: &quot;Protein&quot; },\n    { &quot;id&quot;: &quot;Node2&quot;, &quot;name&quot;: &quot;Node 2&quot;, &quot;category&quot;: &quot;Disease&quot; }\n  ],\n  &quot;links&quot;: [\n    { &quot;source&quot;: &quot;Node1&quot;, &quot;target&quot;: &quot;Node2&quot;, &quot;relationship&quot;: &quot;Associated with&quot; }\n  ]\n}"></textarea>
+        </div>
+
+        <div id="tab-content-csv" style="display: none;">
+          <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 8px;">
+            CSV rows with columns: <code>source,target,relationship,sourceCategory,targetCategory</code>
+          </p>
+          <textarea id="input-csv" class="code-editor-area" placeholder="source,target,relationship,sourceCategory,targetCategory
+ACE2,SARS-CoV-2,Receptor Binding,Host Receptor,Virus
+SARS-CoV-2,COVID-19,Etiological Cause,Virus,Disease
+PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
+        </div>
+
+        <div style="display: flex; gap: 10px; align-items: center; justify-content: space-between;">
+          <div style="display: flex; gap: 8px;">
+            <button id="btn-load-preset-biomed" class="btn" style="font-size: 11px;">Load Sample: Oncology &amp; Genes</button>
+            <button id="btn-load-preset-pharma" class="btn" style="font-size: 11px;">Load Sample: Drug Interactions</button>
+          </div>
+          <span style="font-size: 11px; color: var(--text-dim);" id="parse-status-msg"></span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button id="btn-cancel-modal" class="btn">Cancel</button>
+        <button id="btn-apply-custom-data" class="btn btn-primary">
+          Generate &amp; Render Graph &rarr;
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- APPLICATION LOGIC & DATA ENGINE -->
+  <script>
+    /**
+     * BIOMEDICAL KNOWLEDGE GRAPH ENGINE
+     * Models literature datasets PMC8259047, PMC11462910, PMC8293341 and custom input.
+     */
+
+    // --- COLOR PALETTE FOR ENTITY CATEGORIES ---
+    const CATEGORY_CONFIG = {
+      "Publication": { color: "#38bdf8", label: "Paper / Study" },
+      "Diagnostic Assay": { color: "#00f0ff", label: "Diagnostic / Assay" },
+      "Viral Target": { color: "#f43f5e", label: "Viral Component / Antigen" },
+      "Host Receptor / Enzyme": { color: "#8b5cf6", label: "Host Receptor / Protease" },
+      "Immune Response": { color: "#10b981", label: "Immune Marker / Cell" },
+      "Clinical Metric / Variable": { color: "#f59e0b", label: "Clinical Metric / Ct Threshold" },
+      "Regulatory / Guideline": { color: "#6366f1", label: "Regulatory Standard / Appraisal" },
+      "Disease / Pathology": { color: "#ec4899", label: "Disease / Clinical Syndrome" },
+      "Specimen / Matrix": { color: "#14b8a6", label: "Specimen / Tissue" },
+      "Gene / Protein": { color: "#22c55e", label: "Gene / Protein" },
+      "Drug / Therapeutic": { color: "#a855f7", label: "Drug / Molecule" },
+      "Other": { color: "#94a3b8", label: "Entity" }
+    };
+
+    // --- DATASETS EXTRACTED FROM THE 3 PMC PAPERS ---
+    
+    // 1. PMC8259047: Lateral Flow Immunoassays for COVID-19 Immune Response (David et al.)
+    const DATA_PMC8259047 = {
+      meta: {
+        title: "Operational characteristics of 30 lateral flow immunoassays used to identify COVID-19 immune response",
+        authors: "David A, Scott L, Jugwanth S, Gededzha M, Mayne ES, et al.",
+        journal: "J Immunol Methods (2021)",
+        pmc: "PMC8259047",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8259047/",
+        summary: "Evaluated 30 lateral flow immunoassays (LFIAs) assessing sensitivity, specificity, operational characteristics, target antigens (Spike vs Nucleocapsid), and regulatory approval for point-of-care serology."
+      },
+      nodes: [
+        { id: "PMC8259047", name: "David et al. (PMC8259047)", category: "Publication", desc: "Evaluated 30 lateral flow immunoassays (LFIAs) for COVID-19 immune response." },
+        { id: "Orient Gene LFIA", name: "Zhejiang Orient Gene IgG/IgM", category: "Diagnostic Assay", desc: "High sensitivity kit recommended by SAHPRA in August 2020 for national testing algorithm." },
+        { id: "Genrui LFIA", name: "Genrui 2019-nCoV IgG/IgM", category: "Diagnostic Assay", desc: "Recommended for SAHPRA authorization with high IgG/IgM sensitivity." },
+        { id: "Biosynex LFIA", name: "Biosynex COVID-19 BSS", category: "Diagnostic Assay", desc: "European POC lateral flow cassette requiring 10μL whole blood or serum." },
+        { id: "Boson Biotech LFIA", name: "Boson Biotech 2019-nCoV", category: "Diagnostic Assay", desc: "Immunochromatographic strip kit evaluated for SARS-CoV-2 seroprevalence." },
+        { id: "SARS-CoV-2 Spike (S)", name: "Spike Glycoprotein (S)", category: "Viral Target", desc: "Target antigen used to detect neutralizing antibodies; contains S1/S2 and RBD." },
+        { id: "Nucleocapsid Protein (N)", name: "Nucleocapsid Protein (N)", category: "Viral Target", desc: "Abundant structural viral protein used as capture antigen in 70% of evaluated LFIAs." },
+        { id: "IgM Antibody", name: "Immunoglobulin M (IgM)", category: "Immune Response", desc: "Early antibody marker appearing 4-7 days post-symptom onset; transient persistence." },
+        { id: "IgG Antibody", name: "Immunoglobulin G (IgG)", category: "Immune Response", desc: "Long-term antibody conferring durable immunity, peaking 2-3 weeks post-infection." },
+        { id: "SAHPRA Approval", name: "SAHPRA Regulatory Approval", category: "Regulatory / Guideline", desc: "South African Health Products Regulatory Authority standard requiring ≥80% sensitivity." },
+        { id: "Finger-prick Blood", name: "Finger-prick Capillary Blood", category: "Specimen / Matrix", desc: "Optimal POC matrix requiring minimal blood volume (10-20 μL) without centrifugation." },
+        { id: "Serum / Plasma", name: "Venous Serum / Plasma", category: "Specimen / Matrix", desc: "Laboratory reference matrix tested across pre-February 2020 negative control banks." },
+        { id: "Test Duration (15 min)", name: "15-Minute Read Time", category: "Clinical Metric / Variable", desc: "Crucial operational metric: 85% of kits produced valid results within 10-15 minutes." },
+        { id: "COVID-19 Seroconversion", name: "COVID-19 Seroconversion", category: "Disease / Pathology", desc: "Biological process where patient mounts detectable humoral antibodies to SARS-CoV-2." }
+      ],
+      links: [
+        { source: "PMC8259047", target: "Orient Gene LFIA", relationship: "Evaluates operational accuracy" },
+        { source: "PMC8259047", target: "Genrui LFIA", relationship: "Evaluates operational accuracy" },
+        { source: "PMC8259047", target: "Biosynex LFIA", relationship: "Evaluates operational accuracy" },
+        { source: "PMC8259047", target: "Boson Biotech LFIA", relationship: "Evaluates operational accuracy" },
+        { source: "Orient Gene LFIA", target: "SAHPRA Approval", relationship: "Recommended for full approval" },
+        { source: "Genrui LFIA", target: "SAHPRA Approval", relationship: "Received section 21 authorization" },
+        { source: "Biosynex LFIA", target: "SAHPRA Approval", relationship: "Received section 21 authorization" },
+        { source: "Boson Biotech LFIA", target: "SAHPRA Approval", relationship: "Received section 21 authorization" },
+        { source: "Orient Gene LFIA", target: "SARS-CoV-2 Spike (S)", relationship: "Employs capture antigen" },
+        { source: "Orient Gene LFIA", target: "Nucleocapsid Protein (N)", relationship: "Employs capture antigen" },
+        { source: "Orient Gene LFIA", target: "IgG Antibody", relationship: "Detects human serum IgG" },
+        { source: "Orient Gene LFIA", target: "IgM Antibody", relationship: "Detects human serum IgM" },
+        { source: "Biosynex LFIA", target: "Finger-prick Blood", relationship: "Validated for POC capillary blood" },
+        { source: "Boson Biotech LFIA", target: "Serum / Plasma", relationship: "Validated with biobank sera" },
+        { source: "IgM Antibody", target: "COVID-19 Seroconversion", relationship: "Early serological biomarker" },
+        { source: "IgG Antibody", target: "COVID-19 Seroconversion", relationship: "Sustained neutralizing response" },
+        { source: "Orient Gene LFIA", target: "Test Duration (15 min)", relationship: "Standard assay turnaround" }
+      ]
+    };
+
+    // 2. PMC11462910: Diagnostic Accuracy of Rapid Antigen Tests vs RT-PCR Meta-Analysis (Hirabayashi et al.)
+    const DATA_PMC11462910 = {
+      meta: {
+        title: "Comparison of diagnostic accuracy of rapid antigen tests for COVID-19 compared to the viral genetic test in adults: systematic review & meta-analysis",
+        authors: "Hirabayashi E, DeArmond M, Stone AEL, et al.",
+        journal: "JBI Evid Synth (2024)",
+        pmc: "PMC11462910",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC11462910/",
+        summary: "Meta-analysis of 91 adult studies synthesizing diagnostic accuracy (sensitivity 67.1%, PPV 97.7%) of rapid antigen tests (RATs) like BinaxNOW and Roche against gold-standard RT-PCR."
+      },
+      nodes: [
+        { id: "PMC11462910", name: "Hirabayashi et al. (PMC11462910)", category: "Publication", desc: "Systematic review & meta-analysis of 91 studies evaluating POC RAT diagnostic accuracy." },
+        { id: "RT-PCR Gold Standard", name: "Real-Time RT-PCR", category: "Diagnostic Assay", desc: "Reference molecular gold standard detecting SARS-CoV-2 RNA genome in certified laboratories." },
+        { id: "Abbott BinaxNOW", name: "Abbott BinaxNOW Ag Card", category: "Diagnostic Assay", desc: "Leading POC antigen card test; pooled sensitivity 72.8% and specificity 99.4%." },
+        { id: "Roche SARS-CoV-2 Ag", name: "Roche Rapid Antigen Test", category: "Diagnostic Assay", desc: "SD Biosensor / Roche POC lateral flow assay recommended for primary care testing." },
+        { id: "Abbott PanBio", name: "Abbott PanBio COVID-19 Ag", category: "Diagnostic Assay", desc: "Widely deployed membrane strip detecting Nucleocapsid protein." },
+        { id: "STANDARD Q Ag", name: "SD Biosensor STANDARD Q", category: "Diagnostic Assay", desc: "Chromatographic immunoassay evaluated extensively across symptomatic cohorts." },
+        { id: "Viral Load (Ct < 25)", name: "High Viral Load (Ct < 25)", category: "Clinical Metric / Variable", desc: "Samples with cycle threshold < 25 exhibited high RAT sensitivity (>92.5%)." },
+        { id: "Viral Load (Ct >= 25)", name: "Low Viral Load (Ct ≥ 25)", category: "Clinical Metric / Variable", desc: "Lower viral shedding led to significant sensitivity drops (<45%)." },
+        { id: "Symptomatic Adults", name: "Symptomatic Adult Cohort", category: "Clinical Metric / Variable", desc: "Pooled sensitivity 72.1% in symptomatic individuals within 7 days of onset." },
+        { id: "Asymptomatic Cohort", name: "Asymptomatic Population", category: "Clinical Metric / Variable", desc: "Substantially lower pooled sensitivity (58.1%) requiring secondary testing." },
+        { id: "Nasopharyngeal Swab", name: "Nasopharyngeal Swab", category: "Specimen / Matrix", desc: "Highest diagnostic yield anatomical collection site compared to nasal swabs." },
+        { id: "WHO Standard (Sens >=80%)", name: "WHO RAT Target (Sens ≥80%, Spec ≥97%)", category: "Regulatory / Guideline", desc: "World Health Organization benchmark criteria for point-of-care antigen diagnostics." },
+        { id: "False Negative Risk", name: "False Negative Re-testing Protocol", category: "Regulatory / Guideline", desc: "Clinical guideline mandating RT-PCR confirmation for symptomatic patients with negative RAT." },
+        { id: "QUADAS-2 Tool", name: "QUADAS-2 Risk of Bias", category: "Regulatory / Guideline", desc: "Methodological appraisal tool assessing patient selection, index test, and reference standard flow." }
+      ],
+      links: [
+        { source: "PMC11462910", target: "RT-PCR Gold Standard", relationship: "Reference comparator test" },
+        { source: "PMC11462910", target: "Abbott BinaxNOW", relationship: "Meta-analyzed performance" },
+        { source: "PMC11462910", target: "Roche SARS-CoV-2 Ag", relationship: "Recommended for primary care" },
+        { source: "PMC11462910", target: "Abbott PanBio", relationship: "Synthesized 28 cohort studies" },
+        { source: "PMC11462910", target: "STANDARD Q Ag", relationship: "Evaluated diagnostic accuracy" },
+        { source: "Abbott BinaxNOW", target: "Viral Load (Ct < 25)", relationship: "Achieves >94% sensitivity" },
+        { source: "Abbott BinaxNOW", target: "Viral Load (Ct >= 25)", relationship: "Sensitivity drops to 41%" },
+        { source: "Roche SARS-CoV-2 Ag", target: "Symptomatic Adults", relationship: "Exceeds WHO criteria (82.3%)" },
+        { source: "Abbott PanBio", target: "Nasopharyngeal Swab", relationship: "Recommended specimen type" },
+        { source: "PMC11462910", target: "WHO Standard (Sens >=80%)", relationship: "Benchmarks against criteria" },
+        { source: "PMC11462910", target: "False Negative Risk", relationship: "Recommends reflexive PCR" },
+        { source: "PMC11462910", target: "QUADAS-2 Tool", relationship: "Appraises study quality" },
+        { source: "Asymptomatic Cohort", target: "False Negative Risk", relationship: "Heightens risk of missed cases" },
+        { source: "Abbott BinaxNOW", target: "RT-PCR Gold Standard", relationship: "High specificity agreement (99.4%)" }
+      ]
+    };
+
+    // 3. PMC8293341: Innate Immunity in Children and Role of ACE2 Expression (Dioguardi et al.)
+    const DATA_PMC8293341 = {
+      meta: {
+        title: "Innate Immunity in Children and the Role of ACE2 Expression in SARS-CoV-2 Infection",
+        authors: "Dioguardi M, Cazzolla AP, Arena C, Lo Muzio L, et al.",
+        journal: "Pediatr Rep (2021)",
+        pmc: "PMC8293341",
+        url: "https://pmc.ncbi.nlm.nih.gov/articles/PMC8293341/",
+        summary: "Systematic review analyzing why pediatric patients suffer significantly milder COVID-19 disease, focusing on age-dependent ACE2 receptor dynamics, mucosal innate immunity, and memory T cells."
+      },
+      nodes: [
+        { id: "PMC8293341", name: "Dioguardi et al. (PMC8293341)", category: "Publication", desc: "Systematic PRISMA review on pediatric innate immunity and ACE2 expression dynamics." },
+        { id: "ACE2 Receptor", name: "ACE2 (Angiotensin-Converting Enzyme 2)", category: "Host Receptor / Enzyme", desc: "Functional functional cell entry receptor for SARS-CoV-2 Spike glycoprotein." },
+        { id: "TMPRSS2 Protease", name: "TMPRSS2 Serine Protease", category: "Host Receptor / Enzyme", desc: "Host cell surface protease that primes Spike S1/S2 cleavage for viral fusion." },
+        { id: "SARS-CoV-2 Spike Protein", name: "SARS-CoV-2 Spike (S1/S2)", category: "Viral Target", desc: "Trimeric class I fusion protein binding human ACE2 with high affinity." },
+        { id: "Pediatric Upper Airway", name: "Pediatric Nasal / Upper Airway Epithelium", category: "Specimen / Matrix", desc: "Features pre-activated innate immune state with elevated constitutive IFN expression." },
+        { id: "Age-Dependent ACE2 Expression", name: "Age-Dependent ACE2 Distribution", category: "Clinical Metric / Variable", desc: "ACE2 expression increases with chronological age; lower in elderly alveolar progenitor cells." },
+        { id: "Plasmacytoid DCs (pDCs)", name: "Plasmacytoid Dendritic Cells (pDCs)", category: "Immune Response", desc: "Key innate immune sentinels producing massive amounts of protective Type I interferons." },
+        { id: "Type I / III Interferons", name: "Interferons (IFN-α, IFN-β, IFN-λ)", category: "Immune Response", desc: "Early antiviral barrier rapidly neutralizing viral replication before lower lung invasion." },
+        { id: "CovH Cross-Reactive Antibodies", name: "Common Cold Coronaviruses (CovH)", category: "Immune Response", desc: "Frequent childhood seasonal coronavirus infections create cross-reactive antibodies and cellular immunity." },
+        { id: "Pediatric Mild Course", name: "Milder COVID-19 in Children", category: "Disease / Pathology", desc: "Only 2.5% of pediatric cases develop severe disease; preserved alveolar architecture." },
+        { id: "Cytokine Storm (IL-6 / TNF-a)", name: "Cytokine Storm & IL-6 Hyperinflammation", category: "Disease / Pathology", desc: "Dysregulated hyperinflammatory response driving adult ARDS and intensive care admission." },
+        { id: "MIS-C Syndrome", name: "MIS-C (Multisystem Inflammatory Syndrome)", category: "Disease / Pathology", desc: "Rare post-acute pediatric hyperinflammatory syndrome presenting weeks after mild infection." },
+        { id: "Memory T Cell Repertoire", name: "Diverse Memory T-Cell Repertoire", category: "Immune Response", desc: "Recent pediatric routine vaccinations (heterologous immunity) prime robust cellular defense." }
+      ],
+      links: [
+        { source: "PMC8293341", target: "ACE2 Receptor", relationship: "Investigates differential expression" },
+        { source: "PMC8293341", target: "Pediatric Mild Course", relationship: "Analyzes protective factors" },
+        { source: "SARS-CoV-2 Spike Protein", target: "ACE2 Receptor", relationship: "High affinity cell entry binding" },
+        { source: "SARS-CoV-2 Spike Protein", target: "TMPRSS2 Protease", relationship: "Cleaved and primed for fusion" },
+        { source: "ACE2 Receptor", target: "Age-Dependent ACE2 Expression", relationship: "Modulated across age cohorts" },
+        { source: "Pediatric Upper Airway", target: "Type I / III Interferons", relationship: "High constitutive basal secretion" },
+        { source: "Plasmacytoid DCs (pDCs)", target: "Type I / III Interferons", relationship: "Secretes potent early interferon" },
+        { source: "Type I / III Interferons", target: "Pediatric Mild Course", relationship: "Prevents pulmonary progression" },
+        { source: "CovH Cross-Reactive Antibodies", target: "Pediatric Mild Course", relationship: "Cross-protects via prior exposure" },
+        { source: "Memory T Cell Repertoire", target: "Pediatric Mild Course", relationship: "Heterologous immune advantage" },
+        { source: "Pediatric Mild Course", target: "Cytokine Storm (IL-6 / TNF-a)", relationship: "Protects against systemic storm" },
+        { source: "Pediatric Mild Course", target: "MIS-C Syndrome", relationship: "Rare post-infectious sequela" }
+      ]
+    };
+
+    // 4. MULTI-PAPER SYNTHESIS: Unified Biomedical Knowledge Network
+    // Interconnects diagnostics, viral structural biology, immune responses, and epidemiology
+    function generateCombinedDataset() {
+      const nodeMap = new Map();
+      const links = [];
+
+      // Combine nodes from all 3 datasets, resolving overlapping keys
+      [DATA_PMC8259047, DATA_PMC11462910, DATA_PMC8293341].forEach(ds => {
+        ds.nodes.forEach(n => {
+          let id = n.id;
+          // Unify Spike protein
+          if (id === "SARS-CoV-2 Spike (S)" || id === "SARS-CoV-2 Spike Protein") {
+            id = "SARS-CoV-2 Spike";
+          }
+          if (!nodeMap.has(id)) {
+            nodeMap.set(id, { ...n, id });
+          }
+        });
+        ds.links.forEach(l => {
+          let s = l.source;
+          let t = l.target;
+          if (s === "SARS-CoV-2 Spike (S)" || s === "SARS-CoV-2 Spike Protein") s = "SARS-CoV-2 Spike";
+          if (t === "SARS-CoV-2 Spike (S)" || t === "SARS-CoV-2 Spike Protein") t = "SARS-CoV-2 Spike";
+          links.push({ source: s, target: t, relationship: l.relationship });
+        });
+      });
+
+      // Add inter-paper bridging links showing cross-domain literature coherence!
+      const bridgeLinks = [
+        { source: "Abbott BinaxNOW", target: "Nucleocapsid Protein (N)", relationship: "Detects viral N-antigen directly" },
+        { source: "Roche SARS-CoV-2 Ag", target: "Nucleocapsid Protein (N)", relationship: "Target capture antigen" },
+        { source: "Viral Load (Ct < 25)", target: "Pediatric Upper Airway", relationship: "High mucosal viral shedding" },
+        { source: "SARS-CoV-2 Spike", target: "IgG Antibody", relationship: "Elicits anti-Spike neutralizers" },
+        { source: "SARS-CoV-2 Spike", target: "IgM Antibody", relationship: "Triggers primary IgM response" },
+        { source: "COVID-19 Seroconversion", target: "Pediatric Mild Course", relationship: "Lower peak titers in children" },
+        { source: "RT-PCR Gold Standard", target: "Viral Load (Ct < 25)", relationship: "Quantifies cycle thresholds" },
+        { source: "Abbott PanBio", target: "Orient Gene LFIA", relationship: "Correlated lateral flow designs" }
+      ];
+
+      bridgeLinks.forEach(bl => links.push(bl));
+
+      return {
+        meta: {
+          title: "Cross-Paper Biomedical Synthesis Network",
+          authors: "Unified Knowledge Model across PMC8259047, PMC11462910, & PMC8293341",
+          journal: "BioSearch Research Knowledge Engine (2026)",
+          pmc: "Multi-Source",
+          url: "https://pmc.ncbi.nlm.nih.gov/",
+          summary: "Synthesized multi-dimensional knowledge graph bridging 30 serology LFIAs (PMC8259047), RAT vs RT-PCR diagnostic meta-analyses (PMC11462910), and pediatric ACE2 innate immunology (PMC8293341)."
+        },
+        nodes: Array.from(nodeMap.values()),
+        links: links
+      };
+    }
+
+    // --- APPLICATION STATE ---
+    let currentDataset = generateCombinedDataset();
+    let activeNodes = [];
+    let activeLinks = [];
+    let simulation = null;
+    let svg = null;
+    let gRoot = null;
+    let linkGroup = null;
+    let nodeGroup = null;
+    let labelGroup = null;
+    let zoomBehavior = null;
+
+    let simulationActive = true;
+    let sizingMode = 'degree'; // 'degree' or 'uniform'
+    let selectedNode = null;
+    let selectedCategoryFilters = new Set();
+    let searchTerm = "";
+
+    // Force parameters
+    let paramLinkDist = 120;
+    let paramCharge = -450;
+    let paramCollision = 38;
+
+    // --- INITIALIZATION ---
+    window.addEventListener('DOMContentLoaded', () => {
+      initSvgAndZoom();
+      initUIListeners();
+      loadDataset('combined');
+    });
+
+    function initSvgAndZoom() {
+      const container = document.getElementById('viewport-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      svg = d3.select('#graph-svg')
+        .attr('width', '100%')
+        .attr('height', '100%')
+        .attr('viewBox', [0, 0, width, height]);
+
+      // Filter definitions (glows, arrows)
+      const defs = svg.append('defs');
+      
+      // Marker for directed links
+      defs.append('marker')
+        .attr('id', 'arrow-marker')
+        .attr('viewBox', '0 -5 10 10')
+        .attr('refX', 22)
+        .attr('refY', 0)
+        .attr('markerWidth', 6)
+        .attr('markerHeight', 6)
+        .attr('orient', 'auto')
+        .append('path')
+        .attr('d', 'M0,-5L10,0L0,5')
+        .attr('fill', 'var(--text-dim)');
+
+      // Glow filter for highlighted nodes
+      const glow = defs.append('filter')
+        .attr('id', 'glow-filter')
+        .attr('x', '-50%')
+        .attr('y', '-50%')
+        .attr('width', '200%')
+        .attr('height', '200%');
+      glow.append('feGaussianBlur')
+        .attr('stdDeviation', '4')
+        .attr('result', 'coloredBlur');
+      const feMerge = glow.append('feMerge');
+      feMerge.append('feMergeNode').attr('in', 'coloredBlur');
+      feMerge.append('feMergeNode').attr('in', 'SourceGraphic');
+
+      // Root zoomable group
+      gRoot = svg.append('g').attr('class', 'g-root');
+      linkGroup = gRoot.append('g').attr('class', 'links-layer');
+      labelGroup = gRoot.append('g').attr('class', 'link-labels-layer');
+      nodeGroup = gRoot.append('g').attr('class', 'nodes-layer');
+
+      // Zoom behavior
+      zoomBehavior = d3.zoom()
+        .scaleExtent([0.15, 4])
+        .on('zoom', (event) => {
+          gRoot.attr('transform', event.transform);
+        });
+
+      svg.call(zoomBehavior)
+        .on('dblclick.zoom', null); // disable double-click zoom to avoid conflict with node actions
+    }
+
+    // --- DATA LOADING & ADAPTER ---
+    function loadDataset(datasetKey) {
+      if (datasetKey === 'combined') {
+        currentDataset = generateCombinedDataset();
+      } else if (datasetKey === 'pmc8259047') {
+        currentDataset = JSON.parse(JSON.stringify(DATA_PMC8259047));
+      } else if (datasetKey === 'pmc11462910') {
+        currentDataset = JSON.parse(JSON.stringify(DATA_PMC11462910));
+      } else if (datasetKey === 'pmc8293341') {
+        currentDataset = JSON.parse(JSON.stringify(DATA_PMC8293341));
+      }
+      
+      // Update top banner
+      updatePaperBanner(currentDataset.meta);
+      
+      // Re-populate category filter chips
+      populateCategoryFilters();
+
+      // Render the graph
+      renderGraph();
+    }
+
+    function updatePaperBanner(meta) {
+      const banner = document.getElementById('paper-banner');
+      if (!meta) {
+        banner.classList.add('hidden');
+        return;
+      }
+      banner.classList.remove('hidden');
+      document.getElementById('banner-paper-name').innerText = meta.title || "Custom Dataset";
+      document.getElementById('banner-paper-desc').innerText = meta.summary || "";
+      const pmcLink = document.getElementById('banner-pmc-link');
+      if (meta.url) {
+        pmcLink.href = meta.url;
+        pmcLink.style.display = 'inline-flex';
+        pmcLink.querySelector('span').innerText = meta.pmc || 'Source Link';
+      } else {
+        pmcLink.style.display = 'none';
+      }
+    }
+
+    function populateCategoryFilters() {
+      const container = document.getElementById('filter-chips-container');
+      container.innerHTML = '';
+      selectedCategoryFilters.clear();
+
+      // Collect categories present in currentDataset
+      const catCount = {};
+      currentDataset.nodes.forEach(n => {
+        const cat = n.category || 'Other';
+        catCount[cat] = (catCount[cat] || 0) + 1;
+        selectedCategoryFilters.add(cat); // all visible by default
+      });
+
+      Object.keys(catCount).forEach(cat => {
+        const cfg = CATEGORY_CONFIG[cat] || CATEGORY_CONFIG['Other'];
+        const chip = document.createElement('div');
+        chip.className = 'filter-chip active';
+        chip.innerHTML = `
+          <span class="filter-chip-dot" style="background: ${cfg.color};"></span>
+          <span>${cat}</span>
+          <span class="filter-chip-count">${catCount[cat]}</span>
+        `;
+        chip.addEventListener('click', () => {
+          if (selectedCategoryFilters.has(cat)) {
+            selectedCategoryFilters.delete(cat);
+            chip.classList.remove('active');
+          } else {
+            selectedCategoryFilters.add(cat);
+            chip.classList.add('active');
+          }
+          applyFiltersAndSearch();
+        });
+        container.appendChild(chip);
+      });
+
+      document.getElementById('category-filter-count').innerText = `${Object.keys(catCount).length} Types`;
+    }
+
+    // --- GRAPH RENDERING WITH D3 ---
+    function renderGraph() {
+      // Calculate node degrees
+      const degreeMap = {};
+      currentDataset.nodes.forEach(n => degreeMap[n.id] = 0);
+      currentDataset.links.forEach(l => {
+        const s = typeof l.source === 'object' ? l.source.id : l.source;
+        const t = typeof l.target === 'object' ? l.target.id : l.target;
+        if (degreeMap[s] !== undefined) degreeMap[s]++;
+        if (degreeMap[t] !== undefined) degreeMap[t]++;
+      });
+
+      // Prepare cloned data
+      const container = document.getElementById('viewport-container');
+      const width = container.clientWidth || 800;
+      const height = container.clientHeight || 600;
+
+      activeNodes = currentDataset.nodes.map((n, i) => {
+        const angle = (i / currentDataset.nodes.length) * 2 * Math.PI;
+        const radius = Math.min(width, height) * 0.32;
+        return {
+          ...n,
+          degree: degreeMap[n.id] || 0,
+          x: width / 2 + radius * Math.cos(angle) + (Math.random() - 0.5) * 50,
+          y: height / 2 + radius * Math.sin(angle) + (Math.random() - 0.5) * 50
+        };
+      });
+
+      // Map links with verified node references
+      const nodeById = new Map(activeNodes.map(d => [d.id, d]));
+      activeLinks = [];
+      currentDataset.links.forEach(l => {
+        const sId = typeof l.source === 'object' ? l.source.id : l.source;
+        const tId = typeof l.target === 'object' ? l.target.id : l.target;
+        if (nodeById.has(sId) && nodeById.has(tId)) {
+          activeLinks.push({
+            source: sId,
+            target: tId,
+            relationship: l.relationship || 'Connected with'
+          });
+        }
+      });
+
+      // Update HUD count
+      document.getElementById('hud-node-count').innerText = activeNodes.length;
+      document.getElementById('hud-link-count').innerText = activeLinks.length;
+
+      // Stop previous simulation
+      if (simulation) simulation.stop();
+
+      // Setup D3 Simulation
+      simulation = d3.forceSimulation(activeNodes)
+        .force('link', d3.forceLink(activeLinks).id(d => d.id).distance(paramLinkDist))
+        .force('charge', d3.forceManyBody().strength(paramCharge))
+        .force('center', d3.forceCenter(width / 2, height / 2).strength(0.08))
+        .force('collision', d3.forceCollide().radius(d => getNodeRadius(d) + paramCollision))
+        .force('x', d3.forceX(width / 2).strength(0.04))
+        .force('y', d3.forceY(height / 2).strength(0.04))
+        .alphaDecay(0.028);
+
+      // Bind Links
+      const linkSelection = linkGroup.selectAll('.link')
+        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
+        .join('line')
+        .attr('class', 'link')
+        .attr('stroke', 'var(--text-dim)')
+        .attr('stroke-width', 1.6)
+        .attr('marker-end', 'url(#arrow-marker)');
+
+      // Bind Link Labels
+      const labelSelection = labelGroup.selectAll('.link-label-group')
+        .data(activeLinks, d => `${d.source.id || d.source}-${d.target.id || d.target}`)
+        .join('g')
+        .attr('class', 'link-label-group');
+
+      labelSelection.selectAll('*').remove();
+      labelSelection.append('rect')
+        .attr('class', 'link-label-bg')
+        .attr('height', 16);
+      labelSelection.append('text')
+        .attr('class', 'link-label-text')
+        .attr('dy', '3.5')
+        .text(d => d.relationship);
+
+      // Bind Nodes
+      const nodeSelection = nodeGroup.selectAll('.node-group')
+        .data(activeNodes, d => d.id)
+        .join('g')
+        .attr('class', 'node-group')
+        .call(d3.drag()
+          .on('start', dragStarted)
+          .on('drag', dragged)
+          .on('end', dragEnded)
+        );
+
+      nodeSelection.selectAll('*').remove();
+
+      // Outer ripple halo for key publication or central nodes
+      nodeSelection.append('circle')
+        .attr('class', 'node-halo')
+        .attr('r', d => getNodeRadius(d) + 5)
+        .attr('fill', d => getNodeColor(d))
+        .attr('fill-opacity', 0.15)
+        .style('display', d => d.degree > 4 || d.category === 'Publication' ? 'block' : 'none');
+
+      // Primary Node Circle
+      nodeSelection.append('circle')
+        .attr('class', 'node-circle')
+        .attr('r', d => getNodeRadius(d))
+        .attr('fill', d => getNodeColor(d));
+
+      // Node Text Label
+      nodeSelection.append('text')
+        .attr('class', 'node-label')
+        .attr('dx', d => getNodeRadius(d) + 6)
+        .attr('dy', 4)
+        .text(d => d.name);
+
+      // Node Interactions
+      nodeSelection
+        .on('mouseover', (event, d) => onNodeHover(d))
+        .on('mouseout', () => onNodeUnhover())
+        .on('click', (event, d) => onNodeClick(d));
+
+      // Link Interactions
+      linkSelection
+        .on('mouseover', function(event, d) {
+          d3.select(this).attr('stroke', 'var(--cyan)').attr('stroke-width', 3);
+          d3.select('#hud-status-text').html(`<strong>${d.source.name}</strong> &rarr; <em>${d.relationship}</em> &rarr; <strong>${d.target.name}</strong>`);
+        })
+        .on('mouseout', function() {
+          d3.select(this).attr('stroke', 'var(--text-dim)').attr('stroke-width', 1.6);
+          d3.select('#hud-status-text').text('Ready • Drag nodes or click to inspect');
+        });
+
+      // Simulation Tick Loop
+      simulation.on('tick', () => {
+        linkSelection
+          .attr('x1', d => d.source.x)
+          .attr('y1', d => d.source.y)
+          .attr('x2', d => d.target.x)
+          .attr('y2', d => d.target.y);
+
+        labelSelection.attr('transform', d => {
+          const midX = (d.source.x + d.target.x) / 2;
+          const midY = (d.source.y + d.target.y) / 2;
+          return `translate(${midX}, ${midY})`;
+        });
+
+        labelSelection.each(function() {
+          const g = d3.select(this);
+          const txt = g.select('text').node();
+          if (txt) {
+            const bb = txt.getBBox();
+            g.select('rect')
+              .attr('x', bb.x - 6)
+              .attr('y', bb.y - 2)
+              .attr('width', bb.width + 12);
+          }
+        });
+
+        nodeSelection.attr('transform', d => `translate(${d.x}, ${d.y})`);
+      });
+
+      // Auto-fit view after brief settling
+      setTimeout(() => fitGraphToViewport(), 400);
+    }
+
+    function getNodeRadius(d) {
+      if (sizingMode === 'uniform') return 12;
+      // Degree-based sizing
+      const base = 9;
+      const boost = Math.min(20, d.degree * 2.4);
+      if (d.category === 'Publication') return base + boost + 3;
+      return base + boost;
+    }
+
+    function getNodeColor(d) {
+      const cfg = CATEGORY_CONFIG[d.category] || CATEGORY_CONFIG['Other'];
+      return cfg.color;
+    }
+
+    // --- INTERACTION HANDLERS ---
+    function onNodeHover(d) {
+      const connectedNodeIds = new Set([d.id]);
+      const connectedLinkIds = new Set();
+
+      activeLinks.forEach(l => {
+        const sId = l.source.id || l.source;
+        const tId = l.target.id || l.target;
+        if (sId === d.id || tId === d.id) {
+          connectedNodeIds.add(sId);
+          connectedNodeIds.add(tId);
+          connectedLinkIds.add(`${sId}-${tId}`);
+        }
+      });
+
+      // Highlight links
+      linkGroup.selectAll('.link')
+        .classed('highlighted', l => {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          return sId === d.id || tId === d.id;
+        })
+        .classed('dimmed', l => {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          return sId !== d.id && tId !== d.id;
+        })
+        .attr('stroke', l => {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          return (sId === d.id || tId === d.id) ? getNodeColor(d) : 'var(--text-dim)';
+        });
+
+      // Show link labels for connected edges
+      labelGroup.selectAll('.link-label-group')
+        .classed('visible', l => {
+          const sId = l.source.id || l.source;
+          const tId = l.target.id || l.target;
+          return sId === d.id || tId === d.id;
+        });
+
+      // Dim non-connected nodes
+      nodeGroup.selectAll('.node-group')
+        .each(function(n) {
+          const isConn = connectedNodeIds.has(n.id);
+          d3.select(this).select('.node-circle')
+            .classed('highlighted', n.id === d.id)
+            .classed('dimmed', !isConn);
+          d3.select(this).select('.node-label')
+            .classed('highlighted', n.id === d.id)
+            .classed('dimmed', !isConn);
+        });
+
+      // Update status tip
+      document.getElementById('hud-status-text').innerHTML = `
+        <strong>${d.name}</strong> (${d.category}) &bull; ${d.degree} connections
+      `;
+    }
+
+    function onNodeUnhover() {
+      linkGroup.selectAll('.link')
+        .classed('highlighted', false)
+        .classed('dimmed', false)
+        .attr('stroke', 'var(--text-dim)');
+
+      labelGroup.selectAll('.link-label-group').classed('visible', false);
+
+      nodeGroup.selectAll('.node-group')
+        .each(function() {
+          d3.select(this).select('.node-circle')
+            .classed('highlighted', false)
+            .classed('dimmed', false);
+          d3.select(this).select('.node-label')
+            .classed('highlighted', false)
+            .classed('dimmed', false);
+        });
+
+      document.getElementById('hud-status-text').text = 'Ready • Drag nodes or click to inspect';
+    }
+
+    function onNodeClick(d) {
+      selectedNode = d;
+      openDetailsDrawer(d);
+    }
+
+    function openDetailsDrawer(node) {
+      const drawer = document.getElementById('details-drawer');
+      const cfg = CATEGORY_CONFIG[node.category] || CATEGORY_CONFIG['Other'];
+
+      document.getElementById('drawer-type-badge').innerText = node.category || "Entity";
+      document.getElementById('drawer-type-badge').style.color = cfg.color;
+      document.getElementById('drawer-type-badge').style.background = `${cfg.color}22`;
+      document.getElementById('drawer-type-badge').style.border = `1px solid ${cfg.color}44`;
+
+      document.getElementById('drawer-entity-name').innerText = node.name;
+      document.getElementById('drawer-entity-desc').innerText = node.desc || "Entity participating in biological regulation and diagnostic accuracy.";
+      document.getElementById('drawer-entity-degree').innerText = node.degree || 0;
+      document.getElementById('drawer-entity-source').innerText = currentDataset.meta?.pmc || "Literature Extraction";
+
+      // Populate connections list
+      const connContainer = document.getElementById('drawer-connections-list');
+      connContainer.innerHTML = '';
+      
+      const related = [];
+      activeLinks.forEach(l => {
+        const s = l.source;
+        const t = l.target;
+        if (s.id === node.id) {
+          related.push({ target: t, rel: l.relationship, direction: 'outgoing' });
+        } else if (t.id === node.id) {
+          related.push({ target: s, rel: l.relationship, direction: 'incoming' });
+        }
+      });
+
+      document.getElementById('drawer-conn-count').innerText = related.length;
+
+      if (related.length === 0) {
+        connContainer.innerHTML = `<div style="font-size: 12px; color: var(--text-dim);">No direct connections for this entity.</div>`;
+      } else {
+        related.forEach(item => {
+          const el = document.createElement('div');
+          el.className = 'connected-item';
+          const tColor = CATEGORY_CONFIG[item.target.category]?.color || '#94a3b8';
+          el.innerHTML = `
+            <div style="display:flex; align-items:center; gap:6px; overflow:hidden;">
+              <span style="width:7px; height:7px; border-radius:50%; background:${tColor}; flex-shrink:0;"></span>
+              <span style="font-weight:500; white-space:nowrap; text-overflow:ellipsis; overflow:hidden;">${item.target.name}</span>
+            </div>
+            <span class="conn-edge-label">${item.rel}</span>
+          `;
+          el.addEventListener('click', () => {
+            focusNode(item.target);
+            openDetailsDrawer(item.target);
+          });
+          connContainer.appendChild(el);
+        });
+      }
+
+      drawer.classList.add('open');
+    }
+
+    function closeDetailsDrawer() {
+      document.getElementById('details-drawer').classList.remove('open');
+      selectedNode = null;
+      onNodeUnhover();
+    }
+
+    // --- FILTER & SEARCH SYSTEM ---
+    function applyFiltersAndSearch() {
+      const q = searchTerm.toLowerCase().trim();
+
+      nodeGroup.selectAll('.node-group')
+        .each(function(d) {
+          const matchesCategory = selectedCategoryFilters.has(d.category || 'Other');
+          const matchesQuery = !q || d.name.toLowerCase().includes(q) || (d.desc && d.desc.toLowerCase().includes(q));
+          const visible = matchesCategory && matchesQuery;
+
+          d3.select(this)
+            .style('display', visible ? 'block' : 'none');
+        });
+
+      linkGroup.selectAll('.link')
+        .each(function(l) {
+          const s = l.source;
+          const t = l.target;
+          const sVis = selectedCategoryFilters.has(s.category || 'Other') && (!q || s.name.toLowerCase().includes(q));
+          const tVis = selectedCategoryFilters.has(t.category || 'Other') && (!q || t.name.toLowerCase().includes(q));
+          d3.select(this).style('display', (sVis && tVis) ? 'block' : 'none');
+        });
+    }
+
+    // --- ZOOM & VIEWPORT HELPER ---
+    function fitGraphToViewport() {
+      if (!activeNodes || activeNodes.length === 0) return;
+
+      const container = document.getElementById('viewport-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+
+      let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
+      activeNodes.forEach(d => {
+        if (d.x < minX) minX = d.x;
+        if (d.x > maxX) maxX = d.x;
+        if (d.y < minY) minY = d.y;
+        if (d.y > maxY) maxY = d.y;
+      });
+
+      const padding = 80;
+      const graphWidth = maxX - minX + padding * 2;
+      const graphHeight = maxY - minY + padding * 2;
+
+      const scale = Math.max(0.2, Math.min(1.5, Math.min(width / graphWidth, height / graphHeight)));
+      const translateX = width / 2 - ((minX + maxX) / 2) * scale;
+      const translateY = height / 2 - ((minY + maxY) / 2) * scale;
+
+      svg.transition().duration(600).call(
+        zoomBehavior.transform,
+        d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+      );
+    }
+
+    function focusNode(node) {
+      const container = document.getElementById('viewport-container');
+      const width = container.clientWidth;
+      const height = container.clientHeight;
+      const scale = 1.6;
+
+      const translateX = width / 2 - node.x * scale;
+      const translateY = height / 2 - node.y * scale;
+
+      svg.transition().duration(650).call(
+        zoomBehavior.transform,
+        d3.zoomIdentity.translate(translateX, translateY).scale(scale)
+      );
+
+      // Trigger pulse animation
+      onNodeHover(node);
+    }
+
+    // --- DRAG BEHAVIOR ---
+    function dragStarted(event, d) {
+      if (!event.active && simulationActive) simulation.alphaTarget(0.3).restart();
+      d.fx = d.x;
+      d.fy = d.y;
+    }
+
+    function dragged(event, d) {
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    function dragEnded(event, d) {
+      if (!event.active && simulationActive) simulation.alphaTarget(0);
+      // Keep pinned or let float? Pin them for precision layout
+      d.fx = event.x;
+      d.fy = event.y;
+    }
+
+    // --- UI EVENT LISTENERS ---
+    function initUIListeners() {
+      // Dataset selector
+      document.getElementById('dataset-selector').addEventListener('change', (e) => {
+        if (e.target.value === 'custom') {
+          openCustomDataModal();
+        } else {
+          loadDataset(e.target.value);
+        }
+      });
+
+      // Search bar
+      const searchInput = document.getElementById('node-search');
+      const searchClear = document.getElementById('search-clear');
+      searchInput.addEventListener('input', (e) => {
+        searchTerm = e.target.value;
+        searchClear.classList.toggle('active', !!searchTerm);
+        applyFiltersAndSearch();
+
+        // If exact match found, auto focus
+        const found = activeNodes.find(n => n.name.toLowerCase() === searchTerm.toLowerCase());
+        if (found) focusNode(found);
+      });
+
+      searchClear.addEventListener('click', () => {
+        searchInput.value = '';
+        searchTerm = '';
+        searchClear.classList.remove('active');
+        applyFiltersAndSearch();
+      });
+
+      // Dock collapse/expand
+      const dock = document.getElementById('controls-dock');
+      const btnShowDock = document.getElementById('btn-show-dock');
+      document.getElementById('btn-hide-dock').addEventListener('click', () => {
+        dock.classList.add('collapsed');
+        btnShowDock.classList.add('visible');
+      });
+      btnShowDock.addEventListener('click', () => {
+        dock.classList.remove('collapsed');
+        btnShowDock.classList.remove('visible');
+      });
+
+      // Simulation Sliders
+      const sDist = document.getElementById('slider-link-dist');
+      sDist.addEventListener('input', (e) => {
+        paramLinkDist = +e.target.value;
+        document.getElementById('val-link-dist').innerText = paramLinkDist;
+        if (simulation) {
+          simulation.force('link').distance(paramLinkDist);
+          simulation.alpha(0.3).restart();
+        }
+      });
+
+      const sCharge = document.getElementById('slider-charge');
+      sCharge.addEventListener('input', (e) => {
+        paramCharge = +e.target.value;
+        document.getElementById('val-charge').innerText = paramCharge;
+        if (simulation) {
+          simulation.force('charge').strength(paramCharge);
+          simulation.alpha(0.3).restart();
+        }
+      });
+
+      const sColl = document.getElementById('slider-collision');
+      sColl.addEventListener('input', (e) => {
+        paramCollision = +e.target.value;
+        document.getElementById('val-collision').innerText = paramCollision;
+        if (simulation) {
+          simulation.force('collision').radius(d => getNodeRadius(d) + paramCollision);
+          simulation.alpha(0.3).restart();
+        }
+      });
+
+      // Sizing Mode Buttons
+      const btnDegree = document.getElementById('btn-size-degree');
+      const btnUniform = document.getElementById('btn-size-uniform');
+      btnDegree.addEventListener('click', () => {
+        sizingMode = 'degree';
+        btnDegree.classList.add('active');
+        btnUniform.classList.remove('active');
+        nodeGroup.selectAll('.node-circle').transition().duration(300).attr('r', d => getNodeRadius(d));
+      });
+      btnUniform.addEventListener('click', () => {
+        sizingMode = 'uniform';
+        btnUniform.classList.add('active');
+        btnDegree.classList.remove('active');
+        nodeGroup.selectAll('.node-circle').transition().duration(300).attr('r', d => getNodeRadius(d));
+      });
+
+      // Physics Pause & Reheat
+      const btnToggleSim = document.getElementById('btn-toggle-sim');
+      btnToggleSim.addEventListener('click', () => {
+        simulationActive = !simulationActive;
+        if (simulationActive) {
+          simulation.restart();
+          document.getElementById('txt-toggle-sim').innerText = "Pause Physics";
+        } else {
+          simulation.stop();
+          document.getElementById('txt-toggle-sim').innerText = "Resume Physics";
+        }
+      });
+
+      document.getElementById('btn-reheat').addEventListener('click', () => {
+        // Unpin all nodes so they disperse fresh
+        activeNodes.forEach(d => { d.fx = null; d.fy = null; });
+        if (simulation) simulation.alpha(1).restart();
+      });
+
+      // Zoom Buttons
+      document.getElementById('btn-zoom-in').addEventListener('click', () => svg.transition().duration(300).call(zoomBehavior.scaleBy, 1.3));
+      document.getElementById('btn-zoom-out').addEventListener('click', () => svg.transition().duration(300).call(zoomBehavior.scaleBy, 0.7));
+      document.getElementById('btn-zoom-fit').addEventListener('click', fitGraphToViewport);
+      document.getElementById('btn-zoom-reset').addEventListener('click', () => {
+        svg.transition().duration(300).call(zoomBehavior.transform, d3.zoomIdentity);
+      });
+
+      // Drawer buttons
+      document.getElementById('btn-close-drawer').addEventListener('click', closeDetailsDrawer);
+      document.getElementById('btn-focus-node').addEventListener('click', () => {
+        if (selectedNode) focusNode(selectedNode);
+      });
+      document.getElementById('btn-isolate-node').addEventListener('click', () => {
+        if (!selectedNode) return;
+        const neighbors = new Set([selectedNode.id]);
+        activeLinks.forEach(l => {
+          const s = l.source.id || l.source;
+          const t = l.target.id || l.target;
+          if (s === selectedNode.id) neighbors.add(t);
+          if (t === selectedNode.id) neighbors.add(s);
+        });
+        nodeGroup.selectAll('.node-group').style('display', d => neighbors.has(d.id) ? 'block' : 'none');
+        linkGroup.selectAll('.link').style('display', l => {
+          const s = l.source.id || l.source;
+          const t = l.target.id || l.target;
+          return (neighbors.has(s) && neighbors.has(t)) ? 'block' : 'none';
+        });
+      });
+
+      // Custom Data Modal
+      document.getElementById('btn-custom-data').addEventListener('click', openCustomDataModal);
+      document.getElementById('btn-close-modal').addEventListener('click', closeCustomDataModal);
+      document.getElementById('btn-cancel-modal').addEventListener('click', closeCustomDataModal);
+      document.getElementById('btn-apply-custom-data').addEventListener('click', applyCustomDataInput);
+
+      // Modal tabs
+      document.querySelectorAll('.modal-tab').forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          document.querySelectorAll('.modal-tab').forEach(t => t.classList.remove('active'));
+          e.target.classList.add('active');
+          const tName = e.target.getAttribute('data-tab');
+          document.getElementById('tab-content-live-pmc').style.display = tName === 'live-pmc' ? 'block' : 'none';
+          document.getElementById('tab-content-triplets').style.display = tName === 'triplets' ? 'block' : 'none';
+          document.getElementById('tab-content-json').style.display = tName === 'json' ? 'block' : 'none';
+          document.getElementById('tab-content-csv').style.display = tName === 'csv' ? 'block' : 'none';
+        });
+      });
+
+      // Live search triggers
+      document.getElementById('btn-run-live-search').addEventListener('click', runLivePmcSearch);
+      document.querySelectorAll('.live-topic-quick').forEach(a => {
+        a.addEventListener('click', (e) => {
+          e.preventDefault();
+          document.getElementById('live-search-topic').value = a.getAttribute('data-q');
+          runLivePmcSearch();
+        });
+      });
+
+      // Preset buttons in modal
+      document.getElementById('btn-load-preset-biomed').addEventListener('click', () => {
+        document.getElementById('input-triplets').value = 
+`TP53 -> p21 : Transactivates
+TP53 -> MDM2 : Negative autoregulation
+MDM2 -> TP53 : Ubiquitinates & degrades
+BRCA1 -> RAD51 : Homologous recombination repair
+BRCA1 -> PARP1 : Synthetic lethal target
+PARP1 -> Olaparib : Inhibited by targeted drug
+EGFR -> Cetuximab : Monoclonal antibody binding
+EGFR -> KRAS : Downstream MAPK signaling
+KRAS -> BRAF : Phosphorylation cascade
+BRAF -> MEK : Activates oncogenic survival`;
+        document.querySelector('.modal-tab[data-tab="triplets"]').click();
+      });
+
+      document.getElementById('btn-load-preset-pharma').addEventListener('click', () => {
+        document.getElementById('input-triplets').value = 
+`Remdesivir -> RdRp (NSP12) : Chain termination inhibitor
+Paxlovid (Nirmatrelvir) -> Mpro (3CL Protease) : Main protease inhibition
+Ritonavir -> CYP3A4 : Pharmacokinetic booster inhibition
+Molnupiravir -> Viral RNA : Lethal mutagenesis incorporation
+Tocilizumab -> IL-6 Receptor : Blocks inflammatory cytokine storm
+Dexamethasone -> Glucocorticoid Receptor : Broad anti-inflammatory repression
+Baricitinib -> JAK1 / JAK2 : Blocks cytokine signal transduction`;
+        document.querySelector('.modal-tab[data-tab="triplets"]').click();
+      });
+
+      // Export JSON
+      document.getElementById('btn-export-json').addEventListener('click', () => {
+        const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentDataset, null, 2));
+        const dl = document.createElement('a');
+        dl.setAttribute("href", dataStr);
+        dl.setAttribute("download", `biograph_${currentDataset.meta?.pmc || 'model'}.json`);
+        document.body.appendChild(dl);
+        dl.click();
+        dl.remove();
+      });
+
+      // Theme toggle
+      const btnTheme = document.getElementById('btn-theme-toggle');
+      btnTheme.addEventListener('click', () => {
+        const cur = document.documentElement.getAttribute('data-theme');
+        const next = cur === 'dark' ? 'light' : 'dark';
+        document.documentElement.setAttribute('data-theme', next);
+        document.getElementById('theme-icon-sun').style.display = next === 'light' ? 'block' : 'none';
+        document.getElementById('theme-icon-moon').style.display = next === 'dark' ? 'block' : 'none';
+      });
+
+      // Window resize
+      window.addEventListener('resize', () => {
+        const container = document.getElementById('viewport-container');
+        svg.attr('viewBox', [0, 0, container.clientWidth, container.clientHeight]);
+      });
+    }
+
+    // --- CUSTOM DATA PARSING (MAKES GRAPH FOR ANY DATA) ---
+    function openCustomDataModal() {
+      document.getElementById('custom-data-modal').classList.add('open');
+    }
+
+    function closeCustomDataModal() {
+      document.getElementById('custom-data-modal').classList.remove('open');
+    }
+
+    function applyCustomDataInput() {
+      const activeTab = document.querySelector('.modal-tab.active').getAttribute('data-tab');
+      let parsed = null;
+      const statusMsg = document.getElementById('parse-status-msg');
+
+      try {
+        if (activeTab === 'triplets') {
+          const text = document.getElementById('input-triplets').value.trim();
+          if (!text) throw new Error("Please enter relationship lines.");
+          parsed = parseTripletsToGraph(text);
+        } else if (activeTab === 'json') {
+          const raw = document.getElementById('input-json').value.trim();
+          if (!raw) throw new Error("Please enter JSON graph data.");
+          parsed = JSON.parse(raw);
+          if (!parsed.nodes || !parsed.links) throw new Error("JSON must contain 'nodes' and 'links' arrays.");
+        } else if (activeTab === 'csv') {
+          const csvText = document.getElementById('input-csv').value.trim();
+          if (!csvText) throw new Error("Please enter CSV data.");
+          parsed = parseCsvToGraph(csvText);
+        }
+
+        // Apply dataset
+        currentDataset = {
+          meta: {
+            title: "Custom User Knowledge Graph",
+            authors: "Generated via BioGraph Studio Engine",
+            journal: "User-defined dataset",
+            pmc: "User Custom",
+            summary: `Interactive visualization with ${parsed.nodes.length} entities and ${parsed.links.length} relationships.`
+          },
+          nodes: parsed.nodes,
+          links: parsed.links
+        };
+
+        // Select 'custom' in dropdown
+        document.getElementById('dataset-selector').value = 'custom';
+        closeCustomDataModal();
+        updatePaperBanner(currentDataset.meta);
+        populateCategoryFilters();
+        renderGraph();
+
+      } catch (err) {
+        statusMsg.style.color = 'var(--rose)';
+        statusMsg.innerText = `Error: ${err.message}`;
+      }
+    }
+
+    // --- LIVE PMC REST API QUERY ENGINE ---
+    async function runLivePmcSearch() {
+      const topic = document.getElementById('live-search-topic').value.trim();
+      const limit = document.getElementById('live-search-limit').value;
+      const logEl = document.getElementById('live-search-log');
+
+      if (!topic) {
+        logEl.innerHTML = `<span style="color:var(--rose)">[!] Please enter a research topic or query terms.</span>`;
+        return;
+      }
+
+      logEl.innerHTML = `<div>[*] Connecting to Europe PMC REST API...</div>`;
+      logEl.innerHTML += `<div>[*] Searching literature for: "${topic}" (limit: ${limit})...</div>`;
+
+      try {
+        const url = `https://www.ebi.ac.uk/europepmc/webservices/rest/search?query=${encodeURIComponent(topic)}&format=json&pageSize=${limit}&resultType=core`;
+        const resp = await fetch(url);
+        if (!resp.ok) throw new Error(`HTTP error ${resp.status}`);
+        const data = await resp.json();
+        const articles = data.resultList?.result || [];
+
+        if (articles.length === 0) {
+          logEl.innerHTML += `<div style="color:var(--rose)">[-] No articles returned. Try broadening the search keywords.</div>`;
+          return;
+        }
+
+        logEl.innerHTML += `<div style="color:var(--emerald)">[+] Retrieved ${articles.length} open-access research articles!</div>`;
+        articles.forEach((a, i) => {
+          const t = a.title ? a.title.slice(0, 60) : 'Study';
+          logEl.innerHTML += `<div style="color:var(--cyan)">  ${i+1}. ${t}... (${a.pmcid || a.id || 'PMC'})</div>`;
+        });
+
+        logEl.innerHTML += `<div>[*] Extracting biological entities & semantic relationships...</div>`;
+        const graphData = extractEntitiesFromArticles(articles);
+        logEl.innerHTML += `<div style="color:var(--emerald)">[+] Generated ${graphData.nodes.length} entities & ${graphData.links.length} relationships!</div>`;
+        logEl.innerHTML += `<div>[*] Rendering interactive force-directed graph...</div>`;
+
+        currentDataset = {
+          meta: {
+            title: `Live PMC Network: ${topic}`,
+            authors: `Extracted dynamically across ${articles.length} publications via Europe PMC API`,
+            journal: "Real-Time BioGraph Literature Engine",
+            pmc: articles.map(a => a.pmcid || a.id).filter(Boolean).slice(0, 3).join(", "),
+            url: `https://europepmc.org/search?query=${encodeURIComponent(topic)}`,
+            summary: `Automated knowledge graph extracted from: ${articles.map(a => a.title).slice(0, 2).join('; ')}`
+          },
+          nodes: graphData.nodes,
+          links: graphData.links
+        };
+
+        setTimeout(() => {
+          closeCustomDataModal();
+          document.getElementById('dataset-selector').value = 'custom';
+          updatePaperBanner(currentDataset.meta);
+          populateCategoryFilters();
+          renderGraph();
+        }, 700);
+
+      } catch (err) {
+        logEl.innerHTML += `<div style="color:var(--rose)">[-] Live query error: ${err.message}. You can also use the Natural Triplets tab.</div>`;
+      }
+    }
+
+    function extractEntitiesFromArticles(articles) {
+      const BIOMED_TERMS = {
+        "Gene / Protein": ["cas9", "crispr", "ace2", "tp53", "brca1", "egfr", "kras", "p21", "rad51", "parp1", "spike", "nucleocapsid", "interferon", "interleukin", "il-6", "tnf", "t cell", "b cell"],
+        "Host Receptor / Enzyme": ["receptor", "tmprss2", "polymerase", "protease", "kinase", "helicase", "synthase"],
+        "Diagnostic Assay": ["rt-pcr", "pcr", "elisa", "lfia", "antigen test", "rapid test", "sequencing", "qpcr", "western blot"],
+        "Disease / Pathology": ["covid-19", "sars-cov-2", "infection", "cancer", "carcinoma", "pneumonia", "ards", "sepsis", "tumor"],
+        "Drug / Therapeutic": ["vaccine", "antibody", "monoclonal", "inhibitor", "remdesivir", "paxlovid", "mrna", "dexamethasone"],
+        "Specimen / Matrix": ["serum", "plasma", "nasopharyngeal", "saliva", "blood", "epithelium", "mucosa", "swab"]
+      };
+
+      const REL_RULES = [
+        { regex: /binds to|interacts with|complexes with/i, label: "Binds to" },
+        { regex: /inhibits|blocks|suppresses/i, label: "Inhibits" },
+        { regex: /activates|upregulates|induces|promotes/i, label: "Activates / Upregulates" },
+        { regex: /detects|measures|screens for/i, label: "Detects / Quantifies" },
+        { regex: /causes|leads to|results in/i, label: "Causes / Mediates" },
+        { regex: /regulates|modulates/i, label: "Regulates" },
+        { regex: /expressed in|found in/i, label: "Expressed in" }
+      ];
+
+      const nodesMap = new Map();
+      const links = [];
+
+      articles.forEach(art => {
+        const pmcId = art.pmcid || art.id || `Paper_${Math.random().toString(36).substr(2, 5)}`;
+        const title = (art.title || '').replace(/\.$/, '');
+        const abstract = art.abstractText || '';
+        let author = art.authorString || 'Researchers et al.';
+        if (author.includes(',')) author = author.split(',')[0] + ' et al.';
+
+        const paperLabel = `${author} (${pmcId})`;
+        nodesMap.set(pmcId, {
+          id: pmcId,
+          name: paperLabel,
+          category: "Publication",
+          desc: `${title}. DOI: ${art.doi || 'N/A'}`
+        });
+
+        const fullText = `${title}. ${abstract}`;
+        const foundInPaper = [];
+
+        Object.keys(BIOMED_TERMS).forEach(cat => {
+          BIOMED_TERMS[cat].forEach(kw => {
+            const re = new RegExp(`\\b${kw}\\b`, 'i');
+            if (re.test(fullText)) {
+              const displayName = kw.charAt(0).toUpperCase() + kw.slice(1);
+              if (!foundInPaper.includes(displayName)) foundInPaper.push({ name: displayName, cat });
+            }
+          });
+        });
+
+        // Register nodes
+        foundInPaper.forEach(item => {
+          if (!nodesMap.has(item.name)) {
+            nodesMap.set(item.name, {
+              id: item.name,
+              name: item.name,
+              category: item.cat,
+              desc: `Entity analyzed in scientific study ${pmcId}.`
+            });
+          }
+          links.push({
+            source: pmcId,
+            target: item.name,
+            relationship: "Investigates / Reports"
+          });
+        });
+
+        // Link entities together based on sentence proximity
+        const sentences = fullText.split(/[.!?]\s+/);
+        sentences.forEach(s => {
+          const sLower = s.toLowerCase();
+          const present = foundInPaper.filter(item => sLower.includes(item.name.toLowerCase()));
+          if (present.length >= 2) {
+            let rel = "Correlated with";
+            for (let r of REL_RULES) {
+              if (r.regex.test(s)) {
+                rel = r.label;
+                break;
+              }
+            }
+            for (let i = 0; i < present.length - 1; i++) {
+              links.push({
+                source: present[i].name,
+                target: present[i+1].name,
+                relationship: rel
+              });
+            }
+          }
+        });
+      });
+
+      // Deduplicate links
+      const cleanLinks = [];
+      const seen = new Set();
+      links.forEach(l => {
+        const k = `${l.source}-${l.target}-${l.relationship}`;
+        if (!seen.has(k) && l.source !== l.target) {
+          seen.add(k);
+          cleanLinks.push(l);
+        }
+      });
+
+      return { nodes: Array.from(nodesMap.values()), links: cleanLinks };
+    }
+
+    function parseTripletsToGraph(text) {
+      const lines = text.split('\n');
+      const nodeMap = new Map();
+      const links = [];
+
+      lines.forEach(rawLine => {
+        const line = rawLine.trim();
+        if (!line || line.startsWith('#') || line.startsWith('//')) return;
+
+        let src = '', tgt = '', rel = 'Related to';
+
+        if (line.includes('->')) {
+          const parts = line.split('->');
+          src = parts[0].trim();
+          const right = parts[1].trim();
+          if (right.includes(':')) {
+            const rightParts = right.split(':');
+            tgt = rightParts[0].trim();
+            rel = rightParts.slice(1).join(':').trim();
+          } else {
+            tgt = right;
+          }
+        } else if (line.includes('|')) {
+          const parts = line.split('|').map(p => p.trim());
+          src = parts[0];
+          tgt = parts[1];
+          if (parts[2]) rel = parts[2];
+        } else if (line.includes(':')) {
+          const parts = line.split(':').map(p => p.trim());
+          src = parts[0];
+          tgt = parts[1];
+        }
+
+        if (src && tgt) {
+          if (!nodeMap.has(src)) {
+            nodeMap.set(src, {
+              id: src,
+              name: src,
+              category: inferCategory(src),
+              desc: `Entity in custom network.`
+            });
+          }
+          if (!nodeMap.has(tgt)) {
+            nodeMap.set(tgt, {
+              id: tgt,
+              name: tgt,
+              category: inferCategory(tgt),
+              desc: `Entity in custom network.`
+            });
+          }
+          links.push({ source: src, target: tgt, relationship: rel });
+        }
+      });
+
+      return { nodes: Array.from(nodeMap.values()), links };
+    }
+
+    function parseCsvToGraph(csv) {
+      const lines = csv.split('\n');
+      const nodeMap = new Map();
+      const links = [];
+
+      let hasHeader = true;
+      lines.forEach((rawLine, idx) => {
+        const line = rawLine.trim();
+        if (!line) return;
+        const cols = line.split(',').map(c => c.trim().replace(/^["']|["']$/g, ''));
+        if (idx === 0 && (cols[0].toLowerCase() === 'source' || cols[1].toLowerCase() === 'target')) {
+          return; // skip header
+        }
+
+        const src = cols[0];
+        const tgt = cols[1];
+        const rel = cols[2] || 'Connected';
+        const srcCat = cols[3] || inferCategory(src);
+        const tgtCat = cols[4] || inferCategory(tgt);
+
+        if (src && tgt) {
+          if (!nodeMap.has(src)) {
+            nodeMap.set(src, { id: src, name: src, category: srcCat, desc: 'Custom node' });
+          }
+          if (!nodeMap.has(tgt)) {
+            nodeMap.set(tgt, { id: tgt, name: tgt, category: tgtCat, desc: 'Custom node' });
+          }
+          links.push({ source: src, target: tgt, relationship: rel });
+        }
+      });
+
+      return { nodes: Array.from(nodeMap.values()), links };
+    }
+
+    function inferCategory(name) {
+      const lower = name.toLowerCase();
+      if (lower.includes('paper') || lower.includes('et al') || lower.includes('study') || lower.includes('pmc')) return 'Publication';
+      if (lower.includes('assay') || lower.includes('kit') || lower.includes('test') || lower.includes('rt-pcr') || lower.includes('rat') || lower.includes('lfia')) return 'Diagnostic Assay';
+      if (lower.includes('spike') || lower.includes('s-protein') || lower.includes('nucleocapsid') || lower.includes('antigen') || lower.includes('virus')) return 'Viral Target';
+      if (lower.includes('receptor') || lower.includes('ace2') || lower.includes('tmprss2') || lower.includes('enzyme') || lower.includes('protease')) return 'Host Receptor / Enzyme';
+      if (lower.includes('igm') || lower.includes('igg') || lower.includes('interferon') || lower.includes('antibody') || lower.includes('t cell') || lower.includes('pdc')) return 'Immune Response';
+      if (lower.includes('disease') || lower.includes('covid') || lower.includes('cancer') || lower.includes('syndrome') || lower.includes('storm')) return 'Disease / Pathology';
+      if (lower.includes('inhibitor') || lower.includes('mab') || lower.includes('drug') || lower.includes('vir')) return 'Drug / Therapeutic';
+      return 'Gene / Protein';
+    }
+  </script>
+</body>
+</html>
