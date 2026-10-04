@@ -154,6 +154,7 @@ def extract_entities_and_relations(articles: List[Dict[str, Any]]) -> Dict[str, 
             "id": paper_id,
             "name": paper_label,
             "category": "Publication",
+            "relevance": 1.00,
             "desc": f"{title}. DOI: {doi}"
         }
 
@@ -174,10 +175,12 @@ def extract_entities_and_relations(articles: List[Dict[str, Any]]) -> Dict[str, 
         # Register entities
         for ent_name, cat in detected_entities:
             if ent_name not in nodes_map:
+                in_title = ent_name.lower() in title.lower()
                 nodes_map[ent_name] = {
                     "id": ent_name,
                     "name": ent_name,
                     "category": cat,
+                    "relevance": round(0.95 if in_title else 0.85, 2),
                     "desc": f"Biomedical entity analyzed in {pmcid}."
                 }
             # Link paper to entity
@@ -305,13 +308,14 @@ ALLOWED CATEGORIES (Strictly use these exact strings):
 Return STRICT JSON:
 {{
   "nodes": [
-    {{ "id": "PMC_ID", "name": "Author et al. (PMC_ID)", "category": "Publication", "desc": "Summary of paper..." }},
-    {{ "id": "EntityId", "name": "Display Name", "category": "CategoryName", "desc": "Brief scientific role or finding..." }}
+    {{ "id": "PMC_ID", "name": "Author et al. (PMC_ID)", "category": "Publication", "desc": "Summary of paper...", "relevance": 1.00 }},
+    {{ "id": "EntityId", "name": "Display Name", "category": "CategoryName", "desc": "Brief scientific role or finding...", "relevance": 0.95 }}
   ],
   "links": [
     {{ "source": "PMC_ID", "target": "EntityId", "relationship": "RelationshipLabel" }}
   ]
-}}"""
+}}
+Each node MUST include a "relevance" float between 0.50 and 1.00 indicating its relevance to the paper (1.00 for the paper publication node)."""
 
     url = f"https://generativelanguage.googleapis.com/v1beta/models/{chosen_model}:generateContent?key={api_key}"
     payload = {
@@ -346,6 +350,7 @@ Return STRICT JSON:
                     "id": canonical_id,
                     "name": f"{author} ({canonical_id})",
                     "category": "Publication",
+                    "relevance": 1.00,
                     "desc": f"{a.get('title', '')}. Source: Europe PMC."
                 }
 
@@ -361,10 +366,12 @@ Return STRICT JSON:
                     if n.get("name") and len(n["name"]) > 5:
                         node_map[norm_id]["name"] = n["name"]
                 else:
+                    rel_val = float(n.get("relevance", 0.85)) if n.get("relevance") is not None else 0.85
                     node_map[norm_id] = {
                         "id": norm_id,
                         "name": n.get("name", norm_id),
                         "category": n.get("category", "Other"),
+                        "relevance": round(min(0.99, max(0.40, rel_val)), 2),
                         "desc": n.get("desc", f"Entity analyzed in research on {topic}.")
                     }
 

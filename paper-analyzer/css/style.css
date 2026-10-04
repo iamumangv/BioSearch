@@ -84,22 +84,6 @@ body {
 
 a { color: var(--accent); }
 
-/* Shared micro-typography -------------------------------------------------- */
-.eyebrow {
-  font-family: var(--font-mono);
-  font-size: 10px;
-  font-weight: 500;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--text-3);
-}
-
-.rule {
-  height: 1px;
-  background: var(--line);
-  border: 0;
-}
-
 /* ==============================================================================
    Masthead
    ============================================================================== */
@@ -319,8 +303,6 @@ a { color: var(--accent); }
 
 .preset-chip:last-child { border-right: 1px solid var(--line); }
 
-.preset-chip .chip-dot { display: none; }
-
 .preset-chip:hover { color: var(--text-2); }
 
 .preset-chip.active {
@@ -368,7 +350,21 @@ a { color: var(--accent); }
   margin-bottom: 18px;
 }
 
-.hero-meta-row > * + * { position: relative; }
+.paper-hero-banner .hero-meta-row > * + * {
+  position: relative;
+  padding-left: 15px;
+}
+
+.paper-hero-banner .hero-meta-row > * + *::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  width: 1px;
+  height: 9px;
+  margin-top: -4.5px;
+  background: var(--line-strong);
+}
 
 .meta-badge {
   font-family: var(--font-mono);
@@ -552,6 +548,7 @@ a { color: var(--accent); }
   border: 1px solid var(--line);
   border-radius: var(--radius);
   padding: 0;
+  overflow: hidden;
 }
 
 .card-header {
@@ -1262,14 +1259,13 @@ a { color: var(--accent); }
 .graph-display-layout {
   display: grid;
   grid-template-columns: 1fr 330px;
+  height: 600px;
 }
 
 .graph-viewport-box {
   position: relative;
   background: var(--inset);
   border-right: 1px solid var(--line);
-  min-height: 560px;
-  height: 100%;
   overflow: hidden;
 }
 
@@ -1295,7 +1291,6 @@ a { color: var(--accent); }
   display: flex;
   flex-direction: column;
   overflow-y: auto;
-  max-height: 620px;
 }
 
 .inspector-header {
@@ -1800,9 +1795,8 @@ a { color: var(--accent); }
    ============================================================================== */
 @media (max-width: 1100px) {
   .findings-columns { grid-template-columns: 1fr; gap: 28px; }
-  .graph-display-layout { grid-template-columns: 1fr; }
-  .graph-viewport-box { border-right: 0; border-bottom: 1px solid var(--line); min-height: 460px; }
-  .graph-inspector-panel { max-height: none; }
+  .graph-display-layout { grid-template-columns: 1fr; height: auto; }
+  .graph-viewport-box { border-right: 0; border-bottom: 1px solid var(--line); height: 460px; }
   .brand-tag { display: none; }
 }
 

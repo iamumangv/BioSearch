@@ -1,7 +1,7 @@
 /**
- * BioSearch PaperLens - Interactive Paper Knowledge Graph Visualizer
- * High-performance force-directed canvas graph with particle telemetry,
- * category filtering, drag physics, zoom/pan controls, and node inspector.
+ * PaperLens - Citation Topology Visualizer
+ * Force-directed canvas graph with drag physics, zoom/pan, category filtering,
+ * and a node inspector. Colors follow the workbench's muted editorial palette.
  */
 
 class PaperGraphVisualizer {
@@ -30,28 +30,37 @@ class PaperGraphVisualizer {
 
     // Visual theme palette
     this.colors = {
-      paper: { fill: '#00f0ff', stroke: '#38bdf8', glow: 'rgba(0, 240, 255, 0.45)', text: '#ffffff' },
-      method: { fill: '#3b82f6', stroke: '#60a5fa', glow: 'rgba(59, 130, 246, 0.35)', text: '#eff6ff' },
-      foundation: { fill: '#a855f7', stroke: '#c084fc', glow: 'rgba(168, 85, 247, 0.35)', text: '#f3e8ff' },
-      entity: { fill: '#10b981', stroke: '#34d399', glow: 'rgba(16, 185, 129, 0.35)', text: '#ecfdf5' },
-      benchmark: { fill: '#f59e0b', stroke: '#fbbf24', glow: 'rgba(245, 158, 11, 0.35)', text: '#fffbeb' },
-      comparison: { fill: '#ec4899', stroke: '#f472b6', glow: 'rgba(236, 72, 153, 0.35)', text: '#fdf2f8' }
+      paper:      { fill: '#c0954e', stroke: '#d3ab68', halo: 'rgba(192, 149, 78, 0.16)' },
+      method:     { fill: '#6ea3cf', stroke: '#8fb8dc', halo: 'rgba(110, 163, 207, 0.14)' },
+      foundation: { fill: '#9a8cc0', stroke: '#b0a3d0', halo: 'rgba(154, 140, 192, 0.14)' },
+      entity:     { fill: '#6fae8b', stroke: '#8cc0a4', halo: 'rgba(111, 174, 139, 0.14)' },
+      benchmark:  { fill: '#c69a52', stroke: '#d6b075', halo: 'rgba(198, 154, 82, 0.14)' },
+      comparison: { fill: '#a2757e', stroke: '#bb9099', halo: 'rgba(162, 117, 126, 0.14)' }
     };
 
     this.initEvents();
     this.resize();
     window.addEventListener('resize', () => this.resize());
+    if (typeof ResizeObserver !== 'undefined') {
+      this.resizeObserver = new ResizeObserver(() => this.resize());
+      this.resizeObserver.observe(this.container);
+    }
     this.animate();
   }
 
   resize() {
     if (!this.canvas || !this.container) return;
     const rect = this.container.getBoundingClientRect();
-    this.width = rect.width || 800;
-    this.height = Math.max(rect.height, 560);
-    this.canvas.width = this.width * window.devicePixelRatio;
-    this.canvas.height = this.height * window.devicePixelRatio;
-    this.ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+    const dpr = window.devicePixelRatio || 1;
+    const width = Math.max(rect.width, 320);
+    const height = Math.max(rect.height, 320);
+    if (width === this.width && height === this.height && dpr === this.dpr && this.canvas.width) return;
+    this.width = width;
+    this.height = height;
+    this.dpr = dpr;
+    this.canvas.width = Math.round(width * dpr);
+    this.canvas.height = Math.round(height * dpr);
+    this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   }
 
   loadGraph(graphData) {
@@ -369,14 +378,14 @@ class PaperGraphVisualizer {
       ctx.lineTo(link.target.x, link.target.y);
 
       if (isFilteredOut) {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.04)';
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.03)';
         ctx.lineWidth = 1;
       } else if (isConnected) {
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.75)';
-        ctx.lineWidth = 2.4;
+        ctx.strokeStyle = 'rgba(192, 149, 78, 0.7)';
+        ctx.lineWidth = 1.6;
       } else {
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
-        ctx.lineWidth = 1.2;
+        ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+        ctx.lineWidth = 1;
       }
       ctx.stroke();
 
@@ -384,8 +393,8 @@ class PaperGraphVisualizer {
       if (isConnected && link.label) {
         const midX = (link.source.x + link.target.x) / 2;
         const midY = (link.source.y + link.target.y) / 2;
-        ctx.font = '10px Inter, sans-serif';
-        ctx.fillStyle = '#94a3b8';
+        ctx.font = '10px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#8b9099';
         ctx.textAlign = 'center';
         ctx.fillText(link.label, midX, midY - 6);
       }
@@ -406,12 +415,10 @@ class PaperGraphVisualizer {
 
       ctx.save();
       ctx.beginPath();
-      ctx.arc(px, py, p.size, 0, Math.PI * 2);
+      ctx.arc(px, py, p.size * 0.7, 0, Math.PI * 2);
       ctx.fillStyle = (this.selectedNode && (s.id === this.selectedNode.id || t.id === this.selectedNode.id))
-        ? '#00f0ff'
-        : 'rgba(139, 92, 246, 0.6)';
-      ctx.shadowColor = '#00f0ff';
-      ctx.shadowBlur = 6;
+        ? 'rgba(192, 149, 78, 0.85)'
+        : 'rgba(154, 140, 192, 0.5)';
       ctx.fill();
       ctx.restore();
     }
@@ -427,41 +434,39 @@ class PaperGraphVisualizer {
       ctx.save();
 
       if (isFiltered) {
-        ctx.globalAlpha = 0.2;
+        ctx.globalAlpha = 0.16;
       }
 
-      // Outer glow for selected/hovered/paper
+      // Selection / hover halo
       if (isSelected || isHovered || isPaper) {
         ctx.beginPath();
-        const pulse = isPaper ? Math.sin(Date.now() * 0.003) * 4 : 0;
-        ctx.arc(node.x, node.y, node.radius + (isSelected ? 10 : 6) + pulse, 0, Math.PI * 2);
-        ctx.fillStyle = style.glow;
+        const pulse = isPaper && isSelected ? Math.sin(Date.now() * 0.0022) * 2 : 0;
+        ctx.arc(node.x, node.y, node.radius + (isSelected ? 7 : 4) + pulse, 0, Math.PI * 2);
+        ctx.fillStyle = style.halo;
         ctx.fill();
 
         ctx.strokeStyle = style.stroke;
-        ctx.lineWidth = isSelected ? 2.5 : 1.5;
+        ctx.lineWidth = 1;
         ctx.stroke();
       }
 
-      // Node Body
+      // Node body
       ctx.beginPath();
       ctx.arc(node.x, node.y, node.radius, 0, Math.PI * 2);
       ctx.fillStyle = style.fill;
-      ctx.shadowColor = style.stroke;
-      ctx.shadowBlur = isSelected ? 16 : 8;
+      ctx.globalAlpha *= 0.92;
       ctx.fill();
+      ctx.globalAlpha = isFiltered ? 0.16 : 1;
 
-      ctx.strokeStyle = '#ffffff';
-      ctx.lineWidth = isSelected ? 2.5 : 1.2;
+      ctx.strokeStyle = isSelected ? '#f2f3f5' : style.stroke;
+      ctx.lineWidth = isSelected ? 1.8 : 1;
       ctx.stroke();
 
-      // Node Label
-      ctx.font = isPaper ? 'bold 13px Inter, sans-serif' : '11px Inter, sans-serif';
-      ctx.fillStyle = style.text;
+      // Node label
+      ctx.font = `${isPaper ? '600 ' : ''}${isPaper ? 12 : 10.5}px Inter, sans-serif`;
+      ctx.fillStyle = isFiltered ? '#5a6069' : (isPaper ? '#e7e9ec' : '#9aa1aa');
       ctx.textAlign = 'center';
-      ctx.shadowBlur = 4;
-      ctx.shadowColor = '#000000';
-      ctx.fillText(node.label, node.x, node.y + node.radius + 15);
+      ctx.fillText(node.label, node.x, node.y + node.radius + 14);
 
       ctx.restore();
     }
@@ -476,7 +481,7 @@ class PaperGraphVisualizer {
     const startY = -this.panY / this.scale - 200;
     const endY = (this.height - this.panY) / this.scale + 200;
 
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.035)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.028)';
     for (let x = Math.floor(startX / gridSize) * gridSize; x < endX; x += gridSize) {
       for (let y = Math.floor(startY / gridSize) * gridSize; y < endY; y += gridSize) {
         ctx.fillRect(x, y, 1.5, 1.5);
@@ -493,25 +498,25 @@ class PaperGraphVisualizer {
     if (!elTitle || !elGroup || !elInfo) return;
 
     if (!node) {
-      elTitle.innerText = 'Select a node';
-      elGroup.innerText = 'Topology Inspector';
-      elInfo.innerText = 'Click any entity, paper, or method in the graph to inspect structural relationships and telemetry.';
+      elTitle.innerText = 'No node selected';
+      elGroup.innerText = 'Inspector';
+      elInfo.innerText = 'Select any paper, method, or entity in the graph to read its role and its connections.';
       if (elEdges) elEdges.innerHTML = '';
       return;
     }
 
     const groupNames = {
-      paper: 'Primary Publication',
-      method: 'Architecture & Method',
-      foundation: 'Foundational Paper / Framework',
-      entity: 'Target Entity / Assembly',
-      benchmark: 'Benchmark & Validation',
-      comparison: 'Competitor / Baseline'
+      paper: 'Primary publication',
+      method: 'Architecture or method',
+      foundation: 'Foundational work',
+      entity: 'Target entity',
+      benchmark: 'Benchmark or validation',
+      comparison: 'Competing baseline'
     };
 
     elTitle.innerText = node.label;
     elGroup.innerText = groupNames[node.group] || node.group.toUpperCase();
-    elInfo.innerText = node.info || 'Central node in the paper lineage graph.';
+    elInfo.innerText = node.info || 'Central node in the lineage graph.';
 
     if (elEdges) {
       const connectedLinks = this.links.filter(
@@ -519,7 +524,7 @@ class PaperGraphVisualizer {
       );
 
       if (connectedLinks.length === 0) {
-        elEdges.innerHTML = '<div class="inspector-edge-item">No direct edges detected</div>';
+        elEdges.innerHTML = '<div class="inspector-edge-item">No direct edges</div>';
       } else {
         elEdges.innerHTML = connectedLinks.map(l => {
           const isSource = l.source.id === node.id;

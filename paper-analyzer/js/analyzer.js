@@ -118,12 +118,12 @@ document.addEventListener('DOMContentLoaded', () => {
         c.classList.toggle('active', i === matchIdx);
       });
       loadPaper(matchIdx);
-      showToastNotification(`⚡ PaperLens Dossier Loaded: ${papers[matchIdx].shortTitle || papers[matchIdx].title}`);
+      showToastNotification(`Loaded analysis for ${papers[matchIdx].shortTitle || papers[matchIdx].title}`);
       return;
     }
 
     // Step 2: Paper not found in preset cache -> Automatically deconstruct & synthesize!
-    showToastNotification(`⏳ Auto-Deconstructing Paper across 6 Core Dimensions: "${targetTitle || targetPmc}"...`, true);
+    showToastNotification(`Retrieving metadata and building an analysis for "${targetTitle || targetPmc}"`, true);
 
     try {
       let finalTitle = targetTitle || `Research Paper ${targetPmc}`;
@@ -135,7 +135,7 @@ document.addEventListener('DOMContentLoaded', () => {
       let finalPmc = targetPmc || 'PMC-CUSTOM';
 
       // Update UI title immediately to show deconstruction in progress
-      if (paperTitle) paperTitle.textContent = `Deconstructing: ${finalTitle}...`;
+      if (paperTitle) paperTitle.textContent = `Analyzing: ${finalTitle}`;
       if (paperPmcid) paperPmcid.textContent = finalPmc;
 
       // If title is missing and a PMC ID is provided, query Europe PMC API with a 2-second timeout
@@ -194,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
       initPaperPresets();
       loadPaper(0);
 
-      showToastNotification(`✅ Deconstructed "${synthesizedPaper.shortTitle || synthesizedPaper.title}" into PaperLens!`);
+      showToastNotification(`Added ${synthesizedPaper.shortTitle || synthesizedPaper.title} to the corpus`);
 
       // Update URL silently
       try {
@@ -203,7 +203,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     } catch (err) {
       console.error("Auto-deconstruct error:", err);
-      showToastNotification(`⚠️ Fallback to default dossier: ${err.message}`);
+      showToastNotification(`Could not build the analysis, showing the default record: ${err.message}`);
       loadPaper(0);
     }
   }
@@ -775,7 +775,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         executeBtn.disabled = true;
-        if (statusText) statusText.innerHTML = '<span class="spinner"></span> Synthesizing paper across 6 core dimensions...';
+        if (statusText) statusText.innerHTML = '<span class="spinner"></span> Retrieving metadata and extracting findings';
 
         try {
           // Check for Gemini API key if available
@@ -824,7 +824,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const cleanJournal = (journal || "Peer-Reviewed Scientific Literature").trim();
     const cleanYear = year || new Date().getFullYear();
     const cleanDoi = doi || "10.1016/biosearch.analysis";
-    const snippet = (text && text.trim()) ? text.slice(0, 240) : `Comprehensive analytical decomposition and scientific intelligence profile generated via BioSearch PaperLens for ${cleanTitle}.`;
+    const snippet = (text && text.trim()) ? text.slice(0, 240) : `Analysis generated from bibliographic metadata alone for ${cleanTitle}.`;
 
     // Detect biological and scientific domain
     const lower = (cleanTitle + ' ' + (text || '')).toLowerCase();
