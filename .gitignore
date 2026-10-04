@@ -1,43 +1,91 @@
-# Dependencies
-node_modules/
-.pnp
-.pnp.js
+# ==============================================================================
+# BioSearch — Git Ignore Configuration
+# ==============================================================================
 
-# OS Files
+# Environment Variables & Private Secrets
+.env
+.env.local
+.env.development
+.env.test
+.env.production
+.env.*.local
+!.env.example
+
+# Operating System Files
 .DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
 Thumbs.db
+desktop.ini
+*.tmp
 
-# Logs
-*.log
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
-
-# Editor / IDE
+# IDEs & Editor Configuration
 .vscode/
 .idea/
+*.sublime-project
+*.sublime-workspace
 *.swp
 *.swo
+*~
+.cursor/
 
-# Python
+# Python Runtime & Bytecode
 __pycache__/
 *.py[cod]
 *$py.class
-
-# Scratch
-scratch/
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
 
 # Virtual Environments
 venv/
 .venv/
 env/
 ENV/
+env.bak/
+venv.bak/
 
-# Databases
+# Testing & Type Checking
+.pytest_cache/
+.coverage
+htmlcov/
+.mypy_cache/
+.ruff_cache/
+
+# Node & Package Managers
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnp
+.pnp.js
+
+# Databases & Runtime Locks
 *.sqlite3
+*.db-journal
+*.db-wal
+*.db-shm
 
-# Environment Variables
-.env
-.env.local
-.env.*.local
-!.env.example
+# Temporary & Scratch Files
+scratch/
+tmp/
+temp/

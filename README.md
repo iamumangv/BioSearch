@@ -1,222 +1,252 @@
-# 🧬 BioSearch Platform — Central Operations Guide
+# 🧬 BioSearch
 
-Welcome to the **BioSearch Platform**, an AI-powered biomedical research, surveillance, and knowledge graphing suite.
+<div align="center">
 
-This document serves as the **central reference** on how to start, stop, configure, and operate all components of the platform.
+**Autonomous Multi-Modal Biomedical Literature Intelligence, 3D Macromolecular Exploration & Planetary Outbreak Surveillance**
+
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
+[![Python 3.8+](https://img.shields.io/badge/python-3.8+-blue.svg)](https://www.python.org/downloads/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.100+-009688.svg)](https://fastapi.tiangolo.com)
+[![Three.js](https://img.shields.io/badge/Three.js-r128-black.svg)](https://threejs.org/)
+[![D3.js](https://img.shields.io/badge/D3.js-v7-F9A03C.svg)](https://d3js.org/)
+[![Gemini API](https://img.shields.io/badge/Google%20Gemini-AI%20Synthesis-4285F4.svg)](https://ai.google.dev/)
+
+[Quick Start](#-quick-start) •
+[Modules Overview](#-core-platform-modules) •
+[Screenshots](#-platform-showcase) •
+[CLI Pipeline](#-cli-knowledge-graph-pipeline) •
+[Configuration](#-configuration--environment-variables) •
+[Architecture](#-repository-architecture)
+
+</div>
 
 ---
 
-## ⚡ Quick Start (TL;DR)
+## 📌 Overview
 
-| Action | One-Click (Windows) | Terminal Command |
+**BioSearch** is a next-generation biomedical intelligence platform combining real-time scientific literature indexing, interactive 3D molecular visualization, automated LLM knowledge graph synthesis, and planetary disease outbreak surveillance into a unified research workstation.
+
+Built for life sciences researchers, epidemiologists, and bioinformaticians, BioSearch deconstructs complex biomedical queries into living entity topologies, dynamic hypothesis lineage trees, and real-time geospatial outbreak telemetry.
+
+---
+
+## 📸 Platform Showcase
+
+<div align="center">
+
+### 1. 3D Biomedical Literature Discovery & Particle Canvas
+![BioSearch Landing Page](screenshots/landing_page_3d.png)
+
+### 2. BioGraph Knowledge Graph Studio (Europe PMC + Gemini AI)
+![BioGraph Studio](screenshots/graphing_model.png)
+
+### 3. PaperLens Deep Research Intelligence & Topology Desk
+![PaperLens Analyzer](screenshots/paper_analyzer.png)
+
+### 4. Planetary Disease Outbreak Surveillance Radar
+![Outbreak Radar](screenshots/healthmap_radar.png)
+
+### 5. Interactive 3D Biological Macromolecule Viewer
+![3D Molecular Viewer](screenshots/model_viewer.png)
+
+</div>
+
+---
+
+## 🌐 Core Platform Modules
+
+| Module | Access Path | Description |
 | :--- | :--- | :--- |
-| **Start Everything** | Double-click [`start.bat`](start.bat) | `python -m http.server 8080` |
-| **Stop Everything** | Double-click [`stop.bat`](stop.bat) | Press `Ctrl + C` in the running terminal |
-| **Open in Browser** | Opens automatically with `start.bat` | Navigate to [http://localhost:8080](http://localhost:8080) |
+| **BioSearch Main Hub** | [`/index.html`](index.html) | Interactive 3D paper cascade, living knowledge graph, and semantic query hub |
+| **BioGraph Studio** | [`/knowledge-graph/demo.html`](knowledge-graph/demo.html) | 2D/3D physics-simulated knowledge graph with live Europe PMC retrieval & Gemini AI synthesis |
+| **PaperLens Desk** | [`/paper-analyzer/index.html`](paper-analyzer/index.html) | Deep publication deconstruction: hypotheses, figures, ablations, lineage & citations |
+| **Outbreak Radar** | [`/outbreak-radar/frontend/index.html`](outbreak-radar/frontend/index.html) | Planetary epidemiological surveillance aggregating WHO, CDC, ECDC, and Disease.sh telemetry |
+| **3D Molecular Catalog** | [`/models.html`](models.html) | Interactive catalog of biological macromolecules and viral structures |
+| **3D Structure Viewer** | [`/model-viewer.html`](model-viewer.html) | Full-screen GLTF/Three.js interactive macromolecule and protein visualizer |
 
 ---
 
-## 🚀 How to Start Everything
+## ⚡ Quick Start
 
-### Method 1: One-Click Batch Script (Recommended for Windows)
-Double-click [`start.bat`](start.bat) in the project root folder.
-- Launches the local HTTP server on port `8080`.
-- Automatically opens your default web browser to `http://localhost:8080`.
+### 1. Prerequisites
+- **Python 3.8+** (for local HTTP server and optional backend services)
+- Any modern web browser with WebGL enabled (Chrome, Edge, Firefox, Safari)
 
----
-
-### Method 2: PowerShell
-Open a PowerShell terminal in the project directory:
-
-```powershell
-# Start local server on port 8080
-python -m http.server 8080
-```
-
-To open the browser from PowerShell:
-```powershell
-Start-Process "http://localhost:8080"
-```
-
----
-
-### Method 3: Command Prompt (CMD)
-```cmd
-python -m http.server 8080
-```
-
----
-
-### Method 4: Node.js (Alternative)
-If you prefer Node.js over Python:
+### 2. Clone the Repository
 ```bash
-npx serve . -p 8080
+git clone https://github.com/iamumangv/BioSearch.git
+cd BioSearch
 ```
 
----
-
-## 🛑 How to Stop Everything
-
-### Method 1: Terminal Keyboard Shortcut (Standard)
-If the server is running in an active terminal window, simply press:
-```text
-Ctrl + C
-```
-Type `Y` if prompted to terminate the batch job.
-
----
-
-### Method 2: One-Click Stop Script (Windows)
-Double-click [`stop.bat`](stop.bat) in the project root folder.
-- Automatically locates any process listening on port `8080`.
-- Kills the process cleanly without needing to find the window.
-
----
-
-### Method 3: PowerShell Command Line
-If a server was started in the background or you want to kill whatever is using port 8080:
-
-```powershell
-# Locate and terminate any process listening on port 8080
-Get-NetTCPConnection -LocalPort 8080 -ErrorAction SilentlyContinue |
-    Select-Object -ExpandProperty OwningProcess -Unique |
-    ForEach-Object { Stop-Process -Id $_ -Force }
-```
-
----
-
-### Method 4: Command Prompt (CMD)
-```cmd
-for /f "tokens=5" %a in ('netstat -aon ^| findstr ":8080" ^| findstr "LISTENING"') do taskkill /F /PID %a
-```
-
----
-
-## 🌐 Platform Modules & Direct URLs
-
-Once the server is running on `http://localhost:8080`:
-
-| Module | URL | Description |
-| :--- | :--- | :--- |
-| **Main BioSearch Hub** | [`http://localhost:8080/index.html`](http://localhost:8080/index.html) | Live literature search bar, trending topics, quick navigation links |
-| **BioGraph Studio** | [`http://localhost:8080/knowledge-graph/demo.html`](http://localhost:8080/knowledge-graph/demo.html) | Interactive 2D/3D physics knowledge graph with live Europe PMC retrieval & Gemini AI synthesis |
-| **Global Outbreak Radar** | [`http://localhost:8080/outbreak-radar/frontend/index.html`](http://localhost:8080/outbreak-radar/frontend/index.html) | Real-time global disease outbreak & epidemic monitor (WHO, CDC, ECDC, Disease.sh) |
-| **3D Pathogen Viewer** | [`http://localhost:8080/model-viewer.html`](http://localhost:8080/model-viewer.html) | Interactive 3D molecular, protein, and viral structure inspector |
-
-> [!TIP]
-> You can also directly search from the main homepage: typing any biomedical topic (e.g., `AlphaFold`, `CRISPR Cas9`, `COVID-19 ACE2`) and clicking **"Search Graph"** will automatically redirect to BioGraph Studio and generate a living knowledge graph for that topic.
-
----
-
-## 🐍 CLI Knowledge Graph Generator
-
-In addition to the web interface, the project includes an autonomous CLI tool for batch retrieval and knowledge graph extraction:
-
+### 3. Configure Environment Variables
+Copy the template configuration file to `.env`:
 ```bash
-# 1. Navigate to knowledge-graph directory (or run from root)
-python knowledge-graph/fetch_pmc_and_generate_graph.py --topic "CRISPR Cas9" --max-papers 3
+cp .env.example .env
 ```
+*(On Windows CMD: `copy .env.example .env`)*
 
-### CLI Command Options:
-| Flag | Description | Default | Example |
-| :--- | :--- | :--- | :--- |
-| `--topic` | Biomedical search query or PMC IDs | `"COVID-19 rapid antigen tests ACE2 immunity"` | `--topic "AlphaFold 3 protein complexes"` |
-| `--max-papers` | Number of publications to scrape | `5` | `--max-papers 3` |
-| `--gemini-api-key` | Optional Gemini API key | Reads from `.env` | `--gemini-api-key "AIzaSy..."` |
-| `--model` | Gemini Model identifier | Reads from `.env` (`gemini-3.1-flash-lite`) | `--model "gemini-3.1-flash-lite"` |
-| `--format` | Output format (`json` or `triplets`) | `json` | `--format triplets` |
-| `--output` | Save results to file | stdout | `--output my_graph.json` |
-
----
-
-## ⚙️ Environment Variables (`.env`)
-
-Configuration settings are stored in [`.env`](.env). A template is provided in [`.env.example`](.env.example).
-
+Add your optional [Google Gemini API Key](https://aistudio.google.com/app/apikey) to `.env` for AI entity extraction:
 ```ini
-# Google Gemini API Key for Biological Knowledge Graph Entity Synthesis
-# Get a free key from Google AI Studio: https://aistudio.google.com/app/apikey
 GEMINI_API_KEY="your_api_key_here"
-
-# Model identifier for Google Gemini API
-GEMINI_MODEL="gemini-3.1-flash-lite"
-
-# Local Development Server Port
+GEMINI_MODEL="gemini-2.0-flash"
 PORT=8080
 ```
 
+---
+
+## 🚀 Running the Platform
+
+### Option A: One-Click Launch (Windows)
+Double-click [`start.bat`](start.bat) in the project root directory.
+- Starts the local server on `http://localhost:8080`.
+- Automatically opens your default web browser to the BioSearch home portal.
+- To stop the server at any time, double-click [`stop.bat`](stop.bat) or press `Ctrl + C`.
+
+### Option B: Terminal / Command Line (Cross-Platform)
+
+```bash
+# Start local development server on port 8080
+python -m http.server 8080
+```
+
+Navigate to **`http://localhost:8080`** in your browser.
+
+*(Alternative using Node.js: `npx serve . -p 8080`)*
+
+---
+
+## 🌍 Outbreak Radar Backend (Optional Live Aggregator)
+
+The **Outbreak Radar** frontend includes pre-packaged verified outbreak datasets that run immediately with zero configuration. To launch the optional FastAPI live feed aggregator with background scraping:
+
+```bash
+cd outbreak-radar
+pip install -r requirements.txt
+uvicorn backend.main:app --host 127.0.0.1 --port 8000 --reload
+```
+
+- API Docs: `http://127.0.0.1:8000/docs`
+- Health check: `http://127.0.0.1:8000/api/health`
+
+---
+
+## 🐍 CLI Knowledge Graph Pipeline
+
+BioSearch includes an autonomous command-line tool to query PubMed Central / Europe PMC, extract biological entities and causal triplets, and export visualizer-ready datasets:
+
+```bash
+# Query literature and generate knowledge graph
+python knowledge-graph/fetch_pmc_and_generate_graph.py --topic "CRISPR-Cas9 gene editing" --max-papers 3 --output crispr_graph.json
+```
+
+### CLI Options:
+| Flag | Description | Default | Example |
+| :--- | :--- | :--- | :--- |
+| `--topic` | Scientific query or PMC identifiers | `"COVID-19 rapid antigen tests"` | `--topic "AlphaFold 3 complex"` |
+| `--max-papers` | Number of articles to retrieve | `5` | `--max-papers 5` |
+| `--gemini-api-key` | Google Gemini API Key | Reads from `.env` | `--gemini-api-key "AIzaSy..."` |
+| `--model` | Gemini Model identifier | `gemini-2.0-flash` | `--model "gemini-2.0-flash"` |
+| `--format` | Output structure (`json` or `triplets`) | `json` | `--format triplets` |
+| `--output` | Destination JSON file | `stdout` | `--output results.json` |
+
+---
+
+## ⚙️ Configuration & Environment Variables
+
+Key parameters in [`.env`](.env) (templated in [`.env.example`](.env.example)):
+
+| Variable | Description | Default / Example |
+| :--- | :--- | :--- |
+| `GEMINI_API_KEY` | Google AI Studio API Key for LLM knowledge graph extraction | `"AIzaSy..."` |
+| `GEMINI_MODEL` | Google Gemini model family | `"gemini-2.0-flash"` |
+| `PORT` | Local HTTP development server port | `8080` |
+
 > [!NOTE]
-> `.env` is automatically ignored by Git (via `.gitignore`) so your API keys will never be accidentally committed.
+> `.env` is automatically ignored by Git (via `.gitignore`) so confidential API credentials will never be exposed.
 
 ---
 
-## 🔧 Troubleshooting & FAQs
-
-### 1. Port 8080 is already in use (`Address already in use` error)
-- Run [`stop.bat`](stop.bat) to free port 8080.
-- Or start the server on a different port:
-  ```powershell
-  python -m http.server 8081
-  ```
-
-### 2. Can I use the web application without a server (`file:///`)?
-- Yes! The core platform has built-in defaults so you can double-click [`knowledge-graph/demo.html`](knowledge-graph/demo.html) directly in Windows Explorer.
-- However, running via `start.bat` (`http://localhost:8080`) is recommended to prevent browser CORS restrictions when loading local files.
-
-### 3. Gemini AI shows "Offline" or fails to connect
-- Open BioGraph Studio and click **Gemini AI** in the top navigation bar.
-- Verify your API key and click **Test Connection**.
-- Ensure your model is set to `gemini-3.1-flash-lite`.
-- If no internet or API quota is available, BioSearch automatically activates its **Rule-Based Semantic Fallback Engine**, allowing graph generation to continue smoothly.
-
----
-
-## 📁 Repository Directory Structure
+## 📁 Repository Architecture
 
 ```text
 BioSearch/
-├── start.bat                   # ⚡ One-click start script
-├── stop.bat                    # 🛑 One-click stop script
-├── README.md                   # 📖 Central operations guide (this file)
-├── .env                        # 🔑 Private environment variables & API keys
-├── .env.example                # 📋 Public environment template
-├── index.html                  # 🏠 Main portal & search engine
-├── models.html                 # 🧬 Pathogen models gallery
-├── model-viewer.html           # 🔬 3D molecular viewer
-├── style.css                   # 🎨 Core styling
-├── css/                        # 🎨 Supporting stylesheets
-├── outbreak-radar/             # 🌍 Outbreak Radar: Real-time disease outbreak & epidemic monitor
-│   ├── frontend/               # Leaflet.js interactive dark-mode surveillance dashboard
-│   │   ├── index.html
-│   │   ├── css/style.css
-│   │   ├── data/seed-events.js
-│   │   └── js/app.js
-│   └── backend/                # FastAPI + APScheduler + SQLite outbreak surveillance pipeline
-├── paper-analyzer/             # 📑 PaperLens: Deep Research Intelligence & Topology Engine
-│   ├── index.html              # Main PaperLens application
-│   ├── css/style.css           # Glassmorphic cyber-biomedical design system
+├── index.html                   # 🏠 Main portal & 3D literature discovery hub
+├── models.html                  # 🧬 3D Macromolecule & viral structures catalog
+├── model-viewer.html            # 🔬 Fullscreen 3D structure inspector (Three.js)
+├── start.bat                    # ⚡ One-click Windows launch runner
+├── stop.bat                     # 🛑 One-click Windows process terminator
+├── README.md                    # 📖 Project documentation
+├── .env.example                 # 📋 Public environment configuration template
+├── .gitignore                   # 🛡️ Git ignore configuration
+├── .nojekyll                    # 🚀 GitHub Pages static asset routing
+│
+├── knowledge-graph/             # 🕸️ BioGraph Knowledge Graph Studio
+│   ├── demo.html                # Interactive force-directed knowledge graph application
+│   ├── index.html               # Knowledge graph portal entry
+│   ├── fetch_pmc_and_generate_graph.py # CLI paper retrieval & graph extraction tool
+│   ├── presets/                 # Pre-computed multi-paper knowledge graphs
+│   │   ├── cancer.json          # Oncology & tumor microenvironment dataset
+│   │   ├── covid.json           # SARS-CoV-2 genomics & host receptor dataset
+│   │   ├── dengue.json          # Flavivirus pathogenesis & vector transmission dataset
+│   │   ├── malaria.json         # Plasmodium falciparum surface protein dataset
+│   │   └── presets.js           # Client-side bundle for instant offline rendering
+│   └── README.md                # BioGraph technical documentation
+│
+├── outbreak-radar/              # 🌍 Planetary Outbreak Surveillance Radar
+│   ├── frontend/                # Interactive geospatial surveillance dashboard
+│   │   ├── index.html           # Dark-mode Leaflet telemetry interface
+│   │   ├── css/style.css        # Cyber-epidemiology styling
+│   │   ├── data/seed-events.js  # Verified outbreak epicenters & alert feeds
+│   │   └── js/app.js            # Telemetry feed parser & map rendering engine
+│   └── backend/                 # FastAPI outbreak surveillance pipeline
+│       ├── main.py              # Application entry point
+│       ├── requirements.txt     # Backend dependencies
+│       ├── models/              # SQLite database models
+│       ├── routers/             # Outbreak telemetry API endpoints
+│       └── services/            # Fetchers (WHO, CDC, ECDC) & scheduler
+│
+├── paper-analyzer/              # 📑 PaperLens: Deep Research Intelligence Desk
+│   ├── index.html               # PaperLens reading desk interface
+│   ├── css/style.css            # Minimalist academic reading design system
 │   └── js/
-│       ├── papers-data.js      # Landmark datasets (AlphaFold 3, Prime Editing, ESMFold, Med-PaLM 2, etc.)
-│       ├── graph-visualizer.js # Canvas force-directed topology simulation with node inspector
-│       └── analyzer.js         # Reactive UI, section rendering, custom paper synthesis & exports
-└── knowledge-graph/            # 🕸️ BioGraph Knowledge Graph Studio
-    ├── demo.html               # Main knowledge graph app
-    ├── index.html              # Mirror of demo.html
-    ├── fetch_pmc_and_generate_graph.py  # Python CLI generator
-    └── README.md               # BioGraph specific documentation
+│       ├── analyzer.js          # Reactive UI, section rendering & synthesis
+│       ├── graph-visualizer.js  # Force-directed citation & concept topology simulation
+│       └── papers-data.js       # Pre-indexed benchmark papers (AlphaFold 3, etc.)
+│
+├── css/                         # 🎨 Core design tokens, typography & modules
+│   ├── variables.css            # Color systems, spacing & elevations
+│   ├── navbar.css               # Unified top navigation header
+│   ├── hero.css                 # 3D paper falling scene & parallax layout
+│   ├── advanced-search.css      # Semantic filter modals & query controllers
+│   ├── healthmap-section.css    # Embedded outbreak radar widget styles
+│   └── models.css               # 3D models showcase grid styling
+│
+├── js/                          # ⚡ Frontend orchestration & 3D engines
+│   ├── main.js                  # Primary application entry point & animation loop
+│   ├── ui.js                    # Search handlers, autocomplete & modal triggers
+│   ├── catalog.js               # 3D models catalog rendering
+│   ├── model-viewer.js          # Interactive macromolecule canvas controller
+│   ├── healthmap-preview.js     # Embedded home radar mini-canvas
+│   └── three/                   # Three.js 3D visualization subsystem
+│       ├── scene.js             # Camera, renderer & ambient lighting setup
+│       ├── graph.js             # 3D living biological particle network
+│       ├── paper.js             # 3D cascading research preprint cards
+│       └── textures.js          # Procedural biomedical textures & shaders
+│
+└── screenshots/                 # 🖼️ Platform architecture & UI previews
 ```
 
 ---
 
-## 📑 BioSearch PaperLens — Research Paper Deep Analyzer
+## 🛠️ Technology Stack
 
-Accessible directly at: [`http://localhost:8080/paper-analyzer/index.html`](http://localhost:8080/paper-analyzer/index.html)
+- **Frontend & Rendering:** Vanilla ES6+ JavaScript, Three.js (r128), D3.js (v7), Leaflet.js, Canvas2D API, Modern CSS3 Glassmorphism
+- **Literature & Data APIs:** Europe PMC REST API, NCBI Entrez E-utilities, WHO DON, CDC HAN, Disease.sh
+- **AI & Synthesis:** Google Gemini API (`gemini-2.0-flash`, `gemini-1.5-flash`), Rule-Based Biomedical Entity Regular Expressions
+- **Backend (Surveillance):** Python 3.8+, FastAPI, Uvicorn, SQLite, APScheduler, Requests, BeautifulSoup4
 
-PaperLens provides structured, verifiable deep decomposition of scientific publications across 6 core pillars:
-1. **Core Research Question:** The exact hypothesis ($H_1$), formal problem formulation, status quo bottleneck, and falsification criteria.
-2. **Key Findings:** Quantitative headline results with exact benchmark metrics (PoseBusters, CASP15, TM-score, MedQA, ROC-AUC, $p$-values) and qualitative breakthroughs.
-3. **Ablation Studies:** Component-by-component necessity analysis isolating the causal contribution of each subsystem when perturbed or removed.
-4. **Lineage & Foundation:** Direct ancestral frameworks and landmark papers, explicitly contrasting inherited concepts with key divergences.
-5. **Interactive Paper Knowledge Graph:** Real-time force-directed canvas graph with particle telemetry, topology filters, and interactive node inspector.
-6. **Related Papers:** Semantic and methodological comparison grid highlighting shared concepts, competitor status, and key differences.
+---
 
+## 📄 License
+
+This project is open-source under the [MIT License](LICENSE).
