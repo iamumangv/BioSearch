@@ -10,8 +10,8 @@ This document serves as the **central reference** on how to start, stop, configu
 
 | Action | One-Click (Windows) | Terminal Command |
 | :--- | :--- | :--- |
-| **Start Everything** | Double-click [`start.bat`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/start.bat) | `python -m http.server 8080` |
-| **Stop Everything** | Double-click [`stop.bat`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/stop.bat) | Press `Ctrl + C` in the running terminal |
+| **Start Everything** | Double-click [`start.bat`](start.bat) | `python -m http.server 8080` |
+| **Stop Everything** | Double-click [`stop.bat`](stop.bat) | Press `Ctrl + C` in the running terminal |
 | **Open in Browser** | Opens automatically with `start.bat` | Navigate to [http://localhost:8080](http://localhost:8080) |
 
 ---
@@ -19,7 +19,7 @@ This document serves as the **central reference** on how to start, stop, configu
 ## 🚀 How to Start Everything
 
 ### Method 1: One-Click Batch Script (Recommended for Windows)
-Double-click [`start.bat`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/start.bat) in the project root folder.
+Double-click [`start.bat`](start.bat) in the project root folder.
 - Launches the local HTTP server on port `8080`.
 - Automatically opens your default web browser to `http://localhost:8080`.
 
@@ -67,7 +67,7 @@ Type `Y` if prompted to terminate the batch job.
 ---
 
 ### Method 2: One-Click Stop Script (Windows)
-Double-click [`stop.bat`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/stop.bat) in the project root folder.
+Double-click [`stop.bat`](stop.bat) in the project root folder.
 - Automatically locates any process listening on port `8080`.
 - Kills the process cleanly without needing to find the window.
 
@@ -99,8 +99,8 @@ Once the server is running on `http://localhost:8080`:
 | Module | URL | Description |
 | :--- | :--- | :--- |
 | **Main BioSearch Hub** | [`http://localhost:8080/index.html`](http://localhost:8080/index.html) | Live literature search bar, trending topics, quick navigation links |
-| **BioGraph Studio** | [`http://localhost:8080/graphing-model/demo.html`](http://localhost:8080/graphing-model/demo.html) | Interactive 2D/3D physics knowledge graph with live Europe PMC retrieval & Gemini AI synthesis |
-| **Global HealthMap Outbreak Radar** | [`http://localhost:8080/healthmap-clone/frontend/index.html`](http://localhost:8080/healthmap-clone/frontend/index.html) | Real-time global disease outbreak & epidemic monitor (WHO, CDC, ECDC, Disease.sh) |
+| **BioGraph Studio** | [`http://localhost:8080/knowledge-graph/demo.html`](http://localhost:8080/knowledge-graph/demo.html) | Interactive 2D/3D physics knowledge graph with live Europe PMC retrieval & Gemini AI synthesis |
+| **Global Outbreak Radar** | [`http://localhost:8080/outbreak-radar/frontend/index.html`](http://localhost:8080/outbreak-radar/frontend/index.html) | Real-time global disease outbreak & epidemic monitor (WHO, CDC, ECDC, Disease.sh) |
 | **3D Pathogen Viewer** | [`http://localhost:8080/model-viewer.html`](http://localhost:8080/model-viewer.html) | Interactive 3D molecular, protein, and viral structure inspector |
 
 > [!TIP]
@@ -113,8 +113,8 @@ Once the server is running on `http://localhost:8080`:
 In addition to the web interface, the project includes an autonomous CLI tool for batch retrieval and knowledge graph extraction:
 
 ```bash
-# 1. Navigate to graphing-model directory (or run from root)
-python graphing-model/fetch_pmc_and_generate_graph.py --topic "CRISPR Cas9" --max-papers 3
+# 1. Navigate to knowledge-graph directory (or run from root)
+python knowledge-graph/fetch_pmc_and_generate_graph.py --topic "CRISPR Cas9" --max-papers 3
 ```
 
 ### CLI Command Options:
@@ -131,7 +131,7 @@ python graphing-model/fetch_pmc_and_generate_graph.py --topic "CRISPR Cas9" --ma
 
 ## ⚙️ Environment Variables (`.env`)
 
-Configuration settings are stored in [`.env`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/.env). A template is provided in [`.env.example`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/.env.example).
+Configuration settings are stored in [`.env`](.env). A template is provided in [`.env.example`](.env.example).
 
 ```ini
 # Google Gemini API Key for Biological Knowledge Graph Entity Synthesis
@@ -153,14 +153,14 @@ PORT=8080
 ## 🔧 Troubleshooting & FAQs
 
 ### 1. Port 8080 is already in use (`Address already in use` error)
-- Run [`stop.bat`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/stop.bat) to free port 8080.
+- Run [`stop.bat`](stop.bat) to free port 8080.
 - Or start the server on a different port:
   ```powershell
   python -m http.server 8081
   ```
 
 ### 2. Can I use the web application without a server (`file:///`)?
-- Yes! The core platform has built-in defaults so you can double-click [`graphing-model/demo.html`](file:///c:/Users/admin/OneDrive/Desktop/Hackathon/Website_Draft/graphing-model/demo.html) directly in Windows Explorer.
+- Yes! The core platform has built-in defaults so you can double-click [`knowledge-graph/demo.html`](knowledge-graph/demo.html) directly in Windows Explorer.
 - However, running via `start.bat` (`http://localhost:8080`) is recommended to prevent browser CORS restrictions when loading local files.
 
 ### 3. Gemini AI shows "Offline" or fails to connect
@@ -174,7 +174,7 @@ PORT=8080
 ## 📁 Repository Directory Structure
 
 ```text
-Website_Draft/
+BioSearch/
 ├── start.bat                   # ⚡ One-click start script
 ├── stop.bat                    # 🛑 One-click stop script
 ├── README.md                   # 📖 Central operations guide (this file)
@@ -185,7 +185,7 @@ Website_Draft/
 ├── model-viewer.html           # 🔬 3D molecular viewer
 ├── style.css                   # 🎨 Core styling
 ├── css/                        # 🎨 Supporting stylesheets
-├── healthmap-clone/            # 🌍 EpiWatch: Real-time disease outbreak & epidemic monitor
+├── outbreak-radar/             # 🌍 Outbreak Radar: Real-time disease outbreak & epidemic monitor
 │   ├── frontend/               # Leaflet.js interactive dark-mode surveillance dashboard
 │   │   ├── index.html
 │   │   ├── css/style.css
@@ -199,7 +199,7 @@ Website_Draft/
 │       ├── papers-data.js      # Landmark datasets (AlphaFold 3, Prime Editing, ESMFold, Med-PaLM 2, etc.)
 │       ├── graph-visualizer.js # Canvas force-directed topology simulation with node inspector
 │       └── analyzer.js         # Reactive UI, section rendering, custom paper synthesis & exports
-└── graphing-model/             # 🕸️ BioGraph Knowledge Graph Studio
+└── knowledge-graph/            # 🕸️ BioGraph Knowledge Graph Studio
     ├── demo.html               # Main knowledge graph app
     ├── index.html              # Mirror of demo.html
     ├── fetch_pmc_and_generate_graph.py  # Python CLI generator

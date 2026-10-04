@@ -57,12 +57,12 @@ BioGraph Studio contains a built-in **Live PMC / PubMed Query Engine** that conn
 You can query any scientific topic directly from the BioSearch homepage (`index.html`) using the **"Search Graph"** input or trending topic pills.
 It routes automatically to:
 ```
-graphing-model/demo.html?query=CRISPR-Cas9
+knowledge-graph/demo.html?query=CRISPR-Cas9
 ```
 Upon arrival, the system displays the high-tech synthesis radar, retrieves relevant open-access papers, activates Gemini entity extraction, and weaves the 3D force-directed knowledge graph in real time!
 
 ### Manual Search in Studio:
-1. Open [`graphing-model/demo.html`](demo.html) in your browser.
+1. Open [`knowledge-graph/demo.html`](demo.html) in your browser.
 2. Click the **"✨ Gemini AI"** button in the top navigation bar to configure your optional Gemini API key (stored securely in browser localStorage).
 3. Click **"Graph Any Data"** &rarr; **"🌐 Live PMC / PubMed Query"** tab.
 4. Enter any research topic or query string, for example:
@@ -259,13 +259,13 @@ BioGraph Studio comes pre-configured with four built-in datasets:
 
 ## 8. Running the Application Locally
 
-1. Open [`graphing-model/demo.html`](demo.html) directly in any web browser or serve via HTTP:
+1. Open [`knowledge-graph/demo.html`](demo.html) directly in any web browser or serve via HTTP:
    ```bash
    # Using Python built-in server:
    python -m http.server 5500
    ```
 2. Navigate to:
    ```
-   http://127.0.0.1:5500/graphing-model/demo.html
+   http://127.0.0.1:5500/knowledge-graph/demo.html
    ```
 3. Use the navigation links to explore between **BioSearch Home**, **3D Models**, **HealthMap Outbreak Radar**, and **BioGraph Studio**!

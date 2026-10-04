@@ -149,8 +149,8 @@ export function initUI(scrollController) {
       `;
     }
 
-    // Direct user to graphing model and generate graph for that topic
-    window.location.href = `graphing-model/demo.html?query=${encodeURIComponent(query)}`;
+    // Direct user to knowledge graph and generate graph for that topic
+    window.location.href = `knowledge-graph/demo.html?query=${encodeURIComponent(query)}`;
   }
 
   document.querySelectorAll('.pill-tag').forEach(pill => {

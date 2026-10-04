@@ -160,7 +160,7 @@ export class HealthMapPreview {
     this.canvas.addEventListener('mousemove', (e) => this.handleMouseMove(e));
     this.canvas.addEventListener('mouseleave', () => this.handleMouseLeave());
     this.canvas.addEventListener('click', () => {
-      window.location.href = 'healthmap-clone/frontend/index.html';
+      window.location.href = 'outbreak-radar/frontend/index.html';
     });
 
     this.startLoop();
