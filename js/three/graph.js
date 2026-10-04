@@ -21,35 +21,46 @@ export class BiologicalKnowledgeGraph {
     const particleGlowTex = createParticleGlowTexture();
     const hubGlowTex      = createHubGlowTexture();
 
-    // ── 1. Major Biological Hubs (14 prominent cluster nodes) ──
-    this.hubCount = 14;
+    // ── Make 3D graph bigger and more immersive ──
+    this.group.scale.set(1.4, 1.4, 1.4);
+
+    // ── 1. Major Biological Hubs (Core Central Orange Cluster + Outer Hubs) ──
+    this.hubCount = 20;
     this.hubPositions = new Float32Array(this.hubCount * 3);
     this.hubColors    = new Float32Array(this.hubCount * 3);
     this.hubSizes     = new Float32Array(this.hubCount);
 
-    const hubPalette = [
-      new THREE.Color(0x00f0ff), // Cyan - Genomics
-      new THREE.Color(0xa855f7), // Violet - Proteomics
-      new THREE.Color(0xf43f5e), // Pink - Immunology
-      new THREE.Color(0x10b981), // Emerald - Synthetic Biology
-      new THREE.Color(0x38bdf8), // Sky Blue - Transcriptomics
+    const orangePalette = [
+      new THREE.Color(0xff6a00), // Vibrant amber orange
+      new THREE.Color(0xff7a00), // Core orange
+      new THREE.Color(0xff9500), // Bright gold orange
+      new THREE.Color(0xff5500), // Deep ember orange
+      new THREE.Color(0xffaa22), // Warm light orange
+    ];
+
+    const outerPalette = [
+      new THREE.Color(0x00f0ff), // Cyan
+      new THREE.Color(0xa855f7), // Violet
+      new THREE.Color(0xf43f5e), // Pink
+      new THREE.Color(0x38bdf8), // Sky Blue
     ];
 
     for (let i = 0; i < this.hubCount; i++) {
+      const isCenter = i < 8; // First 8 hubs form the bright orange center cluster
       const phi   = Math.acos(-1 + (2 * i) / this.hubCount);
       const theta = Math.sqrt(this.hubCount * PI) * phi;
-      const radius = rand(5.0, 7.5);
+      const radius = isCenter ? rand(0.8, 3.2) : rand(4.5, 7.5);
 
       this.hubPositions[i * 3]     = radius * Math.cos(theta) * Math.sin(phi);
       this.hubPositions[i * 3 + 1] = radius * Math.sin(theta) * Math.sin(phi) * 0.75;
       this.hubPositions[i * 3 + 2] = radius * Math.cos(phi) * 0.65;
 
-      const c = hubPalette[i % hubPalette.length];
+      const c = isCenter ? orangePalette[i % orangePalette.length] : outerPalette[i % outerPalette.length];
       this.hubColors[i * 3]     = c.r;
       this.hubColors[i * 3 + 1] = c.g;
       this.hubColors[i * 3 + 2] = c.b;
 
-      this.hubSizes[i] = rand(0.55, 0.85);
+      this.hubSizes[i] = isCenter ? rand(0.75, 1.1) : rand(0.55, 0.85);
     }
 
     const hubGeo = new THREE.BufferGeometry();
@@ -57,7 +68,7 @@ export class BiologicalKnowledgeGraph {
     hubGeo.setAttribute('color',    new THREE.BufferAttribute(this.hubColors, 3));
 
     this.hubMat = new THREE.PointsMaterial({
-      size: 0.65,
+      size: 0.85,
       map: hubGlowTex,
       vertexColors: true,
       transparent: true,
@@ -69,8 +80,8 @@ export class BiologicalKnowledgeGraph {
     this.hubPoints = new THREE.Points(hubGeo, this.hubMat);
     this.group.add(this.hubPoints);
 
-    // ── 2. Lattice Mesh Nodes (120 interconnected nodes) ──
-    this.latticeCount = 120;
+    // ── 2. Lattice Mesh Nodes (140 interconnected nodes with glowing orange core) ──
+    this.latticeCount = 140;
     this.latticePositions = new Float32Array(this.latticeCount * 3);
     this.latticeColors    = new Float32Array(this.latticeCount * 3);
     this.baseTargets      = [];
@@ -80,7 +91,7 @@ export class BiologicalKnowledgeGraph {
       const v = Math.random();
       const theta = u * 2.0 * PI;
       const phi   = Math.acos(2.0 * v - 1.0);
-      const r     = rand(3.5, 8.5);
+      const r     = rand(1.2, 8.5);
 
       const tx = r * Math.sin(phi) * Math.cos(theta);
       const ty = r * Math.sin(phi) * Math.sin(theta) * 0.7;
@@ -92,7 +103,15 @@ export class BiologicalKnowledgeGraph {
       this.latticePositions[i * 3 + 1] = ty;
       this.latticePositions[i * 3 + 2] = tz;
 
-      const c = hubPalette[randI(0, hubPalette.length)];
+      // Inner nodes closer to center (r < 4.2) glow rich orange
+      const dist = Math.sqrt(tx * tx + ty * ty + tz * tz);
+      let c;
+      if (dist < 4.0) {
+        c = orangePalette[randI(0, orangePalette.length)];
+      } else {
+        c = outerPalette[randI(0, outerPalette.length)];
+      }
+
       this.latticeColors[i * 3]     = c.r;
       this.latticeColors[i * 3 + 1] = c.g;
       this.latticeColors[i * 3 + 2] = c.b;
@@ -103,7 +122,7 @@ export class BiologicalKnowledgeGraph {
     latGeo.setAttribute('color',    new THREE.BufferAttribute(this.latticeColors, 3));
 
     this.latticeMat = new THREE.PointsMaterial({
-      size: 0.3,
+      size: 0.38,
       map: particleGlowTex,
       vertexColors: true,
       transparent: true,
@@ -150,13 +169,24 @@ export class BiologicalKnowledgeGraph {
           this.linePositions[edgeIdx * 6 + 4] = b.y;
           this.linePositions[edgeIdx * 6 + 5] = b.z;
 
-          // Cyan to purple gradient edge
-          this.lineColors[edgeIdx * 6]     = 0.0;
-          this.lineColors[edgeIdx * 6 + 1] = 0.94;
-          this.lineColors[edgeIdx * 6 + 2] = 1.0;
-          this.lineColors[edgeIdx * 6 + 3] = 0.55;
-          this.lineColors[edgeIdx * 6 + 4] = 0.23;
-          this.lineColors[edgeIdx * 6 + 5] = 0.97;
+          const midDist = (a.length() + b.length()) * 0.5;
+          if (midDist < 4.0) {
+            // Warm orange/amber filaments in the center of the graph
+            this.lineColors[edgeIdx * 6]     = 1.0;
+            this.lineColors[edgeIdx * 6 + 1] = 0.48;
+            this.lineColors[edgeIdx * 6 + 2] = 0.0;
+            this.lineColors[edgeIdx * 6 + 3] = 1.0;
+            this.lineColors[edgeIdx * 6 + 4] = 0.65;
+            this.lineColors[edgeIdx * 6 + 5] = 0.15;
+          } else {
+            // Outer bioluminescent gradient edge
+            this.lineColors[edgeIdx * 6]     = 0.0;
+            this.lineColors[edgeIdx * 6 + 1] = 0.85;
+            this.lineColors[edgeIdx * 6 + 2] = 1.0;
+            this.lineColors[edgeIdx * 6 + 3] = 0.55;
+            this.lineColors[edgeIdx * 6 + 4] = 0.23;
+            this.lineColors[edgeIdx * 6 + 5] = 0.97;
+          }
 
           this.activeEdges.push({ a, b });
           edgeIdx++;
@@ -180,7 +210,7 @@ export class BiologicalKnowledgeGraph {
     this.group.add(this.lineMesh);
 
     // ── 4. Action Potential Pulses (Data Energy Packets) ──
-    this.pulseCount = 28;
+    this.pulseCount = 36;
     this.pulsePositions = new Float32Array(this.pulseCount * 3);
     this.pulseStates    = [];
 
@@ -201,9 +231,9 @@ export class BiologicalKnowledgeGraph {
     pulseGeo.setAttribute('position', new THREE.BufferAttribute(this.pulsePositions, 3));
 
     this.pulseMat = new THREE.PointsMaterial({
-      size: 0.45,
+      size: 0.55,
       map: hubGlowTex,
-      color: 0x00f0ff,
+      color: 0xff7a00, // Vibrant orange energy packets
       transparent: true,
       opacity: 0,
       blending: THREE.AdditiveBlending,

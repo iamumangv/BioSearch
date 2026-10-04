@@ -6,7 +6,7 @@
   display: none;
   position: relative;
   z-index: 5;
-  background: rgba(3, 4, 14, 0.72);
+  background: rgba(10, 8, 7, 0.85);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   padding: 7rem 2rem 9rem;
@@ -214,7 +214,7 @@
 #footer {
   border-top: 1px solid var(--border);
   padding: 3rem 2rem;
-  background: rgba(2, 3, 10, 0.95);
+  background: rgba(8, 7, 6, 0.98);
   text-align: center;
   position: relative;
   z-index: 5;

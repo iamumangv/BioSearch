@@ -23,13 +23,13 @@
 
   <style>
     :root {
-      --bg-base: #060913;
-      --bg-surface: #0d1322;
-      --bg-surface-elevated: #151e34;
-      --bg-translucent: rgba(13, 19, 34, 0.82);
-      --bg-card: rgba(18, 26, 47, 0.75);
+      --bg-base: #060605;
+      --bg-surface: #10100e;
+      --bg-surface-elevated: #181714;
+      --bg-translucent: rgba(14, 13, 11, 0.85);
+      --bg-card: rgba(18, 17, 14, 0.82);
       --border-subtle: rgba(255, 255, 255, 0.08);
-      --border-highlight: rgba(0, 240, 255, 0.25);
+      --border-highlight: rgba(212, 197, 168, 0.25);
 
       --text-main: #f1f5f9;
       --text-muted: #94a3b8;
@@ -79,7 +79,13 @@
 
     body {
       font-family: var(--font-sans);
-      background: var(--bg-base);
+      background-color: #060605;
+      background-image:
+        radial-gradient(ellipse 75% 65% at 50% 28%, rgba(72, 70, 61, 0.45) 0%, rgba(47, 47, 39, 0.24) 38%, rgba(20, 19, 17, 0.1) 65%, transparent 85%),
+        radial-gradient(circle at 50% 50%, rgba(24, 23, 20, 0.65) 0%, rgba(5, 5, 5, 0.98) 100%);
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+      background-size: cover;
       color: var(--text-main);
       overflow: hidden;
       width: 100vw;
@@ -597,7 +603,10 @@
       width: 100%;
       height: 100%;
       position: relative;
-      background: radial-gradient(circle at 50% 50%, rgba(13, 22, 45, 0.5) 0%, rgba(6, 9, 19, 0.95) 100%);
+      background:
+        radial-gradient(ellipse 75% 65% at 50% 28%, rgba(72, 70, 61, 0.45) 0%, rgba(47, 47, 39, 0.24) 38%, rgba(20, 19, 17, 0.1) 65%, transparent 85%),
+        radial-gradient(circle at 50% 50%, rgba(24, 23, 20, 0.65) 0%, rgba(5, 5, 5, 0.98) 100%);
+      background-color: #060605;
       overflow: hidden;
       cursor: grab;
     }
@@ -1130,6 +1139,150 @@
       background: rgba(0, 240, 255, 0.25);
       color: #ffffff;
       box-shadow: 0 0 10px rgba(0, 240, 255, 0.4);
+    }
+
+    .badge-back-btn {
+      background: rgba(139, 92, 246, 0.15) !important;
+      border: 1px solid rgba(139, 92, 246, 0.45) !important;
+      color: #c4b5fd !important;
+    }
+
+    .badge-back-btn:hover {
+      background: rgba(139, 92, 246, 0.3) !important;
+      color: #ffffff !important;
+      box-shadow: 0 0 10px rgba(139, 92, 246, 0.5) !important;
+    }
+
+    /* Prominent Top Floating Exploration Navigation HUD */
+    .floating-back-hud {
+      position: absolute;
+      top: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 38;
+      display: none;
+      align-items: center;
+      gap: 12px;
+      padding: 6px 16px;
+      background: rgba(13, 19, 34, 0.94);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 240, 255, 0.35);
+      border-radius: var(--radius-full);
+      box-shadow: 0 8px 32px rgba(0, 0, 0, 0.55), 0 0 18px rgba(0, 240, 255, 0.16);
+      pointer-events: auto;
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+      max-width: calc(100vw - 32px);
+    }
+
+    .floating-back-hud.visible {
+      display: inline-flex;
+    }
+
+    .floating-back-info {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--text-muted);
+      white-space: nowrap;
+    }
+
+    .floating-back-info strong {
+      color: #ffffff;
+      font-weight: 600;
+    }
+
+    .back-hud-pulse {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--cyan);
+      box-shadow: 0 0 8px var(--cyan);
+      animation: pulseGlow 2s infinite ease-in-out;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { transform: scale(1); opacity: 0.9; }
+      50% { transform: scale(1.3); opacity: 0.45; }
+    }
+
+    .floating-back-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .floating-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 5px 13px;
+      border-radius: 9999px;
+      background: rgba(139, 92, 246, 0.22);
+      border: 1px solid rgba(139, 92, 246, 0.6);
+      color: #ddd6fe;
+      font-size: 11.5px;
+      font-family: var(--font-sans);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .floating-back-btn:hover {
+      background: rgba(139, 92, 246, 0.45);
+      color: #ffffff;
+      border-color: #a78bfa;
+      box-shadow: 0 0 12px rgba(139, 92, 246, 0.6);
+      transform: translateY(-1px);
+    }
+
+    .floating-reset-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      padding: 5px 12px;
+      border-radius: 9999px;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      color: var(--text-dim);
+      font-size: 11px;
+      font-family: var(--font-sans);
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      white-space: nowrap;
+    }
+
+    .floating-reset-btn:hover {
+      background: rgba(239, 68, 68, 0.16);
+      border-color: rgba(239, 68, 68, 0.45);
+      color: #fca5a5;
+      box-shadow: 0 0 10px rgba(239, 68, 68, 0.3);
+    }
+
+    /* Back button in Drawer Header */
+    .drawer-back-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 9px;
+      border-radius: var(--radius-sm);
+      background: rgba(139, 92, 246, 0.18);
+      border: 1px solid rgba(139, 92, 246, 0.45);
+      color: #c4b5fd;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      margin-right: 6px;
+    }
+
+    .drawer-back-btn:hover {
+      background: rgba(139, 92, 246, 0.35);
+      color: #ffffff;
+      border-color: rgba(139, 92, 246, 0.75);
     }
 
     /* Interconnected Entities Dropdown */
@@ -2190,6 +2343,23 @@
 
     <!-- Graph Viewport -->
     <div id="viewport-container" class="viewport-canvas-container">
+      <!-- Prominent Floating Exploration Navigation HUD (Always Visible during Active Node / Sub-Graph Exploration) -->
+      <div id="floating-back-hud" class="floating-back-hud">
+        <div class="floating-back-info">
+          <span class="back-hud-pulse"></span>
+          <span id="floating-back-text">Focused: <strong>Entity</strong></span>
+        </div>
+        <div class="floating-back-actions">
+          <button id="btn-floating-back" class="floating-back-btn" title="Back to originated graph (or click background outside node)">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"></polyline></svg>
+            <span id="btn-floating-back-label">Back to Originated Graph</span>
+          </button>
+          <button id="btn-floating-reset" class="floating-reset-btn" title="Reset to full graph view">
+            ✕ Full Graph
+          </button>
+        </div>
+      </div>
+
       <!-- Floating Top-Left Topic Relevance Score HUD -->
       <div id="floating-relevance-hud" class="floating-relevance-hud">
         <div class="rel-hud-header">
@@ -2406,7 +2576,10 @@
           </span>
           <h2 id="drawer-entity-name" class="drawer-title">Entity Name</h2>
         </div>
-        <button id="btn-close-drawer" class="drawer-close-btn" title="Close topic details">&times;</button>
+        <div style="display: flex; align-items: center; gap: 6px;">
+          <button id="drawer-btn-back" class="drawer-back-btn" title="Back to originated graph" style="display: none;">← Back</button>
+          <button id="btn-close-drawer" class="drawer-close-btn" title="Close topic details">&times;</button>
+        </div>
       </div>
 
       <div class="drawer-body">
@@ -2970,6 +3143,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
     let isolatedNode = null;
     let hasInitiallyIsolated = false;
     let initialIsolatedClusterIds = new Set();
+    let centralOriginNode = null;
+    let graphBackStack = []; // Navigation history stack for originated graph levels
     let expansionHistory = []; // Queue of { id, parentId, parentName, nodeIds: Set, linkKeys: Set }
     const MAX_VISIBLE_EXPANSIONS = 3;
     const hiddenExpansionNodeIds = new Set();
@@ -3050,27 +3225,36 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       addNodeLayer = gRoot.append('g').attr('class', 'add-node-layer');
 
       // Zoom behavior
+      let isDraggingCanvas = false;
       zoomBehavior = d3.zoom()
         .scaleExtent([0.15, 4])
+        .on('start', () => {
+          isDraggingCanvas = false;
+        })
         .on('zoom', (event) => {
+          isDraggingCanvas = true;
           gRoot.attr('transform', event.transform);
+        })
+        .on('end', () => {
+          setTimeout(() => {
+            isDraggingCanvas = false;
+          }, 80);
         });
 
       svg.call(zoomBehavior)
         .on('dblclick.zoom', null); // disable double-click zoom to avoid conflict with node actions
 
-      // Canvas background click clears temporary isolation and restores the original graph
+      // Canvas background click triggers back stack navigation:
+      // Steps back to its originated graph only, then click again to its originated graph
       function handleCanvasBackgroundClick(event) {
-        if (event.target && event.target.closest && event.target.closest('.node-group, .add-node-group, .floating-panel, .floating-connected-box, .floating-left-stack, .floating-left-box, .floating-refs-box, .controls-dock, .header-nav, .bottom-hud, .modal-backdrop, .modal-container, .badge-reset-isolation, .floating-bottom-search-wrapper, .advanced-search-modal')) {
+        if (isDraggingCanvas || event.defaultPrevented) return;
+        if (event.target && event.target.closest && event.target.closest('.node-group, .add-node-group, .floating-panel, .floating-connected-box, .floating-left-stack, .floating-left-box, .floating-refs-box, .controls-dock, .header-nav, .floating-back-hud, .bottom-hud, .modal-backdrop, .modal-container, .badge-reset-isolation, .badge-back-btn, .floating-bottom-search-wrapper, .advanced-search-modal, .zoom-controls, .details-drawer')) {
           return;
         }
-        clearIsolation();
-        closeDetailsDrawer();
+        navigateBackStack();
       }
 
       svg.on('click', handleCanvasBackgroundClick);
-      const vp = document.getElementById('viewport-container');
-      if (vp) vp.addEventListener('click', handleCanvasBackgroundClick);
     }
 
     // --- PRESET KNOWLEDGE GRAPH RETRIEVAL ---
@@ -4044,12 +4228,23 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       const thisExpNodeIds = new Set(newNodes.map(n => n.id));
       const thisExpLinkKeys = new Set(newLinks.map(l => `${l.source}-${l.target}`));
 
-      expansionHistory.push({
+      const expRecord = {
         id: Date.now() + Math.random(),
         parentId: parentNode.id,
         parentName: parentNode.name,
         nodeIds: thisExpNodeIds,
-        linkKeys: thisExpLinkKeys
+        linkKeys: thisExpLinkKeys,
+        newNodes: newNodes,
+        newLinks: newLinks
+      };
+      expansionHistory.push(expRecord);
+
+      // Record this expansion in the navigation back stack so stepping back collapses it cleanly to its originated graph
+      graphBackStack.push({
+        type: 'expansion',
+        parentNode: parentNode,
+        expRecord: expRecord,
+        title: parentNode.name
       });
 
       let pruneNotice = '';
@@ -4086,22 +4281,11 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       });
       activeNodes.forEach(n => n.degree = degreeMap[n.id] || 0);
 
-      // 8. Update UI, Category Filters & HUD
+      // 8. Update UI, Category Filters & Navigation HUD
       populateCategoryFilters();
       document.getElementById('hud-node-count').innerText = activeNodes.length;
       document.getElementById('hud-link-count').innerText = activeLinks.length;
-      document.getElementById('hud-status-text').innerHTML = `
-        <span style="color:var(--cyan); font-weight:700;">&#9889; Deployed Sub-Graph:</span> 
-        <strong>${parentNode.name}</strong> &rarr; +${newNodes.length} nodes (Active Expansions: ${expansionHistory.length}/3)${pruneNotice}
-        <button id="btn-reset-isolation" class="badge-reset-isolation" title="Restore all nodes">✕ Show All Nodes</button>
-      `;
-      const btnReset = document.getElementById('btn-reset-isolation');
-      if (btnReset) {
-        btnReset.onclick = (e) => {
-          e.stopPropagation();
-          clearIsolation();
-        };
-      }
+      updateExplorationHud(parentNode);
 
       // 9. Re-render DOM mesh
       refreshGraphMesh();
@@ -4359,23 +4543,163 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       document.getElementById('hud-status-text').innerText = 'Ready • Click any node to view connections • Click dotted "+" node to expand domain';
     }
 
-    // --- NODE CLICK & EXPLORATION ISOLATION ---
+    // --- NODE CLICK & EXPLORATION ISOLATION WITH BACK STACK ---
     function onNodeClick(d) {
-      selectedNode = d;
+      if (!d) return;
+
+      if (selectedNode && selectedNode.id === d.id) {
+        return;
+      }
+
       updateRelevanceHud(d);
 
       if (!hasInitiallyIsolated) {
-        // Initial click: perform the initial isolation (remove background graph)
+        // Initial click: perform the initial isolation
         hasInitiallyIsolated = true;
+        centralOriginNode = d;
+        graphBackStack = [{ type: 'root', title: 'Complete Graph' }];
         isolateNodeAndInterconnected(d);
       } else {
-        // Subsequent clicks: DO NOT remove/hide the rest of the graph!
-        // Keep all currently visible nodes & expansions, highlight clicked entity
+        // Subsequent node click within active graph:
+        // Do not add individual node clicks to graph back stack;
+        // keep focus in exploration without altering graph hierarchy
         focusSelectedNodeInExploration(d);
       }
 
+      selectedNode = d;
       openDetailsDrawer(d);
       focusNode(d);
+      updateExplorationHud(d);
+    }
+
+    function removeExpansion(expRecord) {
+      if (!expRecord) return;
+      const removeIds = expRecord.nodeIds;
+
+      // 1. Remove from expansionHistory
+      expansionHistory = expansionHistory.filter(e => e.id !== expRecord.id);
+
+      // 2. Remove nodes from activeNodes and currentDataset.nodes
+      activeNodes = activeNodes.filter(n => !removeIds.has(n.id));
+      if (currentDataset && currentDataset.nodes) {
+        currentDataset.nodes = currentDataset.nodes.filter(n => !removeIds.has(n.id));
+      }
+
+      // 3. Remove links from activeLinks and currentDataset.links
+      activeLinks = activeLinks.filter(l => {
+        const sId = (l.source && typeof l.source === 'object') ? l.source.id : l.source;
+        const tId = (l.target && typeof l.target === 'object') ? l.target.id : l.target;
+        return !removeIds.has(sId) && !removeIds.has(tId);
+      });
+      if (currentDataset && currentDataset.links) {
+        currentDataset.links = currentDataset.links.filter(l => {
+          const sId = (l.source && typeof l.source === 'object') ? l.source.id : l.source;
+          const tId = (l.target && typeof l.target === 'object') ? l.target.id : l.target;
+          return !removeIds.has(sId) && !removeIds.has(tId);
+        });
+      }
+
+      // 4. Remove pruned markers if any
+      removeIds.forEach(id => {
+        hiddenExpansionNodeIds.delete(id);
+      });
+      if (expRecord.linkKeys) {
+        expRecord.linkKeys.forEach(k => {
+          hiddenExpansionLinkKeys.delete(k);
+        });
+      }
+
+      // 5. Recompute degrees for accurate node sizing
+      const degreeMap = {};
+      activeNodes.forEach(n => degreeMap[n.id] = 0);
+      activeLinks.forEach(l => {
+        const s = (typeof l.source === 'object' && l.source) ? l.source.id : l.source;
+        const t = (typeof l.target === 'object' && l.target) ? l.target.id : l.target;
+        if (degreeMap[s] !== undefined) degreeMap[s]++;
+        if (degreeMap[t] !== undefined) degreeMap[t]++;
+      });
+      activeNodes.forEach(n => n.degree = degreeMap[n.id] || 0);
+
+      // 6. Refresh graph DOM elements & reheat simulation
+      refreshGraphMesh();
+      if (simulation) {
+        simulation.nodes(activeNodes);
+        if (simulation.force('link')) {
+          simulation.force('link').links(activeLinks);
+        }
+        simulation.alpha(0.6).restart();
+      }
+
+      // 7. Re-apply visibility filters
+      applyFiltersAndSearch();
+
+      // 8. Update HUD metrics
+      const nodeCountEl = document.getElementById('hud-node-count');
+      const linkCountEl = document.getElementById('hud-link-count');
+      if (nodeCountEl) nodeCountEl.innerText = activeNodes.length;
+      if (linkCountEl) linkCountEl.innerText = activeLinks.length;
+    }
+
+    function navigateBackStack() {
+      // If nothing is isolated or expanded, nothing to step back through
+      if (!hasInitiallyIsolated && expansionHistory.length === 0) {
+        return;
+      }
+
+      // 1. If we have active sub-graph expansions, step back to the graph this sub-graph originated from
+      if (expansionHistory.length > 0) {
+        // Pop the latest expansion record
+        const latestExp = expansionHistory[expansionHistory.length - 1];
+
+        // Also pop from graphBackStack if recorded
+        let stackItem = null;
+        while (graphBackStack.length > 0) {
+          const top = graphBackStack[graphBackStack.length - 1];
+          if (top.type === 'expansion' && top.expRecord && top.expRecord.id === latestExp.id) {
+            stackItem = graphBackStack.pop();
+            break;
+          } else if (top.type === 'expansion') {
+            stackItem = graphBackStack.pop();
+            break;
+          } else {
+            break;
+          }
+        }
+
+        // Cleanly remove this expansion's nodes & links
+        removeExpansion(latestExp);
+
+        // Take user back to the parent node this sub-graph originated from in its originated graph!
+        const originParentId = (stackItem && stackItem.parentNode) ? stackItem.parentNode.id : latestExp.parentId;
+        const originNode = activeNodes.find(n => n.id === originParentId) || (stackItem && stackItem.parentNode);
+
+        if (originNode) {
+          selectedNode = originNode;
+          isolatedNode = originNode;
+          focusSelectedNodeInExploration(originNode);
+          openDetailsDrawer(originNode);
+          focusNode(originNode, 1.15);
+          updateExplorationHud(originNode);
+        } else if (isolatedNode) {
+          focusSelectedNodeInExploration(isolatedNode);
+          openDetailsDrawer(isolatedNode);
+          focusNode(isolatedNode, 1.15);
+          updateExplorationHud(isolatedNode);
+        }
+        return;
+      }
+
+      // 2. If no sub-graph expansions remain, but we are in an isolated cluster graph:
+      // Stepping back takes us to its originated graph (the Complete Graph)!
+      if (hasInitiallyIsolated) {
+        clearIsolation();
+        closeDetailsDrawer();
+        return;
+      }
+
+      // Fallback
+      clearIsolation();
+      closeDetailsDrawer();
     }
 
     function isolateNodeAndInterconnected(d) {
@@ -4412,8 +4736,8 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       // 4. Render Dotted Add Node for domain-specific research
       renderDottedAddNode(d);
 
-      // 5. Update HUD status with reset button
-      updateHudExplorationStatus(d, initialIsolatedClusterIds.size - 1);
+      // 5. Update HUD status with back and reset buttons
+      updateExplorationHud(d, initialIsolatedClusterIds.size - 1);
     }
 
     function focusSelectedNodeInExploration(d) {
@@ -4461,37 +4785,128 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       renderDottedAddNode(d);
 
       // Update HUD status
-      updateHudExplorationStatus(d, neighborIds.size - 1);
+      updateExplorationHud(d, neighborIds.size - 1);
     }
 
-    function updateHudExplorationStatus(d, neighborCount) {
+    function updateExplorationHud(d, neighborCount) {
+      if (!d) return;
+
+      const backHud = document.getElementById('floating-back-hud');
+      const backText = document.getElementById('floating-back-text');
+      const backBtnLabel = document.getElementById('btn-floating-back-label');
+      const drawerBtnBack = document.getElementById('drawer-btn-back');
+
+      // Determine label for the originated graph target
+      let backTargetName = '';
+      if (expansionHistory.length > 0) {
+        const currentExp = expansionHistory[expansionHistory.length - 1];
+        backTargetName = currentExp.parentName ? `"${currentExp.parentName}" Graph` : 'Originated Graph';
+      } else if (hasInitiallyIsolated) {
+        backTargetName = 'Full Graph';
+      } else {
+        backTargetName = 'Full Graph';
+      }
+
+      const backActionTitle = `Back to ${backTargetName}`;
+
+      // Update Top Floating Exploration HUD
+      if (backHud) {
+        if (hasInitiallyIsolated || expansionHistory.length > 0) {
+          backHud.classList.add('visible');
+        } else {
+          backHud.classList.remove('visible');
+        }
+        const expCount = expansionHistory.length;
+        const expBadge = expCount > 0 
+          ? ` &bull; <span style="color:#c4b5fd; font-weight:600;">+${expCount} ${expCount === 1 ? 'Sub-Graph' : 'Sub-Graphs'} Active</span>` 
+          : '';
+        if (backText) {
+          backText.innerHTML = `Focused: <strong>${escapeHtml(d.name)}</strong>${expBadge}`;
+        }
+        if (backBtnLabel) {
+          backBtnLabel.innerText = backActionTitle;
+        }
+      }
+
+      // Update Drawer Back Button
+      if (drawerBtnBack) {
+        if (hasInitiallyIsolated || expansionHistory.length > 0) {
+          drawerBtnBack.style.display = 'inline-flex';
+          drawerBtnBack.innerText = `← ${backActionTitle}`;
+          drawerBtnBack.title = `Step back to ${escapeHtml(backTargetName)} (or click background outside node)`;
+        } else {
+          drawerBtnBack.style.display = 'none';
+        }
+      }
+
+      // Update status element in bottom HUD if present
       const statusEl = document.getElementById('hud-status-text');
       if (statusEl) {
+        if (neighborCount === undefined || neighborCount === null) {
+          const neighborIds = new Set([d.id]);
+          activeLinks.forEach(l => {
+            const sId = l.source.id || l.source;
+            const tId = l.target.id || l.target;
+            if (sId === d.id) neighborIds.add(tId);
+            if (tId === d.id) neighborIds.add(sId);
+          });
+          neighborCount = Math.max(0, neighborIds.size - 1);
+        }
+
         const expBadge = expansionHistory.length > 0 
           ? ` &bull; Active Expansions: <strong>${expansionHistory.length}/3</strong>` 
           : '';
+
+        const backBtnHtml = `<button id="btn-back-stack" class="badge-reset-isolation badge-back-btn" title="Back to ${escapeHtml(backTargetName)} (or click background outside node)">← ${escapeHtml(backActionTitle)}</button>`;
+
         statusEl.innerHTML = `
-          <span>Focused: <strong>${d.name}</strong> (${neighborCount} connected)${expBadge} &bull; Click dotted <strong>'+'</strong> node to expand domain</span>
-          <button id="btn-reset-isolation" class="badge-reset-isolation" title="Restore all nodes">✕ Show All Nodes</button>
+          <span>Focused: <strong>${escapeHtml(d.name)}</strong> (${neighborCount} connected)${expBadge} &bull; Click background outside node to step back to originated graph</span>
+          ${backBtnHtml}
+          <button id="btn-reset-isolation" class="badge-reset-isolation" title="Restore complete graph">✕ Full Graph</button>
         `;
+
+        const btnBack = document.getElementById('btn-back-stack');
+        if (btnBack) {
+          btnBack.onclick = (e) => {
+            e.stopPropagation();
+            navigateBackStack();
+          };
+        }
+
         const btnReset = document.getElementById('btn-reset-isolation');
         if (btnReset) {
           btnReset.onclick = (e) => {
             e.stopPropagation();
             clearIsolation();
+            closeDetailsDrawer();
           };
         }
       }
+    }
+
+    // Alias for backwards compatibility
+    function updateHudExplorationStatus(d, neighborCount) {
+      updateExplorationHud(d, neighborCount);
     }
 
     function clearIsolation() {
       isolatedNode = null;
       selectedNode = null;
       hasInitiallyIsolated = false;
+      centralOriginNode = null;
+      graphBackStack = [];
       initialIsolatedClusterIds.clear();
       expansionHistory = [];
       hiddenExpansionNodeIds.clear();
       hiddenExpansionLinkKeys.clear();
+
+      // Hide Floating Back HUD
+      const backHud = document.getElementById('floating-back-hud');
+      if (backHud) backHud.classList.remove('visible');
+
+      // Hide Drawer Back Button
+      const drawerBtnBack = document.getElementById('drawer-btn-back');
+      if (drawerBtnBack) drawerBtnBack.style.display = 'none';
 
       if (svg) svg.classed('show-all-scores', false);
       const relHud = document.getElementById('floating-relevance-hud');
@@ -4523,12 +4938,51 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           .attr('stroke', 'var(--text-dim)');
       }
 
+      // Restore pristine dataset without subnodes
+      if (fullCustomDataset) {
+        currentDataset = JSON.parse(JSON.stringify(fullCustomDataset));
+      } else {
+        currentDataset.nodes = currentDataset.nodes.filter(n => !n.isSubNode);
+        currentDataset.links = currentDataset.links.filter(l => {
+          const s = (typeof l.source === 'object' && l.source) ? l.source.id : l.source;
+          const t = (typeof l.target === 'object' && l.target) ? l.target.id : l.target;
+          return !String(s).includes('__') && !String(t).includes('__');
+        });
+      }
+
+      activeNodes = currentDataset.nodes.slice();
+      activeLinks = currentDataset.links.slice();
+
+      const degreeMap = {};
+      activeNodes.forEach(n => degreeMap[n.id] = 0);
+      activeLinks.forEach(l => {
+        const s = (typeof l.source === 'object' && l.source) ? l.source.id : l.source;
+        const t = (typeof l.target === 'object' && l.target) ? l.target.id : l.target;
+        if (degreeMap[s] !== undefined) degreeMap[s]++;
+        if (degreeMap[t] !== undefined) degreeMap[t]++;
+      });
+      activeNodes.forEach(n => n.degree = degreeMap[n.id] || 0);
+
+      refreshGraphMesh();
+      if (simulation) {
+        simulation.nodes(activeNodes);
+        if (simulation.force('link')) {
+          simulation.force('link').links(activeLinks);
+        }
+        simulation.alpha(0.5).restart();
+      }
+
       // Re-apply filters to restore all dataset nodes and links
       applyFiltersAndSearch();
 
+      const nodeCountEl = document.getElementById('hud-node-count');
+      const linkCountEl = document.getElementById('hud-link-count');
+      if (nodeCountEl) nodeCountEl.innerText = activeNodes.length;
+      if (linkCountEl) linkCountEl.innerText = activeLinks.length;
+
       const statusEl = document.getElementById('hud-status-text');
       if (statusEl) {
-        statusEl.innerText = 'Ready • Click any node to view connections • Click dotted "+" node to expand domain';
+        statusEl.innerText = 'Ready • Click any node to explore connections • Click dotted "+" to expand sub-graph';
       }
     }
 
@@ -5204,7 +5658,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       }
     }
 
-    function closeDetailsDrawer() {
+    function closeDetailsDrawer(clearState = false) {
       const topBox = document.getElementById('floating-top-box');
       const bottomBox = document.getElementById('floating-bottom-box');
       const connBox = document.getElementById('drawer-conn-dropdown');
@@ -5219,8 +5673,10 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         refsBox.classList.remove('visible');
         refsBox.open = false;
       }
-      selectedNode = null;
-      clearIsolation();
+      if (clearState) {
+        selectedNode = null;
+        clearIsolation();
+      }
     }
 
     // --- UNIFIED VISIBILITY & FILTER SYSTEM ---
@@ -5529,8 +5985,33 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         svg.transition().duration(300).call(zoomBehavior.transform, d3.zoomIdentity);
       });
 
-      // Drawer buttons
-      document.getElementById('btn-close-drawer').addEventListener('click', closeDetailsDrawer);
+      // Drawer & Exploration navigation buttons
+      document.getElementById('btn-close-drawer').addEventListener('click', () => closeDetailsDrawer(false));
+
+      const drawerBtnBack = document.getElementById('drawer-btn-back');
+      if (drawerBtnBack) {
+        drawerBtnBack.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navigateBackStack();
+        });
+      }
+
+      const btnFloatingBack = document.getElementById('btn-floating-back');
+      if (btnFloatingBack) {
+        btnFloatingBack.addEventListener('click', (e) => {
+          e.stopPropagation();
+          navigateBackStack();
+        });
+      }
+
+      const btnFloatingReset = document.getElementById('btn-floating-reset');
+      if (btnFloatingReset) {
+        btnFloatingReset.addEventListener('click', (e) => {
+          e.stopPropagation();
+          clearIsolation();
+          closeDetailsDrawer(true);
+        });
+      }
 
       // Custom Data Modal
       document.getElementById('btn-custom-data').addEventListener('click', openCustomDataModal);

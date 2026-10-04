@@ -25,13 +25,13 @@
   left: 0;
   width: 500px;
   max-width: 95vw;
-  background: rgba(13, 19, 34, 0.96);
+  background: rgba(18, 14, 11, 0.96);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 240, 255, 0.25);
+  border: 1px solid rgba(255, 122, 0, 0.3);
   border-radius: 14px;
   padding: 20px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(0, 240, 255, 0.12);
+  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.7), 0 0 25px rgba(255, 122, 0, 0.15);
   z-index: 1000;
   display: none;
   color: #f1f5f9;

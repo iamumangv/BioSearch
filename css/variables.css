@@ -1,5 +1,7 @@
 /* ============================================
    BioSearch — Variables & Design Tokens
+   Background: Exact match to RecordRecharge reference
+   Deep warm black with ambient amber sunset lighting
    ============================================ */
 
 *, *::before, *::after {
@@ -9,26 +11,41 @@
 }
 
 :root {
-  --cyan:    #00f0ff;
-  --violet:  #8b5cf6;
-  --indigo:  #4f46e5;
-  --pink:    #ec4899;
-  --bg:      #03040e;
-  --bg2:     #080c1a;
-  --surface: rgba(255,255,255,0.04);
-  --border:  rgba(255,255,255,0.08);
-  --text:    #e8eaf6;
-  --muted:   #94a3b8;
-  --font:    'Inter', sans-serif;
-  --heading: 'Space Grotesk', sans-serif;
+  --cyan:       #00f0ff;
+  --violet:     #8b5cf6;
+  --indigo:     #4f46e5;
+  --pink:       #ec4899;
+  --amber:      #ff7a00;
+  --amber-glow: rgba(255, 122, 0, 0.25);
+
+  /* Reference exact dark warm palette */
+  --bg:         #080706;
+  --bg2:        #110d0a;
+  --surface:    rgba(255, 255, 255, 0.04);
+  --border:     rgba(255, 255, 255, 0.08);
+  --text:       #f3f4f6;
+  --muted:      #9ca3af;
+  --font:       'Inter', sans-serif;
+  --heading:    'Space Grotesk', sans-serif;
 }
 
 html {
   scroll-behavior: smooth;
+  background-color: var(--bg);
 }
 
 body {
-  background: var(--bg);
+  background-color: #080706;
+  background-image:
+    /* Central radiant amber aura positioned right in the center behind the 3D graph */
+    radial-gradient(ellipse 65% 55% at 50% 45%, rgba(255, 115, 0, 0.32) 0%, rgba(180, 65, 8, 0.16) 42%, transparent 75%),
+    /* Secondary central depth glow */
+    radial-gradient(circle at 50% 48%, rgba(160, 60, 5, 0.18) 0%, transparent 58%),
+    /* Subtle warm tone in top-center */
+    radial-gradient(ellipse 70% 35% at 50% 0%, rgba(40, 24, 14, 0.4) 0%, transparent 60%);
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  background-size: cover;
   color: var(--text);
   font-family: var(--font);
   overflow-x: hidden;

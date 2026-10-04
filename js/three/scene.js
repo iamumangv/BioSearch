@@ -24,14 +24,14 @@ export class SceneManager {
     // Scene
     this.scene = new THREE.Scene();
 
-    // Camera
+    // Camera (closer distance so the 3D graph appears bigger & more immersive)
     this.camera = new THREE.PerspectiveCamera(
       54,
       window.innerWidth / window.innerHeight,
       0.1,
       200
     );
-    this.camera.position.set(0, 0, 16);
+    this.camera.position.set(0, 0, 13.8);
 
     // Mouse coordinates for parallax
     this.mouse = { x: 0, y: 0, tx: 0, ty: 0 };
@@ -42,19 +42,25 @@ export class SceneManager {
   }
 
   _setupLights() {
-    this.ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+    this.ambientLight = new THREE.AmbientLight(0xfff5ea, 0.65);
     this.scene.add(this.ambientLight);
 
-    this.pointLight1 = new THREE.PointLight(0x00f0ff, 6, 60);
-    this.pointLight1.position.set(-10, 8, 8);
+    // Radiant orange light right in the center of the graph
+    this.centerAmberLight = new THREE.PointLight(0xff6a00, 5.5, 38);
+    this.centerAmberLight.position.set(0, 0, 0);
+    this.scene.add(this.centerAmberLight);
+
+    // Warm ambient accent lights
+    this.pointLight1 = new THREE.PointLight(0xff8c00, 4.0, 65);
+    this.pointLight1.position.set(8, 6, 7);
     this.scene.add(this.pointLight1);
 
-    this.pointLight2 = new THREE.PointLight(0x8b5cf6, 6, 60);
-    this.pointLight2.position.set(10, -6, 6);
+    this.pointLight2 = new THREE.PointLight(0x8b5cf6, 3.5, 50);
+    this.pointLight2.position.set(-10, -6, 6);
     this.scene.add(this.pointLight2);
 
-    this.pointLight3 = new THREE.PointLight(0xec4899, 4, 45);
-    this.pointLight3.position.set(0, 4, 10);
+    this.pointLight3 = new THREE.PointLight(0x00f0ff, 3.0, 45);
+    this.pointLight3.position.set(0, 4, 8);
     this.scene.add(this.pointLight3);
   }
 
@@ -64,9 +70,10 @@ export class SceneManager {
     const ambPos = new Float32Array(AMBIENT_COUNT * 3);
     const ambCol = new Float32Array(AMBIENT_COUNT * 3);
     const ambPal = [
-      new THREE.Color(0x00f0ff),
-      new THREE.Color(0xa855f7),
-      new THREE.Color(0x38bdf8)
+      new THREE.Color(0xff8c00), // Warm amber
+      new THREE.Color(0xf59e0b), // Golden amber
+      new THREE.Color(0x00f0ff), // Cyan
+      new THREE.Color(0xa855f7)  // Violet
     ];
 
     for (let i = 0; i < AMBIENT_COUNT; i++) {
@@ -118,7 +125,7 @@ export class SceneManager {
 
     // Smooth camera elevation as scroll reaches graph & search
     const targetCamY = (scrollP > 0.6) ? -1.8 * Math.min(1, (scrollP - 0.6) / 0.4) : 0;
-    const targetCamZ = (scrollP > 0.6) ? 16 + 1.5 * Math.min(1, (scrollP - 0.6) / 0.4) : 16;
+    const targetCamZ = (scrollP > 0.6) ? 13.8 + 1.5 * Math.min(1, (scrollP - 0.6) / 0.4) : 13.8;
 
     this.camera.position.x = this.mouse.x * 1.1;
     this.camera.position.y += (-this.mouse.y * 0.7 + targetCamY - this.camera.position.y) * 0.06;

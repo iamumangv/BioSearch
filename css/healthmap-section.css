@@ -5,9 +5,9 @@
 #healthmap-section {
   position: relative;
   padding: 100px 24px;
-  background: radial-gradient(circle at 50% 20%, rgba(0, 255, 136, 0.04), transparent 70%),
-              radial-gradient(circle at 80% 80%, rgba(0, 240, 255, 0.03), transparent 60%),
-              #060913;
+  background: radial-gradient(circle at 50% 20%, rgba(255, 122, 0, 0.05), transparent 70%),
+              radial-gradient(circle at 80% 80%, rgba(180, 75, 10, 0.04), transparent 60%),
+              #080706;
   border-top: 1px solid rgba(255, 255, 255, 0.06);
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
   overflow: hidden;
@@ -151,7 +151,7 @@
 /* Preview Card */
 .healthmap-card {
   position: relative;
-  background: rgba(13, 19, 34, 0.7);
+  background: rgba(18, 14, 11, 0.7);
   border: 1px solid rgba(0, 255, 136, 0.2);
   border-radius: 20px;
   overflow: hidden;
@@ -168,7 +168,7 @@
   position: relative;
   width: 100%;
   height: 520px;
-  background: #080d1a;
+  background: #0d0b09;
   cursor: pointer;
 }
 
@@ -200,7 +200,7 @@
 .hud-pill {
   padding: 4px 10px;
   border-radius: 6px;
-  background: rgba(6, 9, 19, 0.85);
+  background: rgba(14, 11, 9, 0.88);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(255, 255, 255, 0.12);
   color: #94a3b8;
@@ -219,7 +219,7 @@
   align-items: center;
   gap: 6px;
   padding: 5px 12px;
-  background: rgba(6, 9, 19, 0.85);
+  background: rgba(14, 11, 9, 0.88);
   backdrop-filter: blur(8px);
   border: 1px solid rgba(0, 255, 136, 0.3);
   border-radius: 999px;
@@ -232,7 +232,7 @@
 .healthmap-tooltip {
   position: absolute;
   padding: 10px 14px;
-  background: rgba(6, 9, 19, 0.92);
+  background: rgba(14, 11, 9, 0.94);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(0, 255, 136, 0.4);
   border-radius: 10px;
