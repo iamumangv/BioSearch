@@ -18,6 +18,8 @@
 
   <!-- D3.js v7 CDN with fallback -->
   <script src="https://cdn.jsdelivr.net/npm/d3@7.8.5/dist/d3.min.js"></script>
+  <!-- Pre-computed 7-paper knowledge graphs -->
+  <script src="preset data/presets.js"></script>
 
   <style>
     :root {
@@ -218,57 +220,170 @@
       gap: 12px;
     }
 
-    /* Search bar inside topnav */
-    .search-box {
+    /* Floating Bottom Search Bar */
+    .floating-bottom-search-wrapper {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 35;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      pointer-events: auto;
+    }
+
+    .floating-search-box {
       position: relative;
       display: flex;
       align-items: center;
-      width: 240px;
-      transition: width 0.3s ease;
+      width: 480px;
+      max-width: calc(100vw - 32px);
+      height: 46px;
+      background: rgba(13, 19, 34, 0.88);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(0, 240, 255, 0.32);
+      border-radius: var(--radius-full);
+      box-shadow: 0 12px 36px rgba(0, 0, 0, 0.65), 0 0 24px rgba(0, 240, 255, 0.16);
+      padding: 0 16px 0 44px;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    .search-box:focus-within {
-      width: 320px;
+    .floating-search-box:focus-within {
+      width: 560px;
+      border-color: var(--cyan);
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.8), 0 0 32px rgba(0, 240, 255, 0.35);
+      background: rgba(13, 19, 34, 0.96);
     }
 
-    .search-icon {
+    .floating-search-box .search-icon {
       position: absolute;
-      left: 10px;
+      left: 16px;
+      color: var(--cyan);
+      opacity: 0.9;
       pointer-events: none;
-      color: var(--text-dim);
+      transition: transform 0.2s ease;
     }
 
-    .search-input {
+    .floating-search-box:focus-within .search-icon {
+      transform: scale(1.1);
+    }
+
+    .floating-search-box .search-input {
       width: 100%;
-      background: var(--bg-surface-elevated);
-      border: 1px solid var(--border-subtle);
-      border-radius: var(--radius-sm);
-      padding: 6px 12px 6px 32px;
-      color: var(--text-main);
-      font-size: 13px;
-      font-family: var(--font-sans);
+      height: 100%;
+      background: transparent;
+      border: none;
       outline: none;
+      padding: 0 68px 0 0;
+      color: var(--text-main);
+      font-size: 13.5px;
+      font-family: var(--font-sans);
+      box-shadow: none;
+    }
+
+    .floating-search-box .search-input::placeholder {
+      color: var(--text-dim);
+      font-size: 13px;
+    }
+
+    .floating-search-box .search-input:focus {
+      border: none;
+      box-shadow: none;
+    }
+
+    .floating-search-box .advanced-search-btn {
+      position: absolute;
+      right: 42px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 28px;
+      height: 28px;
+      padding: 0;
+      color: var(--text-dim);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: all 0.2s ease;
     }
 
-    .search-input:focus {
-      border-color: var(--cyan);
-      box-shadow: 0 0 8px var(--cyan-glow);
+    .floating-search-box .advanced-search-btn:hover {
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.12);
     }
 
-    .search-clear {
+    .floating-search-box .search-clear {
       position: absolute;
-      right: 8px;
+      right: 14px;
+      top: 50%;
+      transform: translateY(-50%);
       background: none;
       border: none;
       color: var(--text-dim);
       cursor: pointer;
-      font-size: 14px;
+      font-size: 18px;
+      line-height: 1;
+      display: none;
+      transition: color 0.15s ease;
+    }
+
+    .floating-search-box .search-clear:hover {
+      color: var(--rose);
+    }
+
+    .floating-search-box .search-clear.active {
+      display: block;
+    }
+
+    .search-enter-badge {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.1);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      border-radius: 4px;
+      padding: 1px 5px;
+      pointer-events: none;
+      font-family: var(--font-mono);
+      opacity: 0.75;
+      display: flex;
+      align-items: center;
+      gap: 2px;
+    }
+
+    .floating-search-box:has(.search-clear.active) .search-enter-badge {
       display: none;
     }
 
-    .search-clear.active {
-      display: block;
+    /* Modal pop up upward when inside floating bottom bar */
+    .floating-bottom-search-wrapper .advanced-search-modal {
+      bottom: calc(100% + 14px) !important;
+      top: auto !important;
+      left: 50% !important;
+      transform: translateX(-50%) !important;
+      max-height: calc(100vh - 120px);
+      overflow-y: auto;
+    }
+
+    .floating-bottom-search-wrapper .advanced-search-modal.open {
+      animation: advModalFadeUp 0.22s cubic-bezier(0.16, 1, 0.3, 1) forwards !important;
+    }
+
+    @keyframes advModalFadeUp {
+      from {
+        opacity: 0;
+        transform: translate(-50%, 10px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
     }
 
     .nav-right {
@@ -615,7 +730,7 @@
     }
 
     .floating-top-box .drawer-body {
-      padding: 12px 18px 16px;
+      padding: 0px !important;
       overflow: visible;
       flex: none;
     }
@@ -636,36 +751,192 @@
     /* 2. Bottom Floating Box: ASK AI & PaperLens */
     .floating-bottom-box {
       bottom: 16px;
-      padding: 14px 16px;
+      padding: 0px;
       display: flex;
       flex-direction: column;
       gap: 10px;
     }
 
-    /* 3. Floating Interconnected Entities (Above Controls on the left) */
-    .floating-connected-box {
+    /* 3. Floating Left Stack: References & Interconnected Entities (Above Controls on the left) */
+    .floating-left-stack {
       position: absolute;
       bottom: 64px;
       left: 16px;
-      width: 295px;
+      width: 320px;
+      max-width: calc(100vw - 32px);
       z-index: 24;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      pointer-events: none;
+    }
+
+    .floating-left-box {
+      pointer-events: auto;
       background: var(--bg-card);
       backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
       border: 1px solid var(--border-subtle);
       border-radius: var(--radius-md);
       box-shadow: var(--shadow-lg);
       transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
       display: none;
+      overflow: hidden;
+      margin-top: 0 !important;
     }
 
-    .floating-connected-box.visible {
+    .floating-left-box.visible {
       display: block;
     }
 
+    /* Fallback if rendered standalone */
+    .floating-connected-box {
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-md);
+    }
+
     .floating-connected-box .connected-entities-list {
-      max-height: 220px;
+      max-height: 180px;
       overflow-y: auto;
       padding: 8px;
+    }
+
+    /* References & Research Papers Section */
+    .references-list {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+      padding: 10px;
+      border-top: 1px solid var(--border-subtle);
+    }
+
+    .references-list::-webkit-scrollbar,
+    .connected-entities-list::-webkit-scrollbar {
+      width: 4px;
+    }
+
+    .references-list::-webkit-scrollbar-thumb,
+    .connected-entities-list::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 2px;
+    }
+
+    .reference-item {
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-sm);
+      padding: 9px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      transition: all 0.2s ease;
+    }
+
+    .reference-item:hover {
+      border-color: rgba(0, 240, 255, 0.38);
+      background: rgba(0, 240, 255, 0.04);
+    }
+
+    .reference-item-top {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+
+    .reference-badge {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      padding: 1px 6px;
+      border-radius: 4px;
+      letter-spacing: -0.2px;
+    }
+
+    .reference-badge-pmc {
+      background: rgba(0, 240, 255, 0.12);
+      color: var(--cyan);
+      border: 1px solid rgba(0, 240, 255, 0.3);
+    }
+
+    .reference-badge-journal {
+      background: rgba(139, 92, 246, 0.12);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.25);
+      max-width: 140px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .reference-title {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-main);
+      line-height: 1.35;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .reference-authors {
+      font-size: 10px;
+      color: var(--text-muted);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .reference-reason {
+      font-size: 9.5px;
+      color: var(--text-dim);
+      font-style: italic;
+    }
+
+    .reference-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 2px;
+    }
+
+    .ref-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 10px;
+      font-weight: 500;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-decoration: none;
+      transition: all 0.15s ease;
+    }
+
+    .ref-btn-pmc {
+      background: rgba(255, 255, 255, 0.05);
+      color: var(--text-main);
+      border: 1px solid var(--border-subtle);
+    }
+
+    .ref-btn-pmc:hover {
+      background: rgba(0, 240, 255, 0.15);
+      border-color: var(--cyan);
+      color: var(--cyan);
+    }
+
+    .ref-btn-lens {
+      background: rgba(139, 92, 246, 0.15);
+      color: #c4b5fd;
+      border: 1px solid rgba(139, 92, 246, 0.35);
+    }
+
+    .ref-btn-lens:hover {
+      background: rgba(139, 92, 246, 0.28);
+      color: #ffffff;
+      border-color: #a78bfa;
     }
 
     .drawer-header {
@@ -1641,8 +1912,11 @@
 
     /* Responsive */
     @media (max-width: 900px) {
-      .search-box {
-        display: none;
+      .floating-search-box {
+        width: calc(100vw - 32px);
+      }
+      .floating-search-box:focus-within {
+        width: calc(100vw - 24px);
       }
 
       .controls-dock {
@@ -1689,116 +1963,25 @@
       <div class="dataset-control-group">
         <span class="dataset-label">Active Dataset:</span>
         <select id="dataset-selector" class="dataset-select" aria-label="Select Graph Dataset">
-          <option value="combined">🔬 Multi-Paper Synthesis (PMC8259047 + PMC11462910 + PMC8293341)</option>
-          <option value="pmc8259047">📑 PMC8259047: 30 Lateral Flow Immunoassays (COVID-19 Immune Response)</option>
-          <option value="pmc11462910">📑 PMC11462910: Rapid Antigen Tests vs RT-PCR (Diagnostic Accuracy Meta-Analysis)
-          </option>
-          <option value="pmc8293341">📑 PMC8293341: Innate Immunity in Children &amp; ACE2 Receptor Expression</option>
+          <optgroup label="Preset Multi-Paper Knowledge Graphs (7 Papers Each)">
+            <option value="cancer">🎗️ Cancer Oncology (7 Research Papers)</option>
+            <option value="malaria">🦟 Malaria Parasitology (7 Research Papers)</option>
+            <option value="dengue">🩸 Dengue Flavivirus (7 Research Papers)</option>
+            <option value="covid" selected>🦠 COVID-19 Synthesis (7 Research Papers)</option>
+          </optgroup>
+          <optgroup label="PMC Benchmark Studies">
+            <option value="combined">🔬 COVID-19 3-Paper Benchmark (PMC8259047 + PMC11462910 + PMC8293341)</option>
+            <option value="pmc8259047">📑 PMC8259047: 30 Lateral Flow Immunoassays</option>
+            <option value="pmc11462910">📑 PMC11462910: Rapid Antigen Tests vs RT-PCR</option>
+            <option value="pmc8293341">📑 PMC8293341: Innate Immunity & ACE2 Expression</option>
+          </optgroup>
           <option value="custom">✨ Custom User Graph Data...</option>
         </select>
       </div>
     </div>
 
-    <!-- Center Search -->
-    <div class="nav-center" style="position: relative;">
-      <div class="search-box">
-        <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-          stroke-width="2">
-          <circle cx="11" cy="11" r="8"></circle>
-          <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
-        </svg>
-        <input type="text" id="node-search" class="search-input" placeholder="Search genes, assays, papers..."
-          autocomplete="off" />
-
-        <button class="advanced-search-btn" id="adv-search-toggle" title="Advanced Search"
-          style="margin-left: 4px; padding: 4px; position: absolute; right: 28px;">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <line x1="4" y1="21" x2="4" y2="14"></line>
-            <line x1="4" y1="10" x2="4" y2="3"></line>
-            <line x1="12" y1="21" x2="12" y2="12"></line>
-            <line x1="12" y1="8" x2="12" y2="3"></line>
-            <line x1="20" y1="21" x2="20" y2="16"></line>
-            <line x1="20" y1="12" x2="20" y2="3"></line>
-            <line x1="1" y1="14" x2="7" y2="14"></line>
-            <line x1="9" y1="8" x2="15" y2="8"></line>
-            <line x1="17" y1="16" x2="23" y2="16"></line>
-          </svg>
-        </button>
-
-        <button id="search-clear" class="search-clear" title="Clear search">&times;</button>
-      </div>
-
-      <!-- Advanced Search Modal (Graph) -->
-      <div class="advanced-search-modal" id="adv-search-modal" style="width: 500px; right: auto; left: 0;">
-        <div class="adv-search-header">
-          <span>Advanced Search</span>
-          <button class="adv-search-close" id="adv-close-btn">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <line x1="18" y1="6" x2="6" y2="18"></line>
-              <line x1="6" y1="6" x2="18" y2="18"></line>
-            </svg>
-          </button>
-        </div>
-
-        <div class="adv-form-group">
-          <label for="adv-all-words">Find articles with all of the words</label>
-          <input type="text" id="adv-all-words" placeholder="e.g. perovskite solar efficiency">
-        </div>
-
-        <div class="adv-form-group">
-          <label for="adv-exact">With the exact phrase</label>
-          <input type="text" id="adv-exact" placeholder='e.g. "crispr cas9"'>
-        </div>
-
-        <div class="adv-form-row">
-          <div class="adv-form-group">
-            <label for="adv-any">With at least one of the words</label>
-            <input type="text" id="adv-any" placeholder="e.g. microplastics nanoplastics">
-          </div>
-          <div class="adv-form-group">
-            <label for="adv-none">Without the words</label>
-            <input type="text" id="adv-none" placeholder="e.g. oxide">
-          </div>
-        </div>
-
-        <div class="adv-form-row">
-          <div class="adv-form-group">
-            <label for="adv-where">Where my words occur</label>
-            <select id="adv-where">
-              <option value="anywhere">Anywhere in the article</option>
-              <option value="title">In the title of the article</option>
-            </select>
-          </div>
-        </div>
-
-        <div class="adv-form-row">
-          <div class="adv-form-group">
-            <label for="adv-author">Return articles authored by</label>
-            <input type="text" id="adv-author" placeholder='e.g. "richard feynman"'>
-          </div>
-          <div class="adv-form-group">
-            <label for="adv-source">Published in</label>
-            <input type="text" id="adv-source" placeholder='e.g. "Nature Chemistry"'>
-          </div>
-        </div>
-
-        <div class="adv-form-row">
-          <div class="adv-form-group">
-            <label for="adv-year-start">Date Range (Year)</label>
-            <input type="text" id="adv-year-start" placeholder="Start (e.g. 2021)">
-          </div>
-          <div class="adv-form-group">
-            <label for="adv-year-end">&nbsp;</label>
-            <input type="text" id="adv-year-end" placeholder="End (e.g. 2025)">
-          </div>
-        </div>
-
-        <div class="adv-form-actions">
-          <button class="adv-btn-clear" id="adv-clear-btn">Clear</button>
-          <button class="adv-btn-apply" id="adv-apply-btn">Apply Constraints</button>
-        </div>
-      </div>
-    </div>
+    <!-- Center Spacer -->
+    <div class="nav-center" style="flex: 1;"></div>
 
     <!-- Right Actions -->
     <div class="nav-right">
@@ -2030,6 +2213,107 @@
       </div>
 
       <svg id="graph-svg"></svg>
+
+      <!-- Floating Bottom Search Bar -->
+      <div id="floating-bottom-search-wrapper" class="floating-bottom-search-wrapper">
+        <div class="search-box floating-search-box">
+          <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="2">
+            <circle cx="11" cy="11" r="8"></circle>
+            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+          </svg>
+          <input type="text" id="node-search" class="search-input" placeholder="Search genes, assays, papers, topics"
+            autocomplete="off" />
+
+          <button class="advanced-search-btn" id="adv-search-toggle" title="Advanced Search">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="4" y1="21" x2="4" y2="14"></line>
+              <line x1="4" y1="10" x2="4" y2="3"></line>
+              <line x1="12" y1="21" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12" y2="3"></line>
+              <line x1="20" y1="21" x2="20" y2="16"></line>
+              <line x1="20" y1="12" x2="20" y2="3"></line>
+              <line x1="1" y1="14" x2="7" y2="14"></line>
+              <line x1="9" y1="8" x2="15" y2="8"></line>
+              <line x1="17" y1="16" x2="23" y2="16"></line>
+            </svg>
+          </button>
+
+          <button id="search-clear" class="search-clear" title="Clear search">&times;</button>
+          <div class="search-enter-badge" title="Press Enter to search topic">↵</div>
+        </div>
+
+        <!-- Advanced Search Modal (Graph) -->
+        <div class="advanced-search-modal" id="adv-search-modal" style="width: 500px;">
+          <div class="adv-search-header">
+            <span>Advanced Search</span>
+            <button class="adv-search-close" id="adv-close-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <div class="adv-form-group">
+            <label for="adv-all-words">Find articles with all of the words</label>
+            <input type="text" id="adv-all-words" placeholder="e.g. perovskite solar efficiency">
+          </div>
+
+          <div class="adv-form-group">
+            <label for="adv-exact">With the exact phrase</label>
+            <input type="text" id="adv-exact" placeholder='e.g. "crispr cas9"'>
+          </div>
+
+          <div class="adv-form-row">
+            <div class="adv-form-group">
+              <label for="adv-any">With at least one of the words</label>
+              <input type="text" id="adv-any" placeholder="e.g. microplastics nanoplastics">
+            </div>
+            <div class="adv-form-group">
+              <label for="adv-none">Without the words</label>
+              <input type="text" id="adv-none" placeholder="e.g. oxide">
+            </div>
+          </div>
+
+          <div class="adv-form-row">
+            <div class="adv-form-group">
+              <label for="adv-where">Where my words occur</label>
+              <select id="adv-where">
+                <option value="anywhere">Anywhere in the article</option>
+                <option value="title">In the title of the article</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="adv-form-row">
+            <div class="adv-form-group">
+              <label for="adv-author">Return articles authored by</label>
+              <input type="text" id="adv-author" placeholder='e.g. "richard feynman"'>
+            </div>
+            <div class="adv-form-group">
+              <label for="adv-source">Published in</label>
+              <input type="text" id="adv-source" placeholder='e.g. "Nature Chemistry"'>
+            </div>
+          </div>
+
+          <div class="adv-form-row">
+            <div class="adv-form-group">
+              <label for="adv-year-start">Date Range (Year)</label>
+              <input type="text" id="adv-year-start" placeholder="Start (e.g. 2021)">
+            </div>
+            <div class="adv-form-group">
+              <label for="adv-year-end">&nbsp;</label>
+              <input type="text" id="adv-year-end" placeholder="End (e.g. 2025)">
+            </div>
+          </div>
+
+          <div class="adv-form-actions">
+            <button class="adv-btn-clear" id="adv-clear-btn">Clear</button>
+            <button class="adv-btn-apply" id="adv-apply-btn">Apply Constraints</button>
+          </div>
+        </div>
+      </div>
     </div>
 
     <!-- Bottom HUD Stats -->
@@ -2064,27 +2348,49 @@
       <button id="btn-zoom-reset" class="zoom-btn" title="Reset zoom (100%)">1:1</button>
     </div>
 
-    <!-- Floating Interconnected Entities (Shifted to Left Side Above Controls, closed by default) -->
-    <details id="drawer-conn-dropdown" class="drawer-dropdown floating-connected-box">
-      <summary class="drawer-dropdown-summary">
-        <div style="display: flex; align-items: center; gap: 8px;">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <circle cx="18" cy="5" r="3"></circle>
-            <circle cx="6" cy="12" r="3"></circle>
-            <circle cx="18" cy="19" r="3"></circle>
-            <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
-            <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+    <!-- Left Floating Stack: References & Interconnected Entities (Above Controls on the left) -->
+    <div id="floating-left-stack" class="floating-left-stack">
+      <!-- 1. Topic Literature & Research Papers (Placed ABOVE Interconnected Entities) -->
+      <details id="drawer-refs-dropdown" class="drawer-dropdown floating-left-box floating-refs-box" open>
+        <summary class="drawer-dropdown-summary">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+            <span>Topic Literature &amp; Papers (<span id="drawer-refs-count">0</span>)</span>
+          </div>
+          <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
-          <span>Interconnected Entities (<span id="drawer-conn-count">0</span>)</span>
+        </summary>
+        <div id="drawer-references-list" class="references-list">
+          <!-- Dynamically populated reference papers -->
         </div>
-        <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <polyline points="6 9 12 15 18 9"></polyline>
-        </svg>
-      </summary>
-      <div id="drawer-connections-list" class="connected-entities-list">
-        <!-- Dynamic connected items -->
-      </div>
-    </details>
+      </details>
+
+      <!-- 2. Floating Interconnected Entities (Closed by default) -->
+      <details id="drawer-conn-dropdown" class="drawer-dropdown floating-left-box floating-connected-box">
+        <summary class="drawer-dropdown-summary">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="18" cy="5" r="3"></circle>
+              <circle cx="6" cy="12" r="3"></circle>
+              <circle cx="18" cy="19" r="3"></circle>
+              <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line>
+              <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line>
+            </svg>
+            <span>Interconnected Entities (<span id="drawer-conn-count">0</span>)</span>
+          </div>
+          <svg class="dropdown-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="6 9 12 15 18 9"></polyline>
+          </svg>
+        </summary>
+        <div id="drawer-connections-list" class="connected-entities-list">
+          <!-- Dynamic connected items -->
+        </div>
+      </details>
+    </div>
 
     <!-- 1. Top Floating Box: Topic & GIST -->
     <aside id="floating-top-box" class="floating-panel floating-top-box">
@@ -2105,7 +2411,7 @@
 
       <div class="drawer-body">
         <div>
-          <div class="drawer-section-title">Topic Explanation (Gist)</div>
+          <!-- <div class="drawer-section-title">Topic Explanation (Gist)</div> -->
           <div id="drawer-entity-desc" class="drawer-description">
             Description from publication...
           </div>
@@ -2231,14 +2537,16 @@
                   <option value="8">8 papers</option>
                 </select>
               </div>
-              <div style="display:flex; gap:6px;">
-                <span>Quick Topics:</span>
-                <a href="#" class="live-topic-quick" data-q="PMC8259047 OR PMC11462910 OR PMC8293341"
-                  style="color:var(--cyan); text-decoration:none;">The 3 PMC Papers</a> &bull;
-                <a href="#" class="live-topic-quick" data-q="mRNA vaccine lipid nanoparticle delivery"
-                  style="color:var(--cyan); text-decoration:none;">mRNA LNP</a> &bull;
-                <a href="#" class="live-topic-quick" data-q="CAR-T cell exhaustion immunotherapy"
-                  style="color:var(--cyan); text-decoration:none;">CAR-T Exhaustion</a>
+              <div style="display:flex; gap:6px; flex-wrap:wrap;">
+                <span>Instant Presets:</span>
+                <a href="#" class="live-topic-quick" data-q="Cancer"
+                  style="color:var(--cyan); text-decoration:none;">Cancer (7 Papers)</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="Malaria"
+                  style="color:var(--cyan); text-decoration:none;">Malaria (7 Papers)</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="Dengue"
+                  style="color:var(--cyan); text-decoration:none;">Dengue (7 Papers)</a> &bull;
+                <a href="#" class="live-topic-quick" data-q="COVID-19"
+                  style="color:var(--cyan); text-decoration:none;">COVID-19 (7 Papers)</a>
               </div>
             </div>
 
@@ -2753,7 +3061,7 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
 
       // Canvas background click clears temporary isolation and restores the original graph
       function handleCanvasBackgroundClick(event) {
-        if (event.target && event.target.closest && event.target.closest('.node-group, .add-node-group, .floating-panel, .floating-connected-box, .controls-dock, .header-nav, .bottom-hud, .modal-backdrop, .modal-container, .badge-reset-isolation')) {
+        if (event.target && event.target.closest && event.target.closest('.node-group, .add-node-group, .floating-panel, .floating-connected-box, .floating-left-stack, .floating-left-box, .floating-refs-box, .controls-dock, .header-nav, .bottom-hud, .modal-backdrop, .modal-container, .badge-reset-isolation, .floating-bottom-search-wrapper, .advanced-search-modal')) {
           return;
         }
         clearIsolation();
@@ -2765,9 +3073,47 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       if (vp) vp.addEventListener('click', handleCanvasBackgroundClick);
     }
 
+    // --- PRESET KNOWLEDGE GRAPH RETRIEVAL ---
+    function getPresetDataset(key) {
+      if (window.PRESET_KNOWLEDGE_GRAPHS && window.PRESET_KNOWLEDGE_GRAPHS[key]) {
+        return JSON.parse(JSON.stringify(window.PRESET_KNOWLEDGE_GRAPHS[key]));
+      }
+      return null;
+    }
+
+    function findPresetMatch(query) {
+      if (!query) return null;
+      const q = query.trim().toLowerCase();
+      if (/cancer|tumor|tumour|oncology|carcinoma|sarcoma|melanoma|leukemia|lymphoma|kras|p53|tp53|egfr|brca|osimertinib|pembrolizumab|olaparib|sotorasib/i.test(q)) {
+        return 'cancer';
+      }
+      if (/malaria|plasmodium|falciparum|vivax|pfk13|artemisinin|anopheles|sporozoite|merozoite|r21|rtss|rts,s|kelch13|pfemp1/i.test(q)) {
+        return 'malaria';
+      }
+      if (/dengue|denv|flavivirus|aedes|aegypti|wolbachia|ns1|tak-003|qdenga|dengvaxia|breakbone/i.test(q)) {
+        return 'dengue';
+      }
+      if (/covid|coronavirus|sars-cov|sars|cov-2|covid-19|covid19|corona|bnt162b2/i.test(q)) {
+        return 'covid';
+      }
+      return null;
+    }
+
     // --- DATA LOADING & ADAPTER ---
     function loadDataset(datasetKey) {
-      if (datasetKey === 'combined') {
+      if (datasetKey === 'cancer' || datasetKey === 'preset_cancer') {
+        const d = getPresetDataset('cancer');
+        if (d) { currentDataset = d; fullCustomDataset = JSON.parse(JSON.stringify(d)); }
+      } else if (datasetKey === 'malaria' || datasetKey === 'preset_malaria') {
+        const d = getPresetDataset('malaria');
+        if (d) { currentDataset = d; fullCustomDataset = JSON.parse(JSON.stringify(d)); }
+      } else if (datasetKey === 'dengue' || datasetKey === 'preset_dengue') {
+        const d = getPresetDataset('dengue');
+        if (d) { currentDataset = d; fullCustomDataset = JSON.parse(JSON.stringify(d)); }
+      } else if (datasetKey === 'covid' || datasetKey === 'preset_covid') {
+        const d = getPresetDataset('covid');
+        if (d) { currentDataset = d; fullCustomDataset = JSON.parse(JSON.stringify(d)); }
+      } else if (datasetKey === 'combined') {
         currentDataset = generateCombinedDataset();
       } else if (datasetKey === 'pmc8259047') {
         currentDataset = JSON.parse(JSON.stringify(DATA_PMC8259047));
@@ -2801,6 +3147,17 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           nodes,
           links
         };
+      }
+
+      if (!currentDataset) {
+        currentDataset = getPresetDataset('covid') || generateCombinedDataset();
+      }
+
+      // Sync selector dropdown
+      const selector = document.getElementById('dataset-selector');
+      if (selector) {
+        const match = Array.from(selector.options).find(o => o.value === datasetKey);
+        if (match) selector.value = datasetKey;
       }
 
       // Update top banner
@@ -4339,6 +4696,240 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
       return `${node.name} is a specialized ${cat.toLowerCase()} recognized in biomedical research for its functional role in physiological and molecular processes. Within biological systems, it participates in biochemical signaling cascades, receptor-ligand interactions, and regulatory feedback mechanisms that govern cellular homeostasis. Clinical and laboratory investigations examine its structural characteristics, kinetic properties, and functional responsiveness under varied physiological and pathological conditions. Elucidating the precise mechanisms of this entity facilitates the discovery of targeted diagnostic biomarkers and informs novel therapeutic intervention strategies.`;
     }
 
+    // --- TOPIC RESEARCH PAPERS & REFERENCES ENGINE ---
+    function escapeHtml(str) {
+      if (!str) return '';
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    function getTopicPapers(node, related = []) {
+      const papers = [];
+      const seenIds = new Set();
+
+      function addPaper(paperData, matchReason) {
+        if (!paperData || !paperData.id) return;
+        const cleanId = String(paperData.id).trim();
+        if (seenIds.has(cleanId)) return;
+        seenIds.add(cleanId);
+
+        let cleanPmc = '';
+        if (cleanId.startsWith('PMC')) {
+          cleanPmc = cleanId;
+        } else if (paperData.pmc && String(paperData.pmc).startsWith('PMC')) {
+          cleanPmc = String(paperData.pmc).trim();
+        }
+
+        let fullUrl = paperData.url;
+        if (!fullUrl && cleanPmc) {
+          fullUrl = `https://pmc.ncbi.nlm.nih.gov/articles/${cleanPmc}/`;
+        }
+        if (!fullUrl && paperData.doi) {
+          fullUrl = `https://doi.org/${paperData.doi}`;
+        }
+        if (!fullUrl) {
+          fullUrl = `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(paperData.title || node.name)}`;
+        }
+
+        papers.push({
+          id: cleanId,
+          title: paperData.title || cleanId,
+          authors: paperData.authors || '',
+          journal: paperData.journal || '',
+          pmc: cleanPmc || (cleanId.startsWith('PMC') ? cleanId : 'PubMed Article'),
+          doi: paperData.doi || '',
+          url: fullUrl,
+          summary: paperData.summary || paperData.desc || '',
+          matchReason: matchReason || 'Associated Research Paper'
+        });
+      }
+
+      // 1. If the node itself is a Publication
+      if (node.category === 'Publication') {
+        const metaArt = currentDataset?.meta?.articles?.find(a => a.pmcid === node.id);
+        addPaper({
+          id: node.id,
+          title: metaArt?.title || node.name,
+          authors: metaArt?.authors || '',
+          journal: metaArt?.journal || '',
+          pmc: node.id,
+          doi: metaArt?.doi || node.doi || '',
+          url: metaArt?.url || node.url,
+          summary: metaArt?.summary || node.desc
+        }, 'Direct Primary Publication');
+      }
+
+      // 2. Direct 1-hop Publication links
+      related.forEach(item => {
+        if (item.target && item.target.category === 'Publication') {
+          const pubNode = item.target;
+          const metaArt = currentDataset?.meta?.articles?.find(a => a.pmcid === pubNode.id);
+          addPaper({
+            id: pubNode.id,
+            title: metaArt?.title || pubNode.name,
+            authors: metaArt?.authors || '',
+            journal: metaArt?.journal || '',
+            pmc: pubNode.id,
+            doi: metaArt?.doi || pubNode.doi || '',
+            url: metaArt?.url || pubNode.url,
+            summary: metaArt?.summary || pubNode.desc
+          }, item.rel ? `Direct link: ${item.rel}` : 'Cited in Publication');
+        }
+      });
+
+      // 3. 2-hop Publication connections via neighbors (if < 3 papers found)
+      if (papers.length < 3) {
+        const neighborIds = new Set(related.map(r => r.target.id));
+        activeLinks.forEach(l => {
+          let pubCandidate = null;
+          let bridgeName = '';
+          if (neighborIds.has(l.source.id) && l.target.category === 'Publication' && l.source.id !== node.id) {
+            pubCandidate = l.target;
+            bridgeName = l.source.name || l.source.id;
+          } else if (neighborIds.has(l.target.id) && l.source.category === 'Publication' && l.target.id !== node.id) {
+            pubCandidate = l.source;
+            bridgeName = l.target.name || l.target.id;
+          }
+          if (pubCandidate && !seenIds.has(pubCandidate.id)) {
+            const metaArt = currentDataset?.meta?.articles?.find(a => a.pmcid === pubCandidate.id);
+            addPaper({
+              id: pubCandidate.id,
+              title: metaArt?.title || pubCandidate.name,
+              authors: metaArt?.authors || '',
+              journal: metaArt?.journal || '',
+              pmc: pubCandidate.id,
+              doi: metaArt?.doi || pubCandidate.doi || '',
+              url: metaArt?.url || pubCandidate.url,
+              summary: metaArt?.summary || pubCandidate.desc
+            }, `Connected via ${bridgeName}`);
+          }
+        });
+      }
+
+      // 4. Keyword matches in currentDataset.meta.articles
+      if (currentDataset?.meta?.articles && Array.isArray(currentDataset.meta.articles)) {
+        const nodeLower = node.name.toLowerCase();
+        const nodeTokens = nodeLower
+          .replace(/[^\w\s-]/g, '')
+          .split(/\s+/)
+          .filter(w => w.length >= 4 && !['cell', 'cells', 'with', 'from', 'protein', 'assay', 'human', 'receptor', 'target'].includes(w));
+
+        currentDataset.meta.articles.forEach(art => {
+          if (!seenIds.has(art.pmcid)) {
+            const corpus = `${art.title} ${art.summary || ''}`.toLowerCase();
+            const hit = nodeTokens.some(tok => corpus.includes(tok));
+            if (hit) {
+              addPaper({
+                id: art.pmcid,
+                title: art.title,
+                authors: art.authors,
+                journal: art.journal,
+                pmc: art.pmcid,
+                doi: art.doi,
+                url: art.url,
+                summary: art.summary
+              }, 'Synthesized Dataset Study');
+            }
+          }
+        });
+
+        // If still empty, add top synthesized papers from the active dataset
+        if (papers.length === 0) {
+          currentDataset.meta.articles.slice(0, 3).forEach(art => {
+            addPaper({
+              id: art.pmcid,
+              title: art.title,
+              authors: art.authors,
+              journal: art.journal,
+              pmc: art.pmcid,
+              doi: art.doi,
+              url: art.url,
+              summary: art.summary
+            }, 'Dataset Core Reference');
+          });
+        }
+      } else if (currentDataset?.meta?.pmc && currentDataset.meta.pmc !== 'Multi-Source' && currentDataset.meta.pmc !== 'User Custom') {
+        if (!seenIds.has(currentDataset.meta.pmc)) {
+          addPaper({
+            id: currentDataset.meta.pmc,
+            title: currentDataset.meta.title || currentDataset.meta.pmc,
+            authors: currentDataset.meta.authors || '',
+            journal: currentDataset.meta.journal || '',
+            pmc: currentDataset.meta.pmc,
+            url: currentDataset.meta.url || `https://pmc.ncbi.nlm.nih.gov/articles/${currentDataset.meta.pmc}/`,
+            summary: currentDataset.meta.summary || ''
+          }, 'Primary Benchmark Study');
+        }
+      }
+
+      return papers;
+    }
+
+    function populateTopicReferences(node, related) {
+      const refsContainer = document.getElementById('drawer-references-list');
+      const refsCountEl = document.getElementById('drawer-refs-count');
+
+      const papers = getTopicPapers(node, related);
+      if (refsCountEl) refsCountEl.innerText = papers.length;
+
+      if (!refsContainer) return;
+      refsContainer.innerHTML = '';
+
+      if (papers.length === 0) {
+        refsContainer.innerHTML = `
+          <div style="font-size: 11.5px; color: var(--text-dim); padding: 12px; text-align: center; line-height: 1.5;">
+            No direct peer-reviewed papers indexed for this entity.<br>
+            <a href="https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(node.name)}" target="_blank" rel="noopener noreferrer" style="color: var(--cyan); text-decoration: underline; margin-top: 6px; display: inline-block;">
+              Search PubMed for "${escapeHtml(node.name)}" ↗
+            </a>
+          </div>`;
+        return;
+      }
+
+      papers.forEach(p => {
+        const item = document.createElement('div');
+        item.className = 'reference-item';
+
+        const pmcId = p.pmc || p.id;
+        const readUrl = p.url || (pmcId.startsWith('PMC') ? `https://pmc.ncbi.nlm.nih.gov/articles/${pmcId}/` : `https://pubmed.ncbi.nlm.nih.gov/?term=${encodeURIComponent(p.title)}`);
+
+        const pLensParams = new URLSearchParams();
+        if (pmcId && pmcId.startsWith('PMC')) pLensParams.set('pmc', pmcId);
+        if (p.title) pLensParams.set('title', p.title);
+        if (p.authors) pLensParams.set('authors', p.authors);
+        if (p.journal) pLensParams.set('journal', p.journal);
+        const paperLensUrl = `../paper-analyzer/index.html?${pLensParams.toString()}`;
+
+        item.innerHTML = `
+          <div class="reference-item-top">
+            <span class="reference-badge reference-badge-pmc">${escapeHtml(pmcId)}</span>
+            ${p.journal ? `<span class="reference-badge reference-badge-journal" title="${escapeHtml(p.journal)}">${escapeHtml(p.journal)}</span>` : ''}
+          </div>
+          <div class="reference-title" title="${escapeHtml(p.title)}">${escapeHtml(p.title)}</div>
+          ${p.authors ? `<div class="reference-authors" title="${escapeHtml(p.authors)}">${escapeHtml(p.authors)}</div>` : ''}
+          ${p.matchReason ? `<div class="reference-reason">${escapeHtml(p.matchReason)}</div>` : ''}
+          <div class="reference-actions">
+            <a href="${readUrl}" target="_blank" rel="noopener noreferrer" class="ref-btn ref-btn-pmc" title="Open fulltext publication in Europe PMC">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                <polyline points="15 3 21 3 21 9"></polyline>
+                <line x1="10" y1="14" x2="21" y2="3"></line>
+              </svg>
+              <span>Read Paper</span>
+            </a>
+            <a href="${paperLensUrl}" class="ref-btn ref-btn-lens" title="Deconstruct Paper in PaperLens">
+              <span>PaperLens ↗</span>
+            </a>
+          </div>
+        `;
+        refsContainer.appendChild(item);
+      });
+    }
+
     // --- SIDE DRAWER: DESCRIPTION, CONNECTED ENTITIES & ONLY 2 ACTION BUTTONS ---
     function openDetailsDrawer(node) {
       const drawer = document.getElementById('details-drawer');
@@ -4411,6 +5002,9 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
           related.push({ target: s, rel: l.relationship, direction: 'incoming' });
         }
       });
+
+      // Populate topic references/papers placed above interconnected entities
+      populateTopicReferences(node, related);
 
       // Determine Paper Reference and Source Website
       let hasPaperRef = false;
@@ -4603,17 +5197,27 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         connDropdown.classList.add('visible');
         connDropdown.open = false;
       }
+      const refsDropdown = document.getElementById('drawer-refs-dropdown');
+      if (refsDropdown) {
+        refsDropdown.classList.add('visible');
+        refsDropdown.open = true;
+      }
     }
 
     function closeDetailsDrawer() {
       const topBox = document.getElementById('floating-top-box');
       const bottomBox = document.getElementById('floating-bottom-box');
       const connBox = document.getElementById('drawer-conn-dropdown');
+      const refsBox = document.getElementById('drawer-refs-dropdown');
       if (topBox) topBox.classList.remove('open');
       if (bottomBox) bottomBox.classList.remove('open');
       if (connBox) {
         connBox.classList.remove('visible');
         connBox.open = false;
+      }
+      if (refsBox) {
+        refsBox.classList.remove('visible');
+        refsBox.open = false;
       }
       selectedNode = null;
       clearIsolation();
@@ -4780,6 +5384,15 @@ PanBio RAT,Nucleocapsid,Detects Antigen,Diagnostic,Antigen"></textarea>
         // If exact match found, auto focus
         const found = activeNodes.find(n => n.name.toLowerCase() === searchTerm.toLowerCase());
         if (found) focusNode(found);
+      });
+
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          const val = searchInput.value.trim();
+          if (val) {
+            runLiveTopicSearch(val);
+          }
+        }
       });
 
       searchClear.addEventListener('click', () => {
@@ -5610,6 +6223,48 @@ Each node MUST have a "relevance" float score between 0.50 and 1.00 indicating h
 
       const overlay = document.getElementById('synthesis-overlay');
       const topicText = document.getElementById('synthesis-topic-text');
+
+      // Check if topic matches one of the pre-defined preset graphs ("cancer", "malaria", "dengue", "covid")
+      const presetKey = findPresetMatch(cleanTopic);
+      if (presetKey) {
+        console.log(`[BioGraph] Instant preset match found for "${cleanTopic}" -> loading preset "${presetKey}"`);
+        const presetData = getPresetDataset(presetKey);
+        if (presetData) {
+          fullCustomDataset = JSON.parse(JSON.stringify(presetData));
+          currentDataset = JSON.parse(JSON.stringify(presetData));
+
+          // Sync dataset selector dropdown
+          const selector = document.getElementById('dataset-selector');
+          if (selector) selector.value = presetKey;
+
+          // Update paper banner with the 7-paper meta
+          updatePaperBanner(currentDataset.meta);
+
+          // Populate category filters
+          populateCategoryFilters();
+
+          // Render graph instantly
+          renderGraph();
+
+          // Sync search inputs
+          const nodeSearch = document.getElementById('node-search');
+          if (nodeSearch) nodeSearch.value = cleanTopic;
+          const liveSearch = document.getElementById('live-search-topic');
+          if (liveSearch) liveSearch.value = cleanTopic;
+
+          // Update bottom status tip
+          const statusEl = document.getElementById('hud-status-text');
+          if (statusEl) {
+            statusEl.innerHTML = `<strong>⚡ Instant Preset Loaded:</strong> ${currentDataset.meta.title} (${currentDataset.meta.articles ? currentDataset.meta.articles.length : 7} Research Papers) &bull; Hover nodes for scores`;
+          }
+
+          // Close modal & overlay
+          closeCustomDataModal();
+          if (overlay) overlay.classList.remove('visible');
+
+          return;
+        }
+      }
       const step1 = document.getElementById('synth-step-1');
       const step2 = document.getElementById('synth-step-2');
       const step3 = document.getElementById('synth-step-3');
@@ -5928,7 +6583,7 @@ Each node MUST have a "relevance" float score between 0.50 and 1.00 indicating h
     initAdvancedSearch({
       toggleBtnId: 'adv-search-toggle',
       searchInputId: 'node-search',
-      wrapperSelector: '.nav-center'
+      wrapperSelector: '.floating-bottom-search-wrapper'
     });
   </script>
 </body>

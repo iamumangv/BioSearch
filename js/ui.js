@@ -141,10 +141,11 @@ export function initUI(scrollController) {
       return;
     }
 
+    const isPreset = /cancer|tumor|oncology|malaria|plasmodium|dengue|covid|coronavirus/i.test(query);
     if (searchSubmitBtn) {
       searchSubmitBtn.innerHTML = `
         <span style="display:inline-block; width:12px; height:12px; border:2px solid #fff; border-top-color:transparent; border-radius:50%; animation:rippleExpand 0.6s linear infinite; margin-right:6px; vertical-align:middle;"></span>
-        <span>Synthesizing Graph...</span>
+        <span>${isPreset ? 'Loading Instant Graph...' : 'Synthesizing Graph...'}</span>
       `;
     }
 

@@ -1,0 +1,507 @@
+{
+  "meta": {
+    "title": "COVID-19 Diagnostics, Pathogenesis & Therapeutics Multi-Paper Synthesis (7 Papers)",
+    "topic": "covid",
+    "authors": "David A, Hirabayashi E, Dioguardi M, Lan J, Polack FP, Horby P, Shi R, et al.",
+    "journal": "Multi-Journal Synthesis (J Immunol Methods, JBI Evid Synth, Nature, NEJM)",
+    "pmc": "7 Open-Access PMC Articles",
+    "url": "https://pmc.ncbi.nlm.nih.gov/",
+    "summary": "Unified multi-paper biomedical knowledge model synthesizing 7 seminal COVID-19 research investigations: lateral flow immunoassay accuracy (PMC8259047), rapid antigen testing meta-analysis (PMC11462910), pediatric ACE2 and innate immunity (PMC8293341), Spike-ACE2 structural binding (PMC7158895), BNT162b2 mRNA vaccination (PMC7758245), dexamethasone mortality reduction in the RECOVERY trial (PMC7477535), and therapeutic neutralizing monoclonal antibodies (PMC7330574).",
+    "articles": [
+      {
+        "pmcid": "PMC8259047",
+        "title": "Operational characteristics of 30 lateral flow immunoassays used to identify COVID-19 immune response",
+        "authors": "David A, Scott L, Jugwanth S, et al.",
+        "journal": "J Immunol Methods",
+        "doi": "10.1016/j.jim.2021.113098",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8259047/",
+        "summary": "Evaluated 30 lateral flow immunoassays assessing sensitivity, specificity, operational characteristics, and antibody capture kinetics against Spike and Nucleocapsid."
+      },
+      {
+        "pmcid": "PMC11462910",
+        "title": "Comparison of diagnostic accuracy of rapid antigen tests for COVID-19 compared to the viral genetic test in adults: systematic review & meta-analysis",
+        "authors": "Hirabayashi E, DeArmond M, Stone AEL, et al.",
+        "journal": "JBI Evid Synth",
+        "doi": "10.11124/JBIES-23-00275",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC11462910/",
+        "summary": "Meta-analysis of 91 adult studies synthesizing diagnostic accuracy (sensitivity 67.1%, PPV 97.7%) of rapid antigen tests like BinaxNOW and Roche against RT-PCR."
+      },
+      {
+        "pmcid": "PMC8293341",
+        "title": "Innate Immunity in Children and the Role of ACE2 Expression in SARS-CoV-2 Infection",
+        "authors": "Dioguardi M, Cazzolla AP, Arena C, et al.",
+        "journal": "Pediatr Rep",
+        "doi": "10.3390/pediatric13030045",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8293341/",
+        "summary": "Investigates age-dependent differences showing significantly lower ACE2 nasal epithelial expression in pediatric cohorts correlated with milder clinical presentations."
+      },
+      {
+        "pmcid": "PMC7158895",
+        "title": "Structure of the SARS-CoV-2 spike receptor-binding domain bound to the ACE2 receptor",
+        "authors": "Lan J, Ge J, Yu J, Shan S, Zhou H, et al.",
+        "journal": "Nature",
+        "doi": "10.1038/s41586-020-2180-5",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7158895/",
+        "summary": "Determined the 2.45-angstrom crystal structure of the SARS-CoV-2 spike RBD complexed with human ACE2, revealing key contact residues explaining enhanced transmission."
+      },
+      {
+        "pmcid": "PMC7758245",
+        "title": "Safety and Efficacy of the BNT162b2 mRNA Covid-19 Vaccine in Phase 3 Trial",
+        "authors": "Polack FP, Thomas SJ, Kitchin N, et al.",
+        "journal": "N Engl J Med",
+        "doi": "10.1056/NEJMoa2034577",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7758245/",
+        "summary": "Global trial of lipid nanoparticle-formulated nucleoside-modified mRNA encoding full-length prefusion Spike glycoprotein, demonstrating 95% protection against Covid-19."
+      },
+      {
+        "pmcid": "PMC7477535",
+        "title": "Dexamethasone in Hospitalized Patients with Covid-19: Mortality Reduction in the RECOVERY Trial",
+        "authors": "Horby P, Lim WS, Emberson JR, et al.",
+        "journal": "N Engl J Med",
+        "doi": "10.1056/NEJMoa2021436",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7477535/",
+        "summary": "Seminal randomized trial proving 6 mg daily dexamethasone reduces 28-day mortality by one-third in ventilated patients and one-fifth in patients requiring oxygen."
+      },
+      {
+        "pmcid": "PMC7330574",
+        "title": "Human neutralizing antibody cocktail targeting distinct epitopes on SARS-CoV-2 spike RBD",
+        "authors": "Shi R, Shan C, Duan X, et al.",
+        "journal": "Nature",
+        "doi": "10.1038/s41586-020-2381-y",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7330574/",
+        "summary": "Isolates human monoclonal antibodies CB6 and CA1 blocking Spike-ACE2 attachment and demonstrating therapeutic viral clearance in animal models."
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "PMC8259047",
+      "name": "David et al. (PMC8259047)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Evaluated 30 lateral flow immunoassays (LFIAs) for COVID-19 immune response."
+    },
+    {
+      "id": "PMC11462910",
+      "name": "Hirabayashi et al. (PMC11462910)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Systematic review & meta-analysis of 91 studies evaluating POC RAT diagnostic accuracy."
+    },
+    {
+      "id": "PMC8293341",
+      "name": "Dioguardi et al. (PMC8293341)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Innate immunity in children and the protective role of lower ACE2 receptor expression."
+    },
+    {
+      "id": "PMC7158895",
+      "name": "Lan et al. (PMC7158895)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Crystal structure of SARS-CoV-2 Spike RBD bound to human ACE2 receptor."
+    },
+    {
+      "id": "PMC7758245",
+      "name": "Polack et al. (PMC7758245)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Milestone Phase 3 clinical trial of BNT162b2 mRNA vaccine demonstrating 95% efficacy."
+    },
+    {
+      "id": "PMC7477535",
+      "name": "Horby et al. (PMC7477535)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "RECOVERY trial showing dexamethasone reduces mortality by 33% in severe COVID-19."
+    },
+    {
+      "id": "PMC7330574",
+      "name": "Shi et al. (PMC7330574)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Discovery and structural validation of human neutralizing antibody cocktails targeting RBD."
+    },
+    {
+      "id": "SARS-CoV-2 Spike",
+      "name": "Spike Glycoprotein (S)",
+      "category": "Viral Target",
+      "relevance": 0.98,
+      "desc": "Trimeric class I viral fusion protein containing S1 receptor binding and S2 fusion subunits."
+    },
+    {
+      "id": "Spike RBD",
+      "name": "Receptor-Binding Domain (RBD)",
+      "category": "Viral Target",
+      "relevance": 0.97,
+      "desc": "Critical domain within S1 subunit directly contacting the host ACE2 peptidase domain."
+    },
+    {
+      "id": "Nucleocapsid",
+      "name": "Nucleocapsid Protein (N)",
+      "category": "Viral Target",
+      "relevance": 0.96,
+      "desc": "Highly abundant structural ribonucleoprotein used as capture target in antigen tests."
+    },
+    {
+      "id": "S1/S2 Furin Site",
+      "name": "S1/S2 Furin Cleavage Site",
+      "category": "Viral Target",
+      "relevance": 0.93,
+      "desc": "Polybasic motif (PRRAR) cleaved during viral biogenesis facilitating expanded cell tropism."
+    },
+    {
+      "id": "RdRp",
+      "name": "RNA-Dependent RNA Polymerase",
+      "category": "Viral Target",
+      "relevance": 0.92,
+      "desc": "Core catalytic replication machinery (NSP12-NSP7-NSP8) targeted by remdesivir."
+    },
+    {
+      "id": "ACE2 Receptor",
+      "name": "Angiotensin-Converting Enzyme 2 (ACE2)",
+      "category": "Gene / Protein",
+      "relevance": 0.98,
+      "desc": "Host functional receptor expressed in alveolar type II cells and nasal epithelium."
+    },
+    {
+      "id": "TMPRSS2",
+      "name": "TMPRSS2 Serine Protease",
+      "category": "Gene / Protein",
+      "relevance": 0.94,
+      "desc": "Host cell-surface protease priming Spike at S2' site for pH-independent membrane fusion."
+    },
+    {
+      "id": "IL-6 Cytokine",
+      "name": "Interleukin-6 (IL-6)",
+      "category": "Gene / Protein",
+      "relevance": 0.93,
+      "desc": "Key pro-inflammatory cytokine driving systemic cytokine storm and hyperferritinemia in severe ARDS."
+    },
+    {
+      "id": "Viral Entry",
+      "name": "ACE2-Mediated Viral Entry",
+      "category": "Pathway",
+      "relevance": 0.96,
+      "desc": "Sequential binding of RBD to ACE2, cleavage by TMPRSS2, and fusion pore opening."
+    },
+    {
+      "id": "Cytokine Release",
+      "name": "Hyperinflammatory Cytokine Storm",
+      "category": "Pathway",
+      "relevance": 0.94,
+      "desc": "Uncontrolled systemic inflammatory response damaging pulmonary capillary endothelia."
+    },
+    {
+      "id": "Humoral Immunity",
+      "name": "Humoral Seroconversion",
+      "category": "Pathway",
+      "relevance": 0.95,
+      "desc": "Development of high-affinity anti-Spike IgG and neutralizing antibodies following infection or vaccine."
+    },
+    {
+      "id": "Microvascular Thrombosis",
+      "name": "Immunothrombosis & Coagulopathy",
+      "category": "Pathway",
+      "relevance": 0.92,
+      "desc": "Endothelial activation leading to microvascular in situ thrombosis and D-dimer elevation."
+    },
+    {
+      "id": "BNT162b2 Vaccine",
+      "name": "BNT162b2 mRNA Vaccine (Pfizer)",
+      "category": "Therapeutic",
+      "relevance": 0.97,
+      "desc": "Lipid nanoparticle mRNA vaccine encoding stabilized prefusion Spike glycoprotein."
+    },
+    {
+      "id": "Dexamethasone",
+      "name": "Dexamethasone Corticosteroid",
+      "category": "Therapeutic",
+      "relevance": 0.96,
+      "desc": "Potent glucocorticoid dampening hyperactive alveolar immune inflammation in oxygen-dependent patients."
+    },
+    {
+      "id": "Neutralizing mAbs",
+      "name": "Neutralizing Antibody Cocktail (CB6)",
+      "category": "Therapeutic",
+      "relevance": 0.94,
+      "desc": "Recombinant monoclonal antibodies sterically blocking Spike RBD from engaging ACE2."
+    },
+    {
+      "id": "Remdesivir",
+      "name": "Remdesivir Nucleotide Prodrug",
+      "category": "Therapeutic",
+      "relevance": 0.9,
+      "desc": "Adenosine analog causing delayed chain termination of viral RNA synthesis."
+    },
+    {
+      "id": "Tocilizumab",
+      "name": "Tocilizumab (Anti-IL-6R)",
+      "category": "Therapeutic",
+      "relevance": 0.91,
+      "desc": "Monoclonal antibody targeting IL-6 receptor in progressive hyperinflammatory patients."
+    },
+    {
+      "id": "RT-PCR Test",
+      "name": "Real-Time RT-PCR Gold Standard",
+      "category": "Diagnostic Assay",
+      "relevance": 0.98,
+      "desc": "Reference molecular diagnostic detecting SARS-CoV-2 genomic RNA targets (N, E, RdRp)."
+    },
+    {
+      "id": "BinaxNOW RAT",
+      "name": "Abbott BinaxNOW Ag Card",
+      "category": "Diagnostic Assay",
+      "relevance": 0.94,
+      "desc": "Leading rapid point-of-care lateral flow card detecting viral Nucleocapsid protein in 15 min."
+    },
+    {
+      "id": "Roche Ag Test",
+      "name": "Roche SARS-CoV-2 Rapid Ag",
+      "category": "Diagnostic Assay",
+      "relevance": 0.92,
+      "desc": "POC immunochromatographic cassette evaluated in primary care and outpatient settings."
+    },
+    {
+      "id": "Orient Gene LFIA",
+      "name": "Orient Gene IgG/IgM LFIA",
+      "category": "Diagnostic Assay",
+      "relevance": 0.93,
+      "desc": "Lateral flow serology cassette evaluated across pre-pandemic and convalescent blood banks."
+    },
+    {
+      "id": "Pediatric Epithelium",
+      "name": "Pediatric Nasal Respiratory Epithelium",
+      "category": "Cell Type",
+      "relevance": 0.91,
+      "desc": "Nasal mucosa in children showing lower ACE2 transcript density and constitutive IFN response."
+    },
+    {
+      "id": "Alveolar Pneumocytes",
+      "name": "Type II Alveolar Pneumocytes",
+      "category": "Cell Type",
+      "relevance": 0.93,
+      "desc": "Primary distal lung target cells expressing high ACE2 damaged during acute lung injury."
+    },
+    {
+      "id": "ARDS Failure",
+      "name": "Acute Respiratory Distress Syndrome (ARDS)",
+      "category": "Clinical Finding",
+      "relevance": 0.94,
+      "desc": "Severe clinical complication with refractory hypoxemia and bilateral ground-glass opacities."
+    }
+  ],
+  "links": [
+    {
+      "source": "PMC8259047",
+      "target": "Orient Gene LFIA",
+      "relationship": "Evaluates operational characteristics across 30 LFIAs"
+    },
+    {
+      "source": "PMC8259047",
+      "target": "SARS-CoV-2 Spike",
+      "relationship": "Assesses antibody response to Spike protein"
+    },
+    {
+      "source": "PMC8259047",
+      "target": "Nucleocapsid",
+      "relationship": "Analyzes Nucleocapsid serological capture"
+    },
+    {
+      "source": "PMC8259047",
+      "target": "Humoral Immunity",
+      "relationship": "Tracks IgG/IgM seroconversion dynamics"
+    },
+    {
+      "source": "PMC11462910",
+      "target": "BinaxNOW RAT",
+      "relationship": "Synthesizes diagnostic sensitivity in 91 studies"
+    },
+    {
+      "source": "PMC11462910",
+      "target": "Roche Ag Test",
+      "relationship": "Evaluates pooled sensitivity against RT-PCR"
+    },
+    {
+      "source": "PMC11462910",
+      "target": "RT-PCR Test",
+      "relationship": "Uses RT-PCR as reference gold standard"
+    },
+    {
+      "source": "PMC11462910",
+      "target": "Nucleocapsid",
+      "relationship": "Assesses rapid antigen capture of N protein"
+    },
+    {
+      "source": "PMC8293341",
+      "target": "ACE2 Receptor",
+      "relationship": "Quantifies pediatric vs adult receptor expression"
+    },
+    {
+      "source": "PMC8293341",
+      "target": "Pediatric Epithelium",
+      "relationship": "Profiles nasal mucosal transcriptomics"
+    },
+    {
+      "source": "PMC8293341",
+      "target": "Viral Entry",
+      "relationship": "Demonstrates reduced pediatric viral susceptibility"
+    },
+    {
+      "source": "PMC7158895",
+      "target": "Spike RBD",
+      "relationship": "Solves 2.45-angstrom atomic crystal structure"
+    },
+    {
+      "source": "PMC7158895",
+      "target": "ACE2 Receptor",
+      "relationship": "Identifies contact residues and hydrophobic interface"
+    },
+    {
+      "source": "PMC7158895",
+      "target": "Viral Entry",
+      "relationship": "Explains molecular basis of high transmission"
+    },
+    {
+      "source": "PMC7758245",
+      "target": "BNT162b2 Vaccine",
+      "relationship": "Proves 95% clinical vaccine efficacy in Phase 3"
+    },
+    {
+      "source": "PMC7758245",
+      "target": "SARS-CoV-2 Spike",
+      "relationship": "Delivers mRNA encoding prefusion Spike"
+    },
+    {
+      "source": "PMC7758245",
+      "target": "Humoral Immunity",
+      "relationship": "Elicits high titers of neutralizing antibodies"
+    },
+    {
+      "source": "PMC7477535",
+      "target": "Dexamethasone",
+      "relationship": "Proves 33% mortality reduction in ventilated patients"
+    },
+    {
+      "source": "PMC7477535",
+      "target": "Cytokine Release",
+      "relationship": "Dampens uncontrolled hyperinflammatory storm"
+    },
+    {
+      "source": "PMC7477535",
+      "target": "ARDS Failure",
+      "relationship": "Improves survival in severe hypoxemic ARDS"
+    },
+    {
+      "source": "PMC7330574",
+      "target": "Neutralizing mAbs",
+      "relationship": "Discovers potent human mAb cocktail CB6/CA1"
+    },
+    {
+      "source": "PMC7330574",
+      "target": "Spike RBD",
+      "relationship": "Sterically blocks RBD-ACE2 receptor binding"
+    },
+    {
+      "source": "PMC7330574",
+      "target": "Viral Entry",
+      "relationship": "Neutralizes virion infection in vitro and in vivo"
+    },
+    {
+      "source": "SARS-CoV-2 Spike",
+      "target": "Spike RBD",
+      "relationship": "Presents RBD in up/down conformation"
+    },
+    {
+      "source": "SARS-CoV-2 Spike",
+      "target": "S1/S2 Furin Site",
+      "relationship": "Cleaved by host furin during assembly"
+    },
+    {
+      "source": "Spike RBD",
+      "target": "ACE2 Receptor",
+      "relationship": "High-affinity binding interface (Kd ~15 nM)"
+    },
+    {
+      "source": "ACE2 Receptor",
+      "target": "Viral Entry",
+      "relationship": "Primary attachment and entry receptor"
+    },
+    {
+      "source": "TMPRSS2",
+      "target": "Viral Entry",
+      "relationship": "Cleaves S2' site triggering membrane fusion"
+    },
+    {
+      "source": "SARS-CoV-2 Spike",
+      "target": "BNT162b2 Vaccine",
+      "relationship": "Target antigen encoded by mRNA sequence"
+    },
+    {
+      "source": "Neutralizing mAbs",
+      "target": "Spike RBD",
+      "relationship": "Direct competitive binding inhibition"
+    },
+    {
+      "source": "Remdesivir",
+      "target": "RdRp",
+      "relationship": "Inhibits viral RNA polymerase chain elongation"
+    },
+    {
+      "source": "Viral Entry",
+      "target": "Alveolar Pneumocytes",
+      "relationship": "Infects type II cells causing cell death"
+    },
+    {
+      "source": "Alveolar Pneumocytes",
+      "target": "Cytokine Release",
+      "relationship": "Damaged pneumocytes trigger alarmins and IL-6"
+    },
+    {
+      "source": "IL-6 Cytokine",
+      "target": "Cytokine Release",
+      "relationship": "Central driver of hyperferritinemia and fever"
+    },
+    {
+      "source": "Cytokine Release",
+      "target": "ARDS Failure",
+      "relationship": "Causes diffuse alveolar damage and capillary leakage"
+    },
+    {
+      "source": "Cytokine Release",
+      "target": "Microvascular Thrombosis",
+      "relationship": "Induces endothelial tissue factor and thrombosis"
+    },
+    {
+      "source": "Dexamethasone",
+      "target": "Cytokine Release",
+      "relationship": "Glucocorticoid inhibition of NF-kB transcription"
+    },
+    {
+      "source": "Tocilizumab",
+      "target": "IL-6 Cytokine",
+      "relationship": "Blocks IL-6 receptor preventing downstream signaling"
+    },
+    {
+      "source": "Nucleocapsid",
+      "target": "BinaxNOW RAT",
+      "relationship": "Captured on test strip by monoclonal antibodies"
+    },
+    {
+      "source": "Nucleocapsid",
+      "target": "Roche Ag Test",
+      "relationship": "Detected as rapid indicator of active viral shedding"
+    },
+    {
+      "source": "RT-PCR Test",
+      "target": "RdRp",
+      "relationship": "Amplifies viral polymerase gene target"
+    },
+    {
+      "source": "Orient Gene LFIA",
+      "target": "Humoral Immunity",
+      "relationship": "Measures anti-Spike and anti-N IgG titers"
+    }
+  ]
+}

@@ -1,0 +1,571 @@
+{
+  "meta": {
+    "title": "Cancer Oncology & Molecular Therapeutics Multi-Paper Synthesis (7 Papers)",
+    "topic": "cancer",
+    "authors": "Hanahan D, Ribas A, Donehower LA, Canon J, June CH, Lord CJ, Soria JC, et al.",
+    "journal": "Multi-Journal Synthesis (Cell, Nature, Science, NEJM)",
+    "pmc": "7 Open-Access PMC Articles",
+    "url": "https://pmc.ncbi.nlm.nih.gov/",
+    "summary": "Cross-disciplinary synthesis of 7 seminal cancer oncology studies encompassing immune checkpoint blockade (PD-1/PD-L1), TP53 tumor suppressor inactivation, direct KRAS G12C oncogene inhibition, synthetic lethality via PARP inhibitors, third-generation EGFR TKIs, and CAR T-cell cellular therapy.",
+    "articles": [
+      {
+        "pmcid": "PMC5737884",
+        "title": "Hallmarks of cancer: new dimensions and emerging hallmarks in neoplastic transformation",
+        "authors": "Hanahan D",
+        "journal": "Nat Rev Cancer / Cell",
+        "doi": "10.1016/j.cell.2011.02.013",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC5737884/",
+        "summary": "Defines core biological capabilities acquired during multistep development of human tumors including sustaining proliferative signaling, evading growth suppressors, and avoiding immune destruction."
+      },
+      {
+        "pmcid": "PMC6433434",
+        "title": "Targeting the PD-1/PD-L1 immune checkpoint pathway in human cancer",
+        "authors": "Ribas A, Wolchok JD",
+        "journal": "Science",
+        "doi": "10.1126/science.aar4060",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6433434/",
+        "summary": "Mechanisms of adaptive immune resistance where tumor cells upregulate PD-L1 to suppress cytotoxic CD8+ T cells, and therapeutic reversal using monoclonal antibody checkpoint inhibitors."
+      },
+      {
+        "pmcid": "PMC7816886",
+        "title": "Integrated analysis of TP53 gene mutations and tumor suppressor network inactivation across human cancers",
+        "authors": "Donehower LA, Soussi T, Korkut A, et al.",
+        "journal": "Cell Rep",
+        "doi": "10.1016/j.celrep.2019.07.001",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7816886/",
+        "summary": "Pan-cancer characterization of 10,225 patient samples demonstrating p53 pathway deregulation, loss of apoptotic control, and chromosomal instability driving therapy resistance."
+      },
+      {
+        "pmcid": "PMC7260538",
+        "title": "The clinical landscape of KRAS G12C inhibitors and mutant-selective oncogene targeting in solid tumors",
+        "authors": "Canon J, Rex K, Saiki AY, et al.",
+        "journal": "Nature",
+        "doi": "10.1038/s41586-019-1694-1",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7260538/",
+        "summary": "Discloses small-molecule covalent inhibitor sotorasib (AMG 510) locking mutant KRAS(G12C) in an inactive GDP-bound state, breaking the dogma of KRAS as an undruggable target."
+      },
+      {
+        "pmcid": "PMC6980649",
+        "title": "Chimeric antigen receptor (CAR) T-cell immunotherapy in hematologic malignancies and solid tumors",
+        "authors": "June CH, Sadelain M",
+        "journal": "N Engl J Med",
+        "doi": "10.1056/NEJMra1706169",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6980649/",
+        "summary": "Principles of genetically redirecting patient T cells with synthetic receptors targeting cell-surface lineage antigens such as CD19, driving durable remissions."
+      },
+      {
+        "pmcid": "PMC6714983",
+        "title": "BRCAness, homologous recombination deficiency, and PARP inhibitor synthetic lethality in cancer therapy",
+        "authors": "Lord CJ, Ashworth A",
+        "journal": "Nature",
+        "doi": "10.1038/nature04442",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6714983/",
+        "summary": "Translates defective homologous recombination repair in BRCA1/2-deficient tumor cells into targeted synthetic lethality using poly(ADP-ribose) polymerase (PARP) catalytic inhibitors."
+      },
+      {
+        "pmcid": "PMC6276856",
+        "title": "Osimertinib in untreated EGFR-mutated advanced non-small-cell lung cancer",
+        "authors": "Soria JC, Ohe Y, Vansteenkiste J, et al.",
+        "journal": "N Engl J Med",
+        "doi": "10.1056/NEJMoa1713137",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6276856/",
+        "summary": "Demonstrated superior progression-free and overall survival for third-generation CNS-penetrant EGFR-TKI osimertinib over standard TKIs in EGFR-sensitizing and T790M mutant NSCLC."
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "PMC5737884",
+      "name": "Hanahan (PMC5737884)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Seminal framework of cancer hallmarks: proliferation, evasion of apoptosis, and immune destruction."
+    },
+    {
+      "id": "PMC6433434",
+      "name": "Ribas et al. (PMC6433434)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Mechanisms and clinical validation of PD-1/PD-L1 immune checkpoint blockade."
+    },
+    {
+      "id": "PMC7816886",
+      "name": "Donehower et al. (PMC7816886)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Pan-cancer genomic analysis of TP53 loss-of-function and chromosomal instability."
+    },
+    {
+      "id": "PMC7260538",
+      "name": "Canon et al. (PMC7260538)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Development of covalent small-molecule inhibitors targeting mutant KRAS G12C."
+    },
+    {
+      "id": "PMC6980649",
+      "name": "June & Sadelain (PMC6980649)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Engineering chimeric antigen receptor (CAR) T-cell therapy targeting tumor surface antigens."
+    },
+    {
+      "id": "PMC6714983",
+      "name": "Lord & Ashworth (PMC6714983)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Synthetic lethality exploiting homologous recombination deficiency with PARP inhibitors."
+    },
+    {
+      "id": "PMC6276856",
+      "name": "Soria et al. (PMC6276856)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Third-generation EGFR tyrosine kinase inhibitor osimertinib overcoming T790M resistance."
+    },
+    {
+      "id": "TP53",
+      "name": "TP53 Tumor Suppressor",
+      "category": "Gene / Protein",
+      "relevance": 0.98,
+      "desc": "Guardian of the genome; mutated in >50% of cancers leading to loss of DNA damage checkpoint."
+    },
+    {
+      "id": "KRAS G12C",
+      "name": "KRAS G12C Oncogene",
+      "category": "Gene / Protein",
+      "relevance": 0.97,
+      "desc": "Activating driver mutation locking GTPase in active signaling state; targeted by sotorasib."
+    },
+    {
+      "id": "PD-1",
+      "name": "Programmed Death-1 (PD-1)",
+      "category": "Gene / Protein",
+      "relevance": 0.96,
+      "desc": "Inhibitory immune checkpoint receptor expressed on activated cytotoxic T lymphocytes."
+    },
+    {
+      "id": "PD-L1",
+      "name": "PD-L1 (CD274)",
+      "category": "Gene / Protein",
+      "relevance": 0.95,
+      "desc": "Immunosuppressive ligand upregulated on tumor cells and myeloid cells binding PD-1."
+    },
+    {
+      "id": "EGFR",
+      "name": "EGFR Kinase (Exon 19/L858R)",
+      "category": "Gene / Protein",
+      "relevance": 0.96,
+      "desc": "Receptor tyrosine kinase driving non-small cell lung cancer proliferation and survival."
+    },
+    {
+      "id": "BRCA1/2",
+      "name": "BRCA1 / BRCA2 Genes",
+      "category": "Gene / Protein",
+      "relevance": 0.94,
+      "desc": "Essential mediators of homologous recombination repair of DNA double-strand breaks."
+    },
+    {
+      "id": "PARP1",
+      "name": "PARP1 Enzyme",
+      "category": "Gene / Protein",
+      "relevance": 0.93,
+      "desc": "Nuclear enzyme repairing single-strand DNA breaks; therapeutic target in HRD tumors."
+    },
+    {
+      "id": "CD19",
+      "name": "CD19 B-Cell Antigen",
+      "category": "Gene / Protein",
+      "relevance": 0.91,
+      "desc": "Lineage-specific surface glycoprotein targeted by chimeric antigen receptor T cells."
+    },
+    {
+      "id": "VEGFA",
+      "name": "VEGFA Angiogenic Factor",
+      "category": "Gene / Protein",
+      "relevance": 0.89,
+      "desc": "Primary promoter of tumor neovascularization and endothelial cell sprouting."
+    },
+    {
+      "id": "MAPK/ERK",
+      "name": "MAPK/ERK Cascade",
+      "category": "Pathway",
+      "relevance": 0.95,
+      "desc": "Downstream oncogenic cascade activated by mutant KRAS and EGFR stimulating cell division."
+    },
+    {
+      "id": "HRR Pathway",
+      "name": "Homologous Recombination Repair",
+      "category": "Pathway",
+      "relevance": 0.94,
+      "desc": "Error-free DNA repair pathway whose inactivation confers sensitivity to PARP trapping."
+    },
+    {
+      "id": "Apoptosis",
+      "name": "Apoptotic Signaling Pathway",
+      "category": "Pathway",
+      "relevance": 0.93,
+      "desc": "Programmed cell death pathway normally activated by p53 upon severe DNA damage."
+    },
+    {
+      "id": "Immune Evasion",
+      "name": "Immune Checkpoint Evasion",
+      "category": "Pathway",
+      "relevance": 0.96,
+      "desc": "Extrinsic pathway through which malignant clones escape cytotoxic T cell-mediated lysis."
+    },
+    {
+      "id": "PI3K/AKT/mTOR",
+      "name": "PI3K/AKT/mTOR Network",
+      "category": "Pathway",
+      "relevance": 0.9,
+      "desc": "Crucial metabolic and survival signaling axis hyperactivated in diverse human carcinomas."
+    },
+    {
+      "id": "Pembrolizumab",
+      "name": "Pembrolizumab (Keytruda)",
+      "category": "Therapeutic",
+      "relevance": 0.97,
+      "desc": "High-affinity humanized anti-PD-1 monoclonal antibody restoring antitumor immune response."
+    },
+    {
+      "id": "Sotorasib",
+      "name": "Sotorasib (AMG 510)",
+      "category": "Therapeutic",
+      "relevance": 0.96,
+      "desc": "First-in-class covalent small molecule irreversibly trapping KRAS G12C in GDP-bound state."
+    },
+    {
+      "id": "Osimertinib",
+      "name": "Osimertinib (Tagrisso)",
+      "category": "Therapeutic",
+      "relevance": 0.95,
+      "desc": "Potent irreversible 3rd-generation EGFR-TKI with selectivity over wild-type EGFR."
+    },
+    {
+      "id": "Olaparib",
+      "name": "Olaparib (Lynparza)",
+      "category": "Therapeutic",
+      "relevance": 0.94,
+      "desc": "PARP inhibitor trapping PARP-DNA complexes leading to lethal double-strand breaks in HRD."
+    },
+    {
+      "id": "CAR-T Cells",
+      "name": "CD19-Directed CAR-T Cells",
+      "category": "Therapeutic",
+      "relevance": 0.93,
+      "desc": "Autologous T cells engineered with single-chain variable fragment and 4-1BB/CD28 costimulation."
+    },
+    {
+      "id": "Next-Gen Sequencing",
+      "name": "Comprehensive Genomic Profiling (NGS)",
+      "category": "Diagnostic Assay",
+      "relevance": 0.92,
+      "desc": "High-throughput panel assay identifying targetable mutations, TMB, and MSI status."
+    },
+    {
+      "id": "PD-L1 IHC Assay",
+      "name": "PD-L1 IHC 22C3 Companion Diagnostic",
+      "category": "Diagnostic Assay",
+      "relevance": 0.91,
+      "desc": "Immunohistochemical companion diagnostic measuring tumor proportion score (TPS)."
+    },
+    {
+      "id": "ctDNA Liquid Biopsy",
+      "name": "Circulating Tumor DNA (ctDNA)",
+      "category": "Diagnostic Assay",
+      "relevance": 0.9,
+      "desc": "Non-invasive plasma assay monitoring minimal residual disease and emergent resistance mutations."
+    },
+    {
+      "id": "CD8+ T Cells",
+      "name": "Cytotoxic CD8+ T Lymphocytes",
+      "category": "Cell Type",
+      "relevance": 0.94,
+      "desc": "Primary cellular effectors mediating tumor antigen recognition and perforin/granzyme lysis."
+    },
+    {
+      "id": "Tumor Microenvironment",
+      "name": "Immunosuppressive TME",
+      "category": "Cell Type",
+      "relevance": 0.91,
+      "desc": "Complex stromal niche composed of cancer-associated fibroblasts, Tregs, and myeloid cells."
+    },
+    {
+      "id": "Synthetic Lethality",
+      "name": "Synthetic Lethality",
+      "category": "Clinical Finding",
+      "relevance": 0.94,
+      "desc": "Cell death occurring when two genetic deficiencies occur simultaneously (BRCA1/2 + PARP)."
+    },
+    {
+      "id": "T790M Resistance",
+      "name": "T790M Gatekeeper Mutation",
+      "category": "Clinical Finding",
+      "relevance": 0.9,
+      "desc": "Steric hindrance mutation in EGFR kinase domain conferring resistance to 1st-gen TKIs."
+    }
+  ],
+  "links": [
+    {
+      "source": "PMC5737884",
+      "target": "TP53",
+      "relationship": "Highlights loss of growth suppression"
+    },
+    {
+      "source": "PMC5737884",
+      "target": "Immune Evasion",
+      "relationship": "Formalized as an emerging cancer hallmark"
+    },
+    {
+      "source": "PMC5737884",
+      "target": "VEGFA",
+      "relationship": "Identified as inducer of tumor angiogenesis"
+    },
+    {
+      "source": "PMC5737884",
+      "target": "Apoptosis",
+      "relationship": "Characterized as evasion of programmed cell death"
+    },
+    {
+      "source": "PMC6433434",
+      "target": "PD-1",
+      "relationship": "Characterizes receptor biology"
+    },
+    {
+      "source": "PMC6433434",
+      "target": "PD-L1",
+      "relationship": "Evaluates adaptive resistance expression"
+    },
+    {
+      "source": "PMC6433434",
+      "target": "Pembrolizumab",
+      "relationship": "Analyzes clinical checkpoint inhibition"
+    },
+    {
+      "source": "PMC6433434",
+      "target": "CD8+ T Cells",
+      "relationship": "Demonstrates cytotoxic T cell reactivation"
+    },
+    {
+      "source": "PMC7816886",
+      "target": "TP53",
+      "relationship": "Analyzes 10,225 genomic tumor profiles"
+    },
+    {
+      "source": "PMC7816886",
+      "target": "Apoptosis",
+      "relationship": "Correlates mutation with loss of apoptosis"
+    },
+    {
+      "source": "PMC7816886",
+      "target": "Next-Gen Sequencing",
+      "relationship": "Utilizes comprehensive NGS data"
+    },
+    {
+      "source": "PMC7260538",
+      "target": "KRAS G12C",
+      "relationship": "Discovers pocket targeting covalent inhibitor"
+    },
+    {
+      "source": "PMC7260538",
+      "target": "Sotorasib",
+      "relationship": "Presents preclinical & clinical efficacy"
+    },
+    {
+      "source": "PMC7260538",
+      "target": "MAPK/ERK",
+      "relationship": "Demonstrates rapid shutdown of pathway signaling"
+    },
+    {
+      "source": "PMC6980649",
+      "target": "CAR-T Cells",
+      "relationship": "Details synthetic biology & clinical outcomes"
+    },
+    {
+      "source": "PMC6980649",
+      "target": "CD19",
+      "relationship": "Validates as optimal lineage target"
+    },
+    {
+      "source": "PMC6980649",
+      "target": "Tumor Microenvironment",
+      "relationship": "Assesses solid tumor penetration barriers"
+    },
+    {
+      "source": "PMC6714983",
+      "target": "BRCA1/2",
+      "relationship": "Identifies homologous recombination deficiency"
+    },
+    {
+      "source": "PMC6714983",
+      "target": "PARP1",
+      "relationship": "Establishes catalytic & trapping target"
+    },
+    {
+      "source": "PMC6714983",
+      "target": "Olaparib",
+      "relationship": "Validates clinical PARP inhibition"
+    },
+    {
+      "source": "PMC6714983",
+      "target": "Synthetic Lethality",
+      "relationship": "Demonstrates dual-defect synthetic lethality"
+    },
+    {
+      "source": "PMC6276856",
+      "target": "EGFR",
+      "relationship": "Evaluates 1st-line osimertinib efficacy"
+    },
+    {
+      "source": "PMC6276856",
+      "target": "Osimertinib",
+      "relationship": "Shows superior progression-free survival"
+    },
+    {
+      "source": "PMC6276856",
+      "target": "T790M Resistance",
+      "relationship": "Overcomes secondary gatekeeper resistance"
+    },
+    {
+      "source": "PD-1",
+      "target": "PD-L1",
+      "relationship": "Engages inhibitory ligand on tumor cells"
+    },
+    {
+      "source": "Pembrolizumab",
+      "target": "PD-1",
+      "relationship": "Blocks receptor-ligand interaction"
+    },
+    {
+      "source": "PD-L1",
+      "target": "PD-L1 IHC Assay",
+      "relationship": "Measured by companion diagnostic TPS"
+    },
+    {
+      "source": "PD-L1",
+      "target": "Immune Evasion",
+      "relationship": "Mediates tumor immune escape"
+    },
+    {
+      "source": "Pembrolizumab",
+      "target": "CD8+ T Cells",
+      "relationship": "Reinvigorates exhausted effector cells"
+    },
+    {
+      "source": "CD8+ T Cells",
+      "target": "Tumor Microenvironment",
+      "relationship": "Infiltrates tumor parenchyma"
+    },
+    {
+      "source": "KRAS G12C",
+      "target": "MAPK/ERK",
+      "relationship": "Drives constitutive downstream activation"
+    },
+    {
+      "source": "KRAS G12C",
+      "target": "PI3K/AKT/mTOR",
+      "relationship": "Co-activates secondary survival axis"
+    },
+    {
+      "source": "Sotorasib",
+      "target": "KRAS G12C",
+      "relationship": "Irreversibly binds switch-II pocket"
+    },
+    {
+      "source": "Sotorasib",
+      "target": "MAPK/ERK",
+      "relationship": "Suppresses phosphorylated ERK1/2"
+    },
+    {
+      "source": "EGFR",
+      "target": "MAPK/ERK",
+      "relationship": "Phosphorylates upstream adapter proteins"
+    },
+    {
+      "source": "EGFR",
+      "target": "PI3K/AKT/mTOR",
+      "relationship": "Triggers AKT-mediated anti-apoptotic signals"
+    },
+    {
+      "source": "Osimertinib",
+      "target": "EGFR",
+      "relationship": "Covalently modifies C797 catalytic residue"
+    },
+    {
+      "source": "EGFR",
+      "target": "T790M Resistance",
+      "relationship": "Acquires secondary gatekeeper mutation"
+    },
+    {
+      "source": "TP53",
+      "target": "Apoptosis",
+      "relationship": "Transactivates BAX, PUMA, and NOXA"
+    },
+    {
+      "source": "TP53",
+      "target": "Synthetic Lethality",
+      "relationship": "Alters susceptibility to DNA damaging agents"
+    },
+    {
+      "source": "BRCA1/2",
+      "target": "HRR Pathway",
+      "relationship": "Catalyzes RAD51 nucleoprotein filament formation"
+    },
+    {
+      "source": "PARP1",
+      "target": "Synthetic Lethality",
+      "relationship": "Targeted trapping causes catastrophic DSBs"
+    },
+    {
+      "source": "Olaparib",
+      "target": "PARP1",
+      "relationship": "Potently inhibits poly-ADP-ribosylation"
+    },
+    {
+      "source": "HRR Pathway",
+      "target": "Synthetic Lethality",
+      "relationship": "Deficiency induces high PARP vulnerability"
+    },
+    {
+      "source": "CAR-T Cells",
+      "target": "CD19",
+      "relationship": "Binds surface antigen via scFv domain"
+    },
+    {
+      "source": "CAR-T Cells",
+      "target": "CD8+ T Cells",
+      "relationship": "Engineered from patient cytotoxic T cells"
+    },
+    {
+      "source": "CAR-T Cells",
+      "target": "Tumor Microenvironment",
+      "relationship": "Overcomes inhibitory TGF-beta and checkpoint signals"
+    },
+    {
+      "source": "Next-Gen Sequencing",
+      "target": "KRAS G12C",
+      "relationship": "Detects specific codon 12 transversion"
+    },
+    {
+      "source": "Next-Gen Sequencing",
+      "target": "EGFR",
+      "relationship": "Profiles classical and non-classical mutations"
+    },
+    {
+      "source": "Next-Gen Sequencing",
+      "target": "BRCA1/2",
+      "relationship": "Identifies germline and somatic loss"
+    },
+    {
+      "source": "ctDNA Liquid Biopsy",
+      "target": "T790M Resistance",
+      "relationship": "Detects non-invasive emergent resistance clones"
+    },
+    {
+      "source": "ctDNA Liquid Biopsy",
+      "target": "KRAS G12C",
+      "relationship": "Tracks systemic molecular tumor response"
+    }
+  ]
+}

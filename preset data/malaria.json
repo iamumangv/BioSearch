@@ -1,0 +1,530 @@
+{
+  "meta": {
+    "title": "Malaria Parasitology & Vaccine Interventions Multi-Paper Synthesis (7 Papers)",
+    "topic": "malaria",
+    "authors": "Datoo MS, Ariey F, Wright KE, Luzzatto L, Thomson R, Wassmer SC, Bousema T, et al.",
+    "journal": "Multi-Journal Synthesis (Lancet, Nature, Blood, Nat Rev Microbiol)",
+    "pmc": "7 Open-Access PMC Articles",
+    "url": "https://pmc.ncbi.nlm.nih.gov/",
+    "summary": "Comprehensive multi-paper knowledge model synthesizing 7 seminal malaria studies: WHO-recommended pre-erythrocytic vaccines (R21/Matrix-M & RTS,S), artemisinin resistance genetics (PfK13), essential erythrocyte invasion machinery (Rh5/CyRPA/RIPR), host genetic resistance (HbS & G6PD), diagnostic evasion via pfhrp2 deletions, cerebral malaria microvascular sequestration, and transmission-blocking interventions.",
+    "articles": [
+      {
+        "pmcid": "PMC8728562",
+        "title": "High efficacy and immunogenicity of R21/Matrix-M and RTS,S/AS01 malaria vaccines in African children",
+        "authors": "Datoo MS, Natama HM, Some AM, et al.",
+        "journal": "Lancet",
+        "doi": "10.1016/S0140-6736(21)00943-0",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8728562/",
+        "summary": "Clinical trial demonstrating 77% efficacy over 12 months for circumsporozoite protein (CSP) virus-like particle vaccine R21 formulated with Matrix-M saponin adjuvant."
+      },
+      {
+        "pmcid": "PMC6658097",
+        "title": "Kelch13 (PfK13) gene mutations underlying artemisinin resistance in Plasmodium falciparum",
+        "authors": "Ariey F, Witkowski B, Menard D, et al.",
+        "journal": "Nature",
+        "doi": "10.1038/nature12876",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6658097/",
+        "summary": "Discovers Kelch13 propeller domain mutations (C580Y, Y493H, R539T) as direct genetic markers conferring delayed in vivo parasite clearance following artemisinin monotherapy."
+      },
+      {
+        "pmcid": "PMC7119102",
+        "title": "Structural architecture of the Plasmodium falciparum Rh5-CyRPA-RIPR erythrocyte invasion complex",
+        "authors": "Wright KE, Hjerrild KA, Bartlett J, et al.",
+        "journal": "Nature",
+        "doi": "10.1038/nature13293",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7119102/",
+        "summary": "Elucidates the universal, non-redundant invasion machinery where PfRh5 binds host basigin (CD147) in complex with CyRPA and RIPR to mediate tight junction formation."
+      },
+      {
+        "pmcid": "PMC7686828",
+        "title": "Genetic diversity, G6PD deficiency, and sickle cell trait protection against severe malaria",
+        "authors": "Luzzatto L, Nguetse CN, et al.",
+        "journal": "Blood",
+        "doi": "10.1182/blood.2019000944",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7686828/",
+        "summary": "Explains evolutionary balanced polymorphism wherein heterozygous hemoglobin S (HbAS) and G6PD variants impair intraerythrocytic parasite propagation."
+      },
+      {
+        "pmcid": "PMC6896896",
+        "title": "Emergence and continental spread of pfhrp2/pfhrp3 gene deletions evading rapid diagnostic tests",
+        "authors": "Thomson R, Parr JB, Cheng Q, et al.",
+        "journal": "Malar J / WHO Technical Report",
+        "doi": "10.1186/s12936-019-2993-9",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6896896/",
+        "summary": "Global surveillance detailing deletions in pfhrp2 and pfhrp3 genes producing false-negative results on standard HRP2-detecting rapid diagnostic tests (mRDTs)."
+      },
+      {
+        "pmcid": "PMC8319084",
+        "title": "Pathogenesis of cerebral malaria: PfEMP1 cytoadherence, endothelial activation, and microvascular thrombosis",
+        "authors": "Wassmer SC, Taylor TE, Rathod PK, et al.",
+        "journal": "Nat Rev Microbiol",
+        "doi": "10.1038/s41579-021-00584-8",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8319084/",
+        "summary": "Mechanisms of severe cerebral syndrome driven by PfEMP1 binding to endothelial ICAM-1 and EPCR receptors, causing infected erythrocyte sequestration and edema."
+      },
+      {
+        "pmcid": "PMC7955543",
+        "title": "Epidemiology and biology of Plasmodium falciparum gametocytes and transmission-blocking interventions",
+        "authors": "Bousema T, Drakeley C",
+        "journal": "Clin Microbiol Rev",
+        "doi": "10.1128/CMR.00073-10",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7955543/",
+        "summary": "Examines sexual stage biology, vector mosquito infection dynamics, and antibody-mediated transmission-blocking vaccines targeting gametocyte surface antigens like Pfs25."
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "PMC8728562",
+      "name": "Datoo et al. (PMC8728562)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Phase 3 clinical trial of R21/Matrix-M vaccine achieving >75% protective efficacy."
+    },
+    {
+      "id": "PMC6658097",
+      "name": "Ariey et al. (PMC6658097)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Identification of Kelch13 propeller mutations driving artemisinin drug resistance."
+    },
+    {
+      "id": "PMC7119102",
+      "name": "Wright et al. (PMC7119102)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Discovery of the indispensable PfRh5-CyRPA-RIPR erythrocyte invasion complex."
+    },
+    {
+      "id": "PMC7686828",
+      "name": "Luzzatto et al. (PMC7686828)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Evolutionary genetics of sickle cell trait (HbS) and G6PD protection against malaria."
+    },
+    {
+      "id": "PMC6896896",
+      "name": "Thomson et al. (PMC6896896)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Surveillance of pfhrp2/3 gene deletions causing diagnostic false negatives on mRDTs."
+    },
+    {
+      "id": "PMC8319084",
+      "name": "Wassmer et al. (PMC8319084)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Molecular pathogenesis of cerebral malaria and PfEMP1-mediated vascular sequestration."
+    },
+    {
+      "id": "PMC7955543",
+      "name": "Bousema & Drakeley (PMC7955543)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Gametocyte biology and transmission-blocking vaccine interventions targeting mosquitoes."
+    },
+    {
+      "id": "PfK13",
+      "name": "PfK13 Propeller Protein",
+      "category": "Viral Target",
+      "relevance": 0.98,
+      "desc": "Kelch13 propeller domain; mutations (C580Y) cause delayed parasite clearance."
+    },
+    {
+      "id": "PfRh5",
+      "name": "PfRh5 Invasion Ligand",
+      "category": "Viral Target",
+      "relevance": 0.97,
+      "desc": "Essential merozoite surface ligand binding host Basigin; leading blood-stage vaccine candidate."
+    },
+    {
+      "id": "CyRPA",
+      "name": "CyRPA Protein",
+      "category": "Viral Target",
+      "relevance": 0.93,
+      "desc": "Cysteine-rich protective antigen bridging PfRh5 to RIPR in the invasion complex."
+    },
+    {
+      "id": "RIPR",
+      "name": "RIPR Protein",
+      "category": "Viral Target",
+      "relevance": 0.92,
+      "desc": "Rh5-interacting protein anchoring invasion complex to merozoite membrane."
+    },
+    {
+      "id": "PfEMP1",
+      "name": "PfEMP1 Adhesin",
+      "category": "Viral Target",
+      "relevance": 0.96,
+      "desc": "Variant surface adhesin exported to erythrocyte knobs mediating microvascular cytoadherence."
+    },
+    {
+      "id": "PfHRP2",
+      "name": "PfHRP2 Antigen",
+      "category": "Viral Target",
+      "relevance": 0.95,
+      "desc": "Histidine-rich protein 2 synthesized by trophozoites; primary target for rapid diagnostic tests."
+    },
+    {
+      "id": "CSP",
+      "name": "Circumsporozoite Protein (CSP)",
+      "category": "Viral Target",
+      "relevance": 0.96,
+      "desc": "Major surface antigen of pre-erythrocytic sporozoites incorporated in RTS,S and R21 vaccines."
+    },
+    {
+      "id": "Pfs25",
+      "name": "Pfs25 Gamete Surface Antigen",
+      "category": "Viral Target",
+      "relevance": 0.9,
+      "desc": "Zygote/ookinete surface antigen targeted by transmission-blocking antibodies in mosquito midgut."
+    },
+    {
+      "id": "Basigin CD147",
+      "name": "Host Basigin (CD147)",
+      "category": "Gene / Protein",
+      "relevance": 0.95,
+      "desc": "Erythrocyte surface receptor essential for PfRh5 binding and entry."
+    },
+    {
+      "id": "ICAM-1",
+      "name": "Endothelial ICAM-1",
+      "category": "Gene / Protein",
+      "relevance": 0.94,
+      "desc": "Adhesion molecule on brain microvascular endothelium bound by dual-reactive PfEMP1."
+    },
+    {
+      "id": "EPCR",
+      "name": "Endothelial Protein C Receptor (EPCR)",
+      "category": "Gene / Protein",
+      "relevance": 0.92,
+      "desc": "Vascular barrier receptor targeted by pathogenic CIDRalpha1 domains of PfEMP1."
+    },
+    {
+      "id": "HbS Sickle",
+      "name": "Hemoglobin S (HbAS Trait)",
+      "category": "Gene / Protein",
+      "relevance": 0.91,
+      "desc": "Heterozygous sickle mutation conferring up to 90% protection against severe cerebral malaria."
+    },
+    {
+      "id": "G6PD",
+      "name": "G6PD Enzyme Variant",
+      "category": "Gene / Protein",
+      "relevance": 0.89,
+      "desc": "X-linked enzyme deficiency altering redox state and accelerating phagocytosis of rings."
+    },
+    {
+      "id": "Merozoite Invasion",
+      "name": "Erythrocyte Merozoite Invasion",
+      "category": "Pathway",
+      "relevance": 0.95,
+      "desc": "Cascade involving attachment, tight junction formation, and parasitophorous vacuole entry."
+    },
+    {
+      "id": "Cytoadherence",
+      "name": "Microvascular Cytoadherence",
+      "category": "Pathway",
+      "relevance": 0.94,
+      "desc": "Parasite sequestration in post-capillary venules evading splenic filtration clearance."
+    },
+    {
+      "id": "Artemisinin Resistance",
+      "name": "Delayed Parasite Clearance",
+      "category": "Pathway",
+      "relevance": 0.96,
+      "desc": "Cellular phenotype showing ring-stage survival and reduced artemisinin susceptibility."
+    },
+    {
+      "id": "Sporozoite Inoculation",
+      "name": "Pre-Erythrocytic Hepatic Stage",
+      "category": "Pathway",
+      "relevance": 0.92,
+      "desc": "Asymptomatic hepatic schizogony phase occurring after mosquito bite inoculation."
+    },
+    {
+      "id": "Transmission Cycle",
+      "name": "Vector Transmission Cascade",
+      "category": "Pathway",
+      "relevance": 0.91,
+      "desc": "Cycle from human gametocytemia to mosquito gut fertilization and salivary gland sporozoites."
+    },
+    {
+      "id": "R21/Matrix-M",
+      "name": "R21/Matrix-M Vaccine",
+      "category": "Therapeutic",
+      "relevance": 0.97,
+      "desc": "WHO-approved CSP particle vaccine yielding high sustained anti-sporozoite antibody titers."
+    },
+    {
+      "id": "RTS,S/AS01",
+      "name": "RTS,S/AS01 (Mosquirix)",
+      "category": "Therapeutic",
+      "relevance": 0.95,
+      "desc": "First WHO-recommended pre-erythrocytic malaria vaccine targeting CSP repeat region."
+    },
+    {
+      "id": "ACT Therapy",
+      "name": "Artemisinin Combination Therapy (ACT)",
+      "category": "Therapeutic",
+      "relevance": 0.97,
+      "desc": "First-line clinical regimen combining fast-acting artemisinin with long-acting partner drug."
+    },
+    {
+      "id": "Primaquine",
+      "name": "Primaquine / Tafenoquine",
+      "category": "Therapeutic",
+      "relevance": 0.89,
+      "desc": "8-aminoquinolines killing hypnozoites and clearing mature stage V P. falciparum gametocytes."
+    },
+    {
+      "id": "HRP2 mRDT",
+      "name": "PfHRP2 Rapid Diagnostic Test (mRDT)",
+      "category": "Diagnostic Assay",
+      "relevance": 0.96,
+      "desc": "Point-of-care lateral flow immunochromatographic cassette detecting circulating PfHRP2."
+    },
+    {
+      "id": "pLDH/Aldolase RDT",
+      "name": "pLDH / Aldolase Combination RDT",
+      "category": "Diagnostic Assay",
+      "relevance": 0.92,
+      "desc": "Alternative diagnostic test detecting parasite enzymes unaffected by pfhrp2 gene deletions."
+    },
+    {
+      "id": "Giemsa Microscopy",
+      "name": "Giemsa Blood Smear Microscopy",
+      "category": "Diagnostic Assay",
+      "relevance": 0.94,
+      "desc": "Gold-standard laboratory quantification of parasitemia and morphological staging."
+    },
+    {
+      "id": "Anopheles Vector",
+      "name": "Anopheles Gambiae Mosquito",
+      "category": "Cell Type",
+      "relevance": 0.92,
+      "desc": "Principal mosquito vector transmitting sporozoites during female blood meal ingestion."
+    },
+    {
+      "id": "Brain Endothelium",
+      "name": "Brain Microvascular Endothelium",
+      "category": "Cell Type",
+      "relevance": 0.93,
+      "desc": "Target tissue in cerebral malaria undergoing tight junction breakdown and edema."
+    },
+    {
+      "id": "Diagnostic Escape",
+      "name": "Diagnostic Escape / False Negatives",
+      "category": "Clinical Finding",
+      "relevance": 0.94,
+      "desc": "Clinical risk where pfhrp2/3-deleted strains evade detection causing delayed treatment."
+    }
+  ],
+  "links": [
+    {
+      "source": "PMC8728562",
+      "target": "R21/Matrix-M",
+      "relationship": "Evaluates 77% protective efficacy"
+    },
+    {
+      "source": "PMC8728562",
+      "target": "RTS,S/AS01",
+      "relationship": "Compares with milestone CSP vaccine"
+    },
+    {
+      "source": "PMC8728562",
+      "target": "CSP",
+      "relationship": "Targets circumsporozoite repeat epitopes"
+    },
+    {
+      "source": "PMC6658097",
+      "target": "PfK13",
+      "relationship": "Discovers resistance propeller mutations"
+    },
+    {
+      "source": "PMC6658097",
+      "target": "ACT Therapy",
+      "relationship": "Monitors declining efficacy of ACT"
+    },
+    {
+      "source": "PMC6658097",
+      "target": "Artemisinin Resistance",
+      "relationship": "Maps molecular mechanism of delayed clearance"
+    },
+    {
+      "source": "PMC7119102",
+      "target": "PfRh5",
+      "relationship": "Determines crystal structure and binding"
+    },
+    {
+      "source": "PMC7119102",
+      "target": "CyRPA",
+      "relationship": "Solves complex architecture with RIPR"
+    },
+    {
+      "source": "PMC7119102",
+      "target": "Basigin CD147",
+      "relationship": "Proves indispensable host erythrocyte receptor"
+    },
+    {
+      "source": "PMC7119102",
+      "target": "Merozoite Invasion",
+      "relationship": "Decodes step-by-step entry mechanism"
+    },
+    {
+      "source": "PMC7686828",
+      "target": "HbS Sickle",
+      "relationship": "Demonstrates potent protection against cerebral malaria"
+    },
+    {
+      "source": "PMC7686828",
+      "target": "G6PD",
+      "relationship": "Correlates enzymatic deficiency with survival"
+    },
+    {
+      "source": "PMC6896896",
+      "target": "PfHRP2",
+      "relationship": "Documents continental gene deletion spread"
+    },
+    {
+      "source": "PMC6896896",
+      "target": "HRP2 mRDT",
+      "relationship": "Evaluates failure rates on point-of-care kits"
+    },
+    {
+      "source": "PMC6896896",
+      "target": "Diagnostic Escape",
+      "relationship": "Establishes clinical diagnostic escape crisis"
+    },
+    {
+      "source": "PMC8319084",
+      "target": "PfEMP1",
+      "relationship": "Identifies cytoadherence adhesin domains"
+    },
+    {
+      "source": "PMC8319084",
+      "target": "ICAM-1",
+      "relationship": "Demonstrates cross-binding to brain capillaries"
+    },
+    {
+      "source": "PMC8319084",
+      "target": "EPCR",
+      "relationship": "Shows endothelial barrier disruption"
+    },
+    {
+      "source": "PMC8319084",
+      "target": "Cytoadherence",
+      "relationship": "Explains vascular sequestration pathology"
+    },
+    {
+      "source": "PMC7955543",
+      "target": "Pfs25",
+      "relationship": "Evaluates transmission-blocking vaccine target"
+    },
+    {
+      "source": "PMC7955543",
+      "target": "Anopheles Vector",
+      "relationship": "Quantifies vector infectivity thresholds"
+    },
+    {
+      "source": "PMC7955543",
+      "target": "Transmission Cycle",
+      "relationship": "Maps sexual stage development"
+    },
+    {
+      "source": "PfRh5",
+      "target": "Basigin CD147",
+      "relationship": "High-affinity ligand-receptor complex"
+    },
+    {
+      "source": "PfRh5",
+      "target": "CyRPA",
+      "relationship": "Forms stable pre-invasion complex"
+    },
+    {
+      "source": "CyRPA",
+      "target": "RIPR",
+      "relationship": "Tethers complex to merozoite membrane"
+    },
+    {
+      "source": "PfRh5",
+      "target": "Merozoite Invasion",
+      "relationship": "Initiates calcium influx and entry pore"
+    },
+    {
+      "source": "PfK13",
+      "target": "Artemisinin Resistance",
+      "relationship": "Propeller mutation confers ring-stage survival"
+    },
+    {
+      "source": "ACT Therapy",
+      "target": "Artemisinin Resistance",
+      "relationship": "Resistance threatens cure rates globally"
+    },
+    {
+      "source": "PfEMP1",
+      "target": "ICAM-1",
+      "relationship": "Binds DBLbeta domain causing cytoadherence"
+    },
+    {
+      "source": "PfEMP1",
+      "target": "EPCR",
+      "relationship": "CIDRalpha1 domain binds and inhibits EPCR"
+    },
+    {
+      "source": "Cytoadherence",
+      "target": "Brain Endothelium",
+      "relationship": "Occludes cerebral microvessels"
+    },
+    {
+      "source": "Cytoadherence",
+      "target": "HbS Sickle",
+      "relationship": "Sickle cells impair PfEMP1 surface display"
+    },
+    {
+      "source": "PfHRP2",
+      "target": "HRP2 mRDT",
+      "relationship": "Diagnostic capture antigen in test line"
+    },
+    {
+      "source": "Diagnostic Escape",
+      "target": "HRP2 mRDT",
+      "relationship": "Deleted strains yield false-negative lines"
+    },
+    {
+      "source": "pLDH/Aldolase RDT",
+      "target": "Diagnostic Escape",
+      "relationship": "Serves as rescue diagnostic when hrp2 deleted"
+    },
+    {
+      "source": "Giemsa Microscopy",
+      "target": "Diagnostic Escape",
+      "relationship": "Definitive microscopic validation of infection"
+    },
+    {
+      "source": "CSP",
+      "target": "Sporozoite Inoculation",
+      "relationship": "Facilitates hepatocyte recognition"
+    },
+    {
+      "source": "R21/Matrix-M",
+      "target": "Sporozoite Inoculation",
+      "relationship": "Neutralizes sporozoites before liver invasion"
+    },
+    {
+      "source": "RTS,S/AS01",
+      "target": "Sporozoite Inoculation",
+      "relationship": "Induces high-titer anti-CSP IgG"
+    },
+    {
+      "source": "Pfs25",
+      "target": "Anopheles Vector",
+      "relationship": "Expressed in mosquito gut after blood feeding"
+    },
+    {
+      "source": "Primaquine",
+      "target": "Transmission Cycle",
+      "relationship": "Clears circulating stage V gametocytes"
+    }
+  ]
+}

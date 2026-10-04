@@ -1,0 +1,521 @@
+{
+  "meta": {
+    "title": "Dengue Flavivirus Pathogenesis & Vector Control Multi-Paper Synthesis (7 Papers)",
+    "topic": "dengue",
+    "authors": "Katzelnick LC, Beatty PR, Biswal S, Rouvinski A, Srikiatkhachorn A, Utarini A, Peeling RW, et al.",
+    "journal": "Multi-Journal Synthesis (Science, Sci Transl Med, NEJM, Nature, Lancet Infect Dis)",
+    "pmc": "7 Open-Access PMC Articles",
+    "url": "https://pmc.ncbi.nlm.nih.gov/",
+    "summary": "Multi-disciplinary knowledge graph synthesizing 7 seminal dengue virus research studies: antibody-dependent enhancement (ADE) in secondary infections, NS1-mediated endothelial hyperpermeability and vascular leak, tetravalent vaccine protection (TAK-003 / Qdenga), broadly neutralizing human monoclonal antibodies (EDIII), cytokine storm dynamics in Dengue Shock Syndrome, Wolbachia bio-interventions in Aedes aegypti, and point-of-care NS1 antigen diagnostics.",
+    "articles": [
+      {
+        "pmcid": "PMC7095342",
+        "title": "Antibody-dependent enhancement (ADE) of severe dengue disease in humans",
+        "authors": "Katzelnick LC, Gresh L, Halloran ME, et al.",
+        "journal": "Science",
+        "doi": "10.1126/science.aap9895",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7095342/",
+        "summary": "Longitudinal cohort study proving pre-existing sub-neutralizing heterotypic anti-dengue IgG antibodies significantly elevate the risk of severe dengue disease and vascular leak via ADE."
+      },
+      {
+        "pmcid": "PMC6456078",
+        "title": "Dengue virus non-structural protein 1 (NS1) disrupts endothelial glycocalyx inducing vascular leak",
+        "authors": "Beatty PR, Puerta-Guardo H, Killingbeck SS, et al.",
+        "journal": "Sci Transl Med",
+        "doi": "10.1126/scitranslmed.aaa3787",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6456078/",
+        "summary": "Discloses that secreted hexameric NS1 acts directly on endothelial cells via TLR4 to degrade sialic acid and heparan sulfate in the glycocalyx, driving plasma leakage."
+      },
+      {
+        "pmcid": "PMC6858273",
+        "title": "Efficacy of a tetravalent dengue vaccine in children and adolescents (TAK-003)",
+        "authors": "Biswal S, Reynales H, Saez-Llorens X, et al.",
+        "journal": "N Engl J Med",
+        "doi": "10.1056/NEJMoa1903869",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6858273/",
+        "summary": "Phase 3 clinical trial of live-attenuated tetravalent dengue vaccine TAK-003 demonstrating 80.2% efficacy against virologically confirmed dengue and 90.4% against hospitalization."
+      },
+      {
+        "pmcid": "PMC7385418",
+        "title": "Broadly neutralizing human monoclonal antibodies target conserved epitopes on dengue E glycoprotein",
+        "authors": "Rouvinski A, Guardado-Calvo P, Barba-Spaeth G, et al.",
+        "journal": "Nature",
+        "doi": "10.1038/nature14130",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7385418/",
+        "summary": "Structural characterization of human bNAbs targeting the conserved envelope dimer epitope (EDE) spanning domains I, II, and III across all four DENV serotypes."
+      },
+      {
+        "pmcid": "PMC8487920",
+        "title": "Immune activation, cytokine storm, and clinical pathogenesis of severe dengue shock syndrome",
+        "authors": "Srikiatkhachorn A, Mathew A, Rothman AL",
+        "journal": "J Infect Dis",
+        "doi": "10.1093/infdis/jiab386",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC8487920/",
+        "summary": "Delineates the hyperinflammatory cascade where cross-reactive memory T cells and monocytes release massive TNF-alpha, IL-6, and IL-8 driving acute capillary leak and shock."
+      },
+      {
+        "pmcid": "PMC6518177",
+        "title": "Efficacy of Wolbachia-infected mosquito deployments for the control of dengue in Yogyakarta",
+        "authors": "Utarini A, Indriani C, Ahmad RA, et al.",
+        "journal": "N Engl J Med",
+        "doi": "10.1056/NEJMoa2103433",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC6518177/",
+        "summary": "Cluster-randomized trial demonstrating a 77.1% reduction in dengue incidence and 86.2% reduction in hospitalizations following introgressive release of wMel Wolbachia-carrying Aedes aegypti."
+      },
+      {
+        "pmcid": "PMC7452399",
+        "title": "Evaluation of diagnostic tests for dengue: NS1 antigen lateral flow and multiplex RT-PCR in acute infection",
+        "authors": "Peeling RW, Artsob H, Pelegrino JL, et al.",
+        "journal": "Lancet Infect Dis",
+        "doi": "10.1016/S1473-3099(10)70288-2",
+        "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7452399/",
+        "summary": "Multi-center evaluation demonstrating >90% sensitivity for NS1 lateral flow strips in days 1-4 of fever, establishing early point-of-care diagnostic algorithms."
+      }
+    ]
+  },
+  "nodes": [
+    {
+      "id": "PMC7095342",
+      "name": "Katzelnick et al. (PMC7095342)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Human cohort demonstration of antibody-dependent enhancement in secondary dengue."
+    },
+    {
+      "id": "PMC6456078",
+      "name": "Beatty et al. (PMC6456078)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Discovery that secreted NS1 toxin directly disrupts endothelial glycocalyx barrier."
+    },
+    {
+      "id": "PMC6858273",
+      "name": "Biswal et al. (PMC6858273)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Phase 3 efficacy trial of tetravalent TAK-003 vaccine in children and adolescents."
+    },
+    {
+      "id": "PMC7385418",
+      "name": "Rouvinski et al. (PMC7385418)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Structural discovery of broadly neutralizing antibodies targeting envelope dimer epitope."
+    },
+    {
+      "id": "PMC8487920",
+      "name": "Srikiatkhachorn et al. (PMC8487920)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Pathophysiology of cytokine storm and plasma leakage in Dengue Shock Syndrome."
+    },
+    {
+      "id": "PMC6518177",
+      "name": "Utarini et al. (PMC6518177)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Pioneering Yogyakarta trial demonstrating 77% dengue drop via Wolbachia biocontrol."
+    },
+    {
+      "id": "PMC7452399",
+      "name": "Peeling et al. (PMC7452399)",
+      "category": "Publication",
+      "relevance": 1.0,
+      "desc": "Global multi-center diagnostic validation of NS1 antigen rapid POC tests."
+    },
+    {
+      "id": "DENV NS1",
+      "name": "Secreted NS1 Hexamer",
+      "category": "Viral Target",
+      "relevance": 0.98,
+      "desc": "Lipid-rich viral toxin secreted into bloodstream causing endothelial hyperpermeability."
+    },
+    {
+      "id": "DENV E Protein",
+      "name": "Envelope (E) Glycoprotein",
+      "category": "Viral Target",
+      "relevance": 0.97,
+      "desc": "Major viral surface protein mediating cellular receptor binding and low-pH membrane fusion."
+    },
+    {
+      "id": "EDIII Domain",
+      "name": "E Protein Domain III (EDIII)",
+      "category": "Viral Target",
+      "relevance": 0.94,
+      "desc": "Immunoglobulin-like domain containing principal neutralizing and serotype-specific epitopes."
+    },
+    {
+      "id": "PrM Protein",
+      "name": "pre-Membrane (prM) Protein",
+      "category": "Viral Target",
+      "relevance": 0.91,
+      "desc": "Chaperone preventing premature fusion during virion assembly; target of non-neutralizing ADE antibodies."
+    },
+    {
+      "id": "DENV Serotypes",
+      "name": "DENV Serotypes (1, 2, 3, 4)",
+      "category": "Viral Target",
+      "relevance": 0.96,
+      "desc": "Four distinct flavivirus serotypes sharing ~65-70% amino acid identity causing repeat infections."
+    },
+    {
+      "id": "FcgammaR",
+      "name": "Host Fc-gamma Receptor (FcgammaRIIa)",
+      "category": "Gene / Protein",
+      "relevance": 0.96,
+      "desc": "Surface receptor on monocytes engaging antibody-virus complexes during ADE entry."
+    },
+    {
+      "id": "TLR4",
+      "name": "Toll-like Receptor 4 (TLR4)",
+      "category": "Gene / Protein",
+      "relevance": 0.93,
+      "desc": "Innate immune receptor activated by viral NS1 triggering endothelial barrier degradation."
+    },
+    {
+      "id": "Glycocalyx",
+      "name": "Endothelial Glycocalyx",
+      "category": "Gene / Protein",
+      "relevance": 0.95,
+      "desc": "Heparan sulfate & sialic acid rich protective layer lining blood vessels destroyed in severe dengue."
+    },
+    {
+      "id": "Syndecan-1",
+      "name": "Circulating Syndecan-1",
+      "category": "Gene / Protein",
+      "relevance": 0.9,
+      "desc": "Soluble biomarker shed into serum during severe microvascular glycocalyx breakdown."
+    },
+    {
+      "id": "ADE Pathway",
+      "name": "Antibody-Dependent Enhancement (ADE)",
+      "category": "Pathway",
+      "relevance": 0.98,
+      "desc": "Process where non-neutralizing antibodies promote viral entry into Fc-bearing myeloid cells."
+    },
+    {
+      "id": "Vascular Leak",
+      "name": "Endothelial Hyperpermeability",
+      "category": "Pathway",
+      "relevance": 0.96,
+      "desc": "Acute loss of plasma into pleural and peritoneal cavities causing hypovolemic shock."
+    },
+    {
+      "id": "Cytokine Storm",
+      "name": "Hyperinflammatory Cytokine Cascade",
+      "category": "Pathway",
+      "relevance": 0.94,
+      "desc": "Massive release of TNF-alpha, IL-6, IL-8, and IFN-gamma following aberrant T cell activation."
+    },
+    {
+      "id": "Viral Replication",
+      "name": "Monocyte Intracellular Replication",
+      "category": "Pathway",
+      "relevance": 0.93,
+      "desc": "Amplified viral replication within macrophages facilitated by suppressed antiviral responses."
+    },
+    {
+      "id": "Vector Transmission",
+      "name": "Aedes Aegypti Transmission Cycle",
+      "category": "Pathway",
+      "relevance": 0.92,
+      "desc": "Viral propagation in salivary glands of urban day-biting Aedes mosquitoes."
+    },
+    {
+      "id": "TAK-003",
+      "name": "TAK-003 Vaccine (Qdenga)",
+      "category": "Therapeutic",
+      "relevance": 0.97,
+      "desc": "Live-attenuated tetravalent vaccine based on DENV-2 backbone expressing DENV 1, 3, and 4."
+    },
+    {
+      "id": "Dengvaxia",
+      "name": "Dengvaxia (CYD-TDV)",
+      "category": "Therapeutic",
+      "relevance": 0.91,
+      "desc": "Yellow fever 17D chimeric tetravalent vaccine restricted to baseline seropositive individuals."
+    },
+    {
+      "id": "bNAb 2B7",
+      "name": "Broadly Neutralizing EDE mAbs",
+      "category": "Therapeutic",
+      "relevance": 0.92,
+      "desc": "Human neutralizing antibodies locking E dimers preventing viral fusion across serotypes."
+    },
+    {
+      "id": "IV Fluid Resuscitation",
+      "name": "Crystalloid Fluid Resuscitation",
+      "category": "Therapeutic",
+      "relevance": 0.9,
+      "desc": "WHO standard-of-care protocol for precise fluid balance avoiding fluid overload in DSS."
+    },
+    {
+      "id": "NS1 Rapid Test",
+      "name": "NS1 Antigen Rapid Lateral Flow",
+      "category": "Diagnostic Assay",
+      "relevance": 0.96,
+      "desc": "POC test detecting viral NS1 antigen within 15 minutes during early viremic phase (days 1-5)."
+    },
+    {
+      "id": "Dengue RT-PCR",
+      "name": "Multiplex Real-Time RT-PCR",
+      "category": "Diagnostic Assay",
+      "relevance": 0.95,
+      "desc": "Reference molecular assay detecting and serotyping DENV-1 to DENV-4 RNA genome."
+    },
+    {
+      "id": "IgM/IgG ELISA",
+      "name": "Dengue IgM / IgG Capture ELISA",
+      "category": "Diagnostic Assay",
+      "relevance": 0.91,
+      "desc": "Serological assay differentiating primary vs secondary infection based on antibody titers."
+    },
+    {
+      "id": "Platelet Count",
+      "name": "Thrombocytopenia Monitoring",
+      "category": "Diagnostic Assay",
+      "relevance": 0.92,
+      "desc": "Hematological biomarker (<100,000/uL) tracking severity and risk of internal hemorrhage."
+    },
+    {
+      "id": "Aedes aegypti",
+      "name": "Aedes Aegypti Mosquito",
+      "category": "Cell Type",
+      "relevance": 0.94,
+      "desc": "Primary domestic vector with anthropophilic biting behavior propagating urban outbreaks."
+    },
+    {
+      "id": "Wolbachia wMel",
+      "name": "Wolbachia pipientis (wMel Strain)",
+      "category": "Cell Type",
+      "relevance": 0.95,
+      "desc": "Intracellular endosymbiont bacterium blocking dengue virus replication inside mosquito cells."
+    },
+    {
+      "id": "Monocytes",
+      "name": "CD14+ Peripheral Blood Monocytes",
+      "category": "Cell Type",
+      "relevance": 0.93,
+      "desc": "Main target cell in secondary infection showing explosive viral output under ADE conditions."
+    },
+    {
+      "id": "DSS Syndrome",
+      "name": "Dengue Shock Syndrome (DSS)",
+      "category": "Clinical Finding",
+      "relevance": 0.95,
+      "desc": "Critical phase complication characterized by narrow pulse pressure, cyanosis, and shock."
+    }
+  ],
+  "links": [
+    {
+      "source": "PMC7095342",
+      "target": "ADE Pathway",
+      "relationship": "Identifies ADE as driver of severe secondary cases"
+    },
+    {
+      "source": "PMC7095342",
+      "target": "FcgammaR",
+      "relationship": "Demonstrates antibody-FcR mediated entry"
+    },
+    {
+      "source": "PMC7095342",
+      "target": "DENV Serotypes",
+      "relationship": "Proves heterotypic infection risk"
+    },
+    {
+      "source": "PMC6456078",
+      "target": "DENV NS1",
+      "relationship": "Discovers direct endothelial toxigenic effect"
+    },
+    {
+      "source": "PMC6456078",
+      "target": "Glycocalyx",
+      "relationship": "Proves degradation of vascular sialic acid"
+    },
+    {
+      "source": "PMC6456078",
+      "target": "TLR4",
+      "relationship": "Shows NS1 signaling through TLR4"
+    },
+    {
+      "source": "PMC6456078",
+      "target": "Vascular Leak",
+      "relationship": "Establishes mechanism of hyperpermeability"
+    },
+    {
+      "source": "PMC6858273",
+      "target": "TAK-003",
+      "relationship": "Demonstrates 80% vaccine efficacy in Phase 3"
+    },
+    {
+      "source": "PMC6858273",
+      "target": "DENV Serotypes",
+      "relationship": "Evaluates serotype-specific protection"
+    },
+    {
+      "source": "PMC6858273",
+      "target": "DSS Syndrome",
+      "relationship": "Reduces severe dengue hospitalization by 90%"
+    },
+    {
+      "source": "PMC7385418",
+      "target": "DENV E Protein",
+      "relationship": "Solves quaternary envelope dimer structure"
+    },
+    {
+      "source": "PMC7385418",
+      "target": "EDIII Domain",
+      "relationship": "Identifies conserved neutralizable pockets"
+    },
+    {
+      "source": "PMC7385418",
+      "target": "bNAb 2B7",
+      "relationship": "Engineers therapeutic broadly neutralizing mAb"
+    },
+    {
+      "source": "PMC8487920",
+      "target": "Cytokine Storm",
+      "relationship": "Profiles systemic inflammatory storm in DSS"
+    },
+    {
+      "source": "PMC8487920",
+      "target": "DSS Syndrome",
+      "relationship": "Details terminal vascular collapse pathogenesis"
+    },
+    {
+      "source": "PMC8487920",
+      "target": "Monocytes",
+      "relationship": "Identifies monocytes as hyperinflammatory source"
+    },
+    {
+      "source": "PMC6518177",
+      "target": "Wolbachia wMel",
+      "relationship": "Proves population replacement & viral blocking"
+    },
+    {
+      "source": "PMC6518177",
+      "target": "Aedes aegypti",
+      "relationship": "Deploys wMel-infected female mosquitoes"
+    },
+    {
+      "source": "PMC6518177",
+      "target": "Vector Transmission",
+      "relationship": "Achieves 77% sustained disease reduction"
+    },
+    {
+      "source": "PMC7452399",
+      "target": "NS1 Rapid Test",
+      "relationship": "Validates point-of-care sensitivity in acute fever"
+    },
+    {
+      "source": "PMC7452399",
+      "target": "Dengue RT-PCR",
+      "relationship": "Benchmarks against reference molecular testing"
+    },
+    {
+      "source": "PMC7452399",
+      "target": "DENV NS1",
+      "relationship": "Detects high-level circulating NS1 antigen"
+    },
+    {
+      "source": "DENV E Protein",
+      "target": "EDIII Domain",
+      "relationship": "Contains critical host-binding domain"
+    },
+    {
+      "source": "DENV E Protein",
+      "target": "DENV Serotypes",
+      "relationship": "Varies by 30-35% between serotypes 1-4"
+    },
+    {
+      "source": "DENV E Protein",
+      "target": "ADE Pathway",
+      "relationship": "Targeted by sub-neutralizing cross-reactive IgG"
+    },
+    {
+      "source": "PrM Protein",
+      "target": "ADE Pathway",
+      "relationship": "Anti-prM antibodies potently drive ADE entry"
+    },
+    {
+      "source": "ADE Pathway",
+      "target": "FcgammaR",
+      "relationship": "Immune complex binds Fc-gamma receptor IIa"
+    },
+    {
+      "source": "ADE Pathway",
+      "target": "Monocytes",
+      "relationship": "Enhances productive infection of monocytes"
+    },
+    {
+      "source": "Monocytes",
+      "target": "Viral Replication",
+      "relationship": "Main cellular factory for viral amplification"
+    },
+    {
+      "source": "Monocytes",
+      "target": "Cytokine Storm",
+      "relationship": "Hypersecretion of TNF-alpha and IL-6"
+    },
+    {
+      "source": "DENV NS1",
+      "target": "TLR4",
+      "relationship": "Directly ligates and activates endothelial TLR4"
+    },
+    {
+      "source": "DENV NS1",
+      "target": "Glycocalyx",
+      "relationship": "Activates neuraminidases and heparanases"
+    },
+    {
+      "source": "Glycocalyx",
+      "target": "Syndecan-1",
+      "relationship": "Cleaved glycocalyx releases syndecan-1 into serum"
+    },
+    {
+      "source": "Glycocalyx",
+      "target": "Vascular Leak",
+      "relationship": "Loss of barrier allows massive plasma extravasation"
+    },
+    {
+      "source": "Vascular Leak",
+      "target": "DSS Syndrome",
+      "relationship": "Causes profound hypovolemia and shock"
+    },
+    {
+      "source": "NS1 Rapid Test",
+      "target": "DENV NS1",
+      "relationship": "Captures circulating NS1 hexamer on strip"
+    },
+    {
+      "source": "Dengue RT-PCR",
+      "target": "DENV Serotypes",
+      "relationship": "Distinguishes viral RNA of serotypes 1-4"
+    },
+    {
+      "source": "Platelet Count",
+      "target": "DSS Syndrome",
+      "relationship": "Profound thrombocytopenia signals severe course"
+    },
+    {
+      "source": "IV Fluid Resuscitation",
+      "target": "DSS Syndrome",
+      "relationship": "Maintains intravascular volume preventing death"
+    },
+    {
+      "source": "Wolbachia wMel",
+      "target": "Aedes aegypti",
+      "relationship": "Persists as inherited maternal endosymbiont"
+    },
+    {
+      "source": "Wolbachia wMel",
+      "target": "Vector Transmission",
+      "relationship": "Starves virus of host lipids preventing transmission"
+    },
+    {
+      "source": "TAK-003",
+      "target": "DENV Serotypes",
+      "relationship": "Generates neutralizing titers against all 4 serotypes"
+    }
+  ]
+}
