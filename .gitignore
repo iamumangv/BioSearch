@@ -89,3 +89,12 @@ yarn-error.log*
 scratch/
 tmp/
 temp/
+
+# Binary Archives & Presentations
+*.zip
+*.tar.gz
+*.rar
+*.7z
+*.pptx
+*.ppt
+
