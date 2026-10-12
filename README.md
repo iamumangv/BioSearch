@@ -153,7 +153,7 @@ python knowledge-graph/fetch_pmc_and_generate_graph.py --topic "CRISPR-Cas9 gene
 
 ## ⚙️ Configuration & Environment Variables
 
-Key parameters in [`.env`](.env) (templated in [`.env.example`](.env.example)):
+Key parameters in `.env` (templated in [`.env.example`](.env.example)):
 
 | Variable | Description | Default / Example |
 | :--- | :--- | :--- |
@@ -162,7 +162,7 @@ Key parameters in [`.env`](.env) (templated in [`.env.example`](.env.example)):
 | `PORT` | Local HTTP development server port | `8080` |
 
 > [!NOTE]
-> `.env` is automatically ignored by Git (via `.gitignore`) so confidential API credentials will never be exposed.
+> `.env` is automatically ignored by Git (via `.gitignore`) and strictly guarded by a pre-commit hook (`.githooks/pre-commit`) to ensure confidential API credentials are never committed.
 
 ---
 

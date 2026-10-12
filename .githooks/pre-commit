@@ -1,0 +1,47 @@
+#!/bin/sh
+# ==============================================================================
+# BioSearch - Git Pre-Commit Hook
+# Safeguard: Block commits containing .env or secret configuration files
+# ==============================================================================
+
+# Inspect all staged files that are Added, Copied, or Modified
+STAGED_FILES=$(git diff --cached --name-only --diff-filter=ACM)
+
+if [ -z "$STAGED_FILES" ]; then
+    exit 0
+fi
+
+BLOCKED=0
+
+for file in $STAGED_FILES; do
+    filename=$(basename "$file")
+
+    # Allow harmless template files like .env.example
+    if [ "$filename" = ".env.example" ]; then
+        continue
+    fi
+
+    # Detect any .env, .env.*, *.env, or *.env.* file
+    case "$filename" in
+        .env|.env.*|*.env|*.env.*)
+            echo ""
+            echo "======================================================================"
+            echo " [SECURITY BLOCKED] Commit halted by pre-commit hook!"
+            echo " Environment or secret configuration file detected in staging:"
+            echo "   -> $file"
+            echo ""
+            echo " Sensitive credentials must NEVER be committed to Git."
+            echo " To unstage this file, run:"
+            echo "   git reset HEAD \"$file\""
+            echo "======================================================================"
+            echo ""
+            BLOCKED=1
+            ;;
+    esac
+done
+
+if [ "$BLOCKED" -ne 0 ]; then
+    exit 1
+fi
+
+exit 0

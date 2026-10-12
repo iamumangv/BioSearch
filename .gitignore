@@ -4,12 +4,12 @@
 
 # Environment Variables & Private Secrets
 .env
-.env.local
-.env.development
-.env.test
-.env.production
-.env.*.local
+.env.*
+.env*.local
+*.env
+*.env.*
 !.env.example
+!**/.env.example
 
 # Operating System Files
 .DS_Store
